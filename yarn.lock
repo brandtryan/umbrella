@@ -1661,6 +1661,201 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@example/noc2-example-001@workspace:examples/noc2-example-001":
+  version: 0.0.0-use.local
+  resolution: "@example/noc2-example-001@workspace:examples/noc2-example-001"
+  dependencies:
+    "@thi.ng/hiccup": "workspace:^"
+    "@thi.ng/hiccup-canvas": "workspace:^"
+    "@thi.ng/random": "workspace:^"
+    "@thi.ng/vectors": "workspace:^"
+    typescript: "npm:^5.8.3"
+    vite: "npm:^6.3.5"
+  languageName: unknown
+  linkType: soft
+
+"@example/noc2-example-002@workspace:examples/noc2-example-002":
+  version: 0.0.0-use.local
+  resolution: "@example/noc2-example-002@workspace:examples/noc2-example-002"
+  dependencies:
+    "@thi.ng/hiccup": "workspace:^"
+    "@thi.ng/hiccup-canvas": "workspace:^"
+    "@thi.ng/random": "workspace:^"
+    "@thi.ng/vectors": "workspace:^"
+    typescript: "npm:^5.8.3"
+    vite: "npm:^6.3.5"
+  languageName: unknown
+  linkType: soft
+
+"@example/noc2-example-003@workspace:examples/noc2-example-003":
+  version: 0.0.0-use.local
+  resolution: "@example/noc2-example-003@workspace:examples/noc2-example-003"
+  dependencies:
+    "@thi.ng/hiccup": "workspace:^"
+    "@thi.ng/hiccup-canvas": "workspace:^"
+    "@thi.ng/random": "workspace:^"
+    "@thi.ng/vectors": "workspace:^"
+    typescript: "npm:^5.8.3"
+    vite: "npm:^6.3.5"
+  languageName: unknown
+  linkType: soft
+
+"@example/noc2-example-004@workspace:examples/noc2-example-004":
+  version: 0.0.0-use.local
+  resolution: "@example/noc2-example-004@workspace:examples/noc2-example-004"
+  dependencies:
+    "@thi.ng/hiccup": "workspace:^"
+    "@thi.ng/hiccup-canvas": "workspace:^"
+    "@thi.ng/random": "workspace:^"
+    "@thi.ng/vectors": "workspace:^"
+    typescript: "npm:^5.8.3"
+    vite: "npm:^6.3.5"
+  languageName: unknown
+  linkType: soft
+
+"@example/noc2-example-005@workspace:examples/noc2-example-005":
+  version: 0.0.0-use.local
+  resolution: "@example/noc2-example-005@workspace:examples/noc2-example-005"
+  dependencies:
+    "@thi.ng/hiccup": "workspace:^"
+    "@thi.ng/hiccup-canvas": "workspace:^"
+    "@thi.ng/random": "workspace:^"
+    "@thi.ng/vectors": "workspace:^"
+    typescript: "npm:^5.8.3"
+    vite: "npm:^6.3.5"
+  languageName: unknown
+  linkType: soft
+
+"@example/noc2-example-006@workspace:examples/noc2-example-006":
+  version: 0.0.0-use.local
+  resolution: "@example/noc2-example-006@workspace:examples/noc2-example-006"
+  dependencies:
+    "@thi.ng/hiccup": "workspace:^"
+    "@thi.ng/hiccup-canvas": "workspace:^"
+    "@thi.ng/random": "workspace:^"
+    "@thi.ng/vectors": "workspace:^"
+    typescript: "npm:^5.8.3"
+    vite: "npm:^6.3.5"
+  languageName: unknown
+  linkType: soft
+
+"@example/noc2-exercise-001@workspace:examples/noc2-exercise-01":
+  version: 0.0.0-use.local
+  resolution: "@example/noc2-exercise-001@workspace:examples/noc2-exercise-01"
+  dependencies:
+    "@thi.ng/hiccup": "workspace:^"
+    "@thi.ng/hiccup-canvas": "workspace:^"
+    "@thi.ng/random": "workspace:^"
+    "@thi.ng/vectors": "workspace:^"
+    typescript: "npm:^5.8.3"
+    vite: "npm:^6.3.5"
+  languageName: unknown
+  linkType: soft
+
+"@example/noc2-exercise-02@workspace:examples/noc2-exercise-02":
+  version: 0.0.0-use.local
+  resolution: "@example/noc2-exercise-02@workspace:examples/noc2-exercise-02"
+  dependencies:
+    "@thi.ng/hiccup": "workspace:^"
+    "@thi.ng/hiccup-canvas": "workspace:^"
+    "@thi.ng/random": "workspace:^"
+    "@thi.ng/vectors": "workspace:^"
+    typescript: "npm:^5.8.3"
+    vite: "npm:^6.3.5"
+  languageName: unknown
+  linkType: soft
+
+"@example/noc2-exercise-03@workspace:examples/noc2-exercise-03":
+  version: 0.0.0-use.local
+  resolution: "@example/noc2-exercise-03@workspace:examples/noc2-exercise-03"
+  dependencies:
+    "@thi.ng/hiccup": "workspace:^"
+    "@thi.ng/hiccup-canvas": "workspace:^"
+    "@thi.ng/random": "workspace:^"
+    "@thi.ng/vectors": "workspace:^"
+    typescript: "npm:^5.8.3"
+    vite: "npm:^6.3.5"
+  languageName: unknown
+  linkType: soft
+
+"@example/noc2-exercise-04@workspace:examples/noc2-exercise-04":
+  version: 0.0.0-use.local
+  resolution: "@example/noc2-exercise-04@workspace:examples/noc2-exercise-04"
+  dependencies:
+    "@thi.ng/hiccup": "workspace:^"
+    "@thi.ng/hiccup-canvas": "workspace:^"
+    "@thi.ng/random": "workspace:^"
+    "@thi.ng/vectors": "workspace:^"
+    typescript: "npm:^5.8.3"
+    vite: "npm:^6.3.5"
+  languageName: unknown
+  linkType: soft
+
+"@example/noc2-exercise-05@workspace:examples/noc2-exercise-05":
+  version: 0.0.0-use.local
+  resolution: "@example/noc2-exercise-05@workspace:examples/noc2-exercise-05"
+  dependencies:
+    "@thi.ng/hiccup": "workspace:^"
+    "@thi.ng/hiccup-canvas": "workspace:^"
+    "@thi.ng/random": "workspace:^"
+    "@thi.ng/vectors": "workspace:^"
+    typescript: "npm:^5.8.3"
+    vite: "npm:^6.3.5"
+  languageName: unknown
+  linkType: soft
+
+"@example/noc2-exercise-06@workspace:examples/noc2-exercise-06":
+  version: 0.0.0-use.local
+  resolution: "@example/noc2-exercise-06@workspace:examples/noc2-exercise-06"
+  dependencies:
+    "@thi.ng/hiccup": "workspace:^"
+    "@thi.ng/hiccup-canvas": "workspace:^"
+    "@thi.ng/random": "workspace:^"
+    "@thi.ng/vectors": "workspace:^"
+    typescript: "npm:^5.8.3"
+    vite: "npm:^6.3.5"
+  languageName: unknown
+  linkType: soft
+
+"@example/noc2-exercise-07@workspace:examples/noc2-exercise-07":
+  version: 0.0.0-use.local
+  resolution: "@example/noc2-exercise-07@workspace:examples/noc2-exercise-07"
+  dependencies:
+    "@thi.ng/hiccup": "workspace:^"
+    "@thi.ng/hiccup-canvas": "workspace:^"
+    "@thi.ng/random": "workspace:^"
+    "@thi.ng/vectors": "workspace:^"
+    typescript: "npm:^5.8.3"
+    vite: "npm:^6.3.5"
+  languageName: unknown
+  linkType: soft
+
+"@example/noc2-exercise-08@workspace:examples/noc2-exercise-08":
+  version: 0.0.0-use.local
+  resolution: "@example/noc2-exercise-08@workspace:examples/noc2-exercise-08"
+  dependencies:
+    "@thi.ng/hiccup": "workspace:^"
+    "@thi.ng/hiccup-canvas": "workspace:^"
+    "@thi.ng/random": "workspace:^"
+    "@thi.ng/vectors": "workspace:^"
+    typescript: "npm:^5.8.3"
+    vite: "npm:^6.3.5"
+  languageName: unknown
+  linkType: soft
+
+"@example/noc2-exercise-09@workspace:examples/noc2-exercise-09":
+  version: 0.0.0-use.local
+  resolution: "@example/noc2-exercise-09@workspace:examples/noc2-exercise-09"
+  dependencies:
+    "@thi.ng/hiccup": "workspace:^"
+    "@thi.ng/hiccup-canvas": "workspace:^"
+    "@thi.ng/random": "workspace:^"
+    "@thi.ng/vectors": "workspace:^"
+    typescript: "npm:^5.8.3"
+    vite: "npm:^6.3.5"
+  languageName: unknown
+  linkType: soft
+
 "@example/optical-flow@workspace:examples/optical-flow":
   version: 0.0.0-use.local
   resolution: "@example/optical-flow@workspace:examples/optical-flow"

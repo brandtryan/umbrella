@@ -1,0 +1,49 @@
+{
+	"name": "@example/noc2-example-003",
+	"version": "0.0.1",
+	"private": true,
+	"description": "Traditional Random Walker",
+	"repository": "https://github.com/brandtryan/umbrella",
+	"author": "Brandt Ryan",
+	"license": "Apache-2.0",
+	"scripts": {
+		"start": "vite --host --open",
+		"build": "tsc && vite build --base='./'",
+		"preview": "vite preview --host --open"
+	},
+	"devDependencies": {
+		"typescript": "^5.8.3",
+		"vite": "^6.3.5"
+	},
+	"dependencies": {
+		"@thi.ng/hiccup": "workspace:^",
+		"@thi.ng/hiccup-canvas": "workspace:^",
+		"@thi.ng/random": "workspace:^",
+		"@thi.ng/vectors": "workspace:^"
+	},
+	"keywords": [
+		"2d",
+		"animation",
+		"behavior",
+		"canvas",
+		"example",
+		"vector",
+		"nature-of-code"
+	],
+	"browser": {
+		"process": false
+	},
+	"thi.ng": {
+		"readme": [
+			"boids",
+			"color",
+			"geom",
+			"geom-accel",
+			"math",
+			"rdom-canvas",
+			"timestep",
+			"vectors"
+		],
+		"screenshot": "examples/boid-basics.png"
+	}
+}
