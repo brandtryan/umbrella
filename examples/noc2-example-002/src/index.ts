@@ -1,8 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
-
 // --- TROUBLESHOOTING VERSION ---
-// This file has console.log statements to trace the execution flow.
-// Please run this and copy the output from your browser's developer console.
 
 // console.log("--- Script starting ---");
 
@@ -95,5 +91,5 @@ if (app) {
 	// console.log("LOG: Starting animation loop...");
 	frame();
 } else {
-	console.error("ERROR: Could not find the <div id='app-uniform'> element in your HTML. Please check your index.html file.");
+	console.error("ERROR: Could not find the <div id='app'> element in your HTML. Please check your index.html file.");
 }
