@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: Apache-2.0
+
 import { canvas2d } from "@thi.ng/canvas";
 import { draw } from "@thi.ng/hiccup-canvas";
 import { SYSTEM as RND } from "@thi.ng/random";
@@ -18,7 +18,7 @@ const updateWalker = (pos: Vec): Vec => {
 
 // 3. VIEW (as a pure function)
 const viewWalker = (pos: Vec) => {
-	// Let's try drawing a circle instead of a point
+	// Use circle - points are invisible basically
 	return ["circle", { stroke: "#fff" }, pos, 5]; // pos is the center, 5 is the radius
 };
 
@@ -33,20 +33,12 @@ const { ctx } = canvas2d(canvasSize[0], canvasSize[1], app);
 
 // The main animation loop function
 const frame = () => {
-	// DEBUG 1: Is the loop still running?
-	// console.log("Frame running...");
 
 	// A. Update state
 	walkerPos = updateWalker(walkerPos);
 
-	// DEBUG 2: What is the walker's position AFTER updating?
-	// console.log("Current walker position:", walkerPos);
-
 	// B. Get scene description
 	const scene = viewWalker(walkerPos);
-
-	// DEBUG 3: What does our scene description look like?
-	// console.log("Generated scene:", JSON.stringify(scene));
 
 	// C. Render the scene
 	draw(ctx, [scene]);
