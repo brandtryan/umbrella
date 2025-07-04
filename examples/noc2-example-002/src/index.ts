@@ -1,3 +1,4 @@
+
 // --- TROUBLESHOOTING VERSION ---
 
 // console.log("--- Script starting ---");
@@ -38,6 +39,7 @@ const viewDistribution = (currentCounts: number[]) => {
 			barHeight
 		];
 	});
+
 	const scene = [
 		["rect", { fill: "#ccc" }, [0, 0], ...canvasSize],
 		...bars
@@ -50,46 +52,42 @@ const viewDistribution = (currentCounts: number[]) => {
 // console.log("LOG: Setting up application...");
 
 // Find the canvas container element in your HTML
-const app = document.getElementById("app-uniform");
+const app = document.getElementById("app");
 // console.log("LOG: Found #app element:", app);
 
-if (app) {
-	const { ctx } = canvas2d(canvasSize[0], canvasSize[1], app);
-	// console.log("LOG: Canvas 2D context created:", ctx);
+const { ctx } = canvas2d(canvasSize[0], canvasSize[1], app);
+// console.log("LOG: Canvas 2D context created:", ctx);
 
-	// let frameNumber = 0;
+// let frameNumber = 0;
 
-	const frame = () => {
-		// Stop after a few frames to prevent infinite logging
-		// if (frameNumber > 5) return;
+const frame = () => {
+	// Stop after a few frames
+	// if (frameNumber > 5) return;
 
-		// console.log(`--- FRAME ${frameNumber} START ---`);
-		// console.log("LOG (start of frame): Current counts are:", counts.join(','));
+	// console.log(`--- FRAME ${frameNumber} START ---`);
+	// console.log("LOG (start of frame): Current counts are:", counts.join(','));
 
-		// A. Update state
-		counts = updateCounts(counts);
-		// console.log("LOG (after update):   New counts are:   ", counts.join(','));
+	// A. Update state
+	counts = updateCounts(counts);
+	// console.log("LOG (after update):   New counts are:   ", counts.join(','));
 
-		// B. Get scene description
-		const scene = viewDistribution(counts);
-		// Log the details of the first bar to see if its height is changing
-		// console.log("LOG: First bar's data:", JSON.stringify(scene[1]));
+	// B. Get scene description
+	const scene = viewDistribution(counts);
+	// Log the details of the first bar to see if its height is changing
+	// console.log("LOG: First bar's data:", JSON.stringify(scene[1]));
 
 
-		// C. Render the scene
-		draw(ctx, scene);
-		// console.log("LOG: `draw` function was called.");
+	// C. Render the scene
+	draw(ctx, scene);
+	// console.log("LOG: `draw` function was called.");
 
-		// console.log(`--- FRAME ${frameNumber} END ---`);
-		// frameNumber++;
+	// console.log(`--- FRAME ${frameNumber} END ---`);
+	// frameNumber++;
 
-		// D. Request next frame
-		requestAnimationFrame(frame);
-	};
+	// D. Request next frame
+	requestAnimationFrame(frame);
+};
 
-	// Start the loop
-	// console.log("LOG: Starting animation loop...");
-	frame();
-} else {
-	console.error("ERROR: Could not find the <div id='app'> element in your HTML. Please check your index.html file.");
-}
+// Start the loop
+// console.log("LOG: Starting animation loop...");
+frame();
