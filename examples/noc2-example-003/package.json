@@ -2,7 +2,7 @@
 	"name": "@example/noc2-example-003",
 	"version": "0.0.1",
 	"private": true,
-	"description": "Traditional Random Walker",
+	"description": "A Walker That Tends to Move to the Right",
 	"repository": "https://github.com/brandtryan/umbrella",
 	"author": "Brandt Ryan",
 	"license": "Apache-2.0",
@@ -16,9 +16,14 @@
 		"vite": "^6.3.5"
 	},
 	"dependencies": {
+		"@thi.ng/canvas": "workspace:^",
+		"@thi.ng/color": "workspace:^",
+		"@thi.ng/compare": "workspace:^",
+		"@thi.ng/geom": "workspace:^",
 		"@thi.ng/hiccup": "workspace:^",
 		"@thi.ng/hiccup-canvas": "workspace:^",
 		"@thi.ng/random": "workspace:^",
+		"@thi.ng/transducers": "workspace:^",
 		"@thi.ng/vectors": "workspace:^"
 	},
 	"keywords": [

@@ -33,7 +33,7 @@ const viewDistribution = (currentCounts: number[]) => {
 		const x = i * barWidth;
 		const y = canvasSize[1] - barHeight;
 		return ["rect",
-			{ fill: "#fff", stroke: "#000", weight: 1 },
+			{ fill: "#AAA", stroke: "#000", weight: 1 },
 			[x, y],
 			barWidth - 1,
 			barHeight

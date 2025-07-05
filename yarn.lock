@@ -1691,9 +1691,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@example/noc2-example-003@workspace:examples/noc2-example-003"
   dependencies:
+    "@thi.ng/canvas": "workspace:^"
+    "@thi.ng/color": "workspace:^"
+    "@thi.ng/compare": "workspace:^"
+    "@thi.ng/geom": "workspace:^"
     "@thi.ng/hiccup": "workspace:^"
     "@thi.ng/hiccup-canvas": "workspace:^"
     "@thi.ng/random": "workspace:^"
+    "@thi.ng/transducers": "workspace:^"
     "@thi.ng/vectors": "workspace:^"
     typescript: "npm:^5.8.3"
     vite: "npm:^6.3.5"
