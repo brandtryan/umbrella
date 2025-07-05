@@ -16,6 +16,7 @@
 		"vite": "^6.3.5"
 	},
 	"dependencies": {
+		"@thi.ng/geom": "workspace:^",
 		"@thi.ng/hiccup": "workspace:^",
 		"@thi.ng/hiccup-canvas": "workspace:^",
 		"@thi.ng/random": "workspace:^",
@@ -27,8 +28,9 @@
 		"behavior",
 		"canvas",
 		"example",
-		"vector",
-		"nature-of-code"
+		"nature-of-code",
+		"gaussian",
+		"distribution"
 	],
 	"browser": {
 		"process": false

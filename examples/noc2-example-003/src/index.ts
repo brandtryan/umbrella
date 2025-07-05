@@ -1,30 +1,30 @@
-// import "@thi.ng/api";
+
 import { canvas2d } from "@thi.ng/canvas";
 import { draw } from "@thi.ng/hiccup-canvas";
 import { SYSTEM, weightedRandom } from "@thi.ng/random";
 import { add, type Vec } from "@thi.ng/vectors";
 
-// --- The Functional Programming Core ---
+// --- FP CORE ---
 
 // 1. STATE REPRESENTATION
 const canvasSize: Vec = [window.innerWidth / 2, window.innerHeight / 2];
 let walkerPos: Vec = [canvasSize[0] / 2, canvasSize[1] / 2];
 
-// The possible directions the walker can move, represeted as vectors
+// The possible directions the walker can move, represeted as array of vectors
 const choices: Vec[] = [[1, 0], [-1, 0], [0, 1], [0, -1]];
 
-// The corresponding probabilities for each choice:
+// corresponding probabilities for each choice (# of array elements has to match choices):
 const weights: number[] = [0.4, 0.2, 0.2, 0.2];
 
 // Create the random step generator function ONCE.
-// It's a function that will return of of the vectors from 'choices'
+// The function that will return one of the vectors from 'choices'
 const getRandomStep = weightedRandom<Vec>(choices, weights, SYSTEM);
 
 // 2. BEHAVIOR (as a pure function)
 const updateWalker = (pos: Vec): Vec => {
-	// Call the generator to get a random step direction for this frame:
+	// Call generator to get random step direction for THIS FRAME:
 	const stepDirection = getRandomStep();
-	// Return a NEW vector by adding the current position and the step direction:
+	// Return a NEW, shiny vector by adding the current pos and the step direction:
 	return add([], pos, stepDirection);
 };
 

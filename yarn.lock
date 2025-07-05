@@ -1709,6 +1709,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@example/noc2-example-004@workspace:examples/noc2-example-004"
   dependencies:
+    "@thi.ng/geom": "workspace:^"
     "@thi.ng/hiccup": "workspace:^"
     "@thi.ng/hiccup-canvas": "workspace:^"
     "@thi.ng/random": "workspace:^"
