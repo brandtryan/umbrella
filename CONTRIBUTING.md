@@ -145,11 +145,9 @@ scripts/make-example my-example
 cd examples/my-example
 ```
 
-Currently, it's recommended to install
-[Parcel](https://github.com/parcel-bundler/parcel/) globally for running
-the example. Please consult the [example build
+Please consult the [example build
 instructions](https://github.com/thi-ng/umbrella/wiki/Example-build-instructions)
-in the wiki.
+in the wiki for instructions on building and running examples.
 
 FWIW I usually launch examples from the repo root via a subshell:
 
