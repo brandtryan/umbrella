@@ -1,0 +1,36 @@
+digraph g {
+    rankdir = LR;
+    node [fontname = "sans-serif"; fontsize = 10; style = filled; fontcolor = white;];
+    edge [fontname = "sans-serif"; fontsize = 10;];
+    s0 [label = "sub-0";color = "black";];
+    s1 [label = "rdom$attr-13";color = "black";];
+    s2 [label = "stream-1\n(Stream)";color = "blue";];
+    s3 [label = "in-body";color = "black";];
+    s4 [label = "streamsync-11\n(StreamSync)";color = "red";];
+    s5 [label = "rdom$replace-streamsync-11-0";color = "black";];
+    s6 [label = "xform-3";color = "black";];
+    s7 [label = "xform-7";color = "black";];
+    s8 [label = "rdom$sub-15";color = "black";];
+    s9 [label = "stream-4\n(Stream)";color = "blue";];
+    s10 [label = "xform-12";color = "black";];
+    s11 [label = "rdom$sub-16";color = "black";];
+    s12 [label = "rdom$list-stream-4-1";color = "black";];
+    s13 [label = "metastram-6";color = "black";];
+    s14 [label = "xform-9";color = "black";];
+    s15 [label = "xform-10";color = "black";];
+    s16 [label = "rdom$attr-14";color = "black";];
+    s17 [label = "in-mpos";color = "black";];
+    s0 -> s1;
+    s4 -> s5;
+    s3 -> s4 [label = "xform";];
+    s2 -> s3 [label = "xform";];
+    s6 -> s7 [label = "xform";];
+    s6 -> s8;
+    s10 -> s11;
+    s9 -> s10 [label = "xform";];
+    s9 -> s12;
+    s15 -> s16;
+    s17 -> s4 [label = "xform";];
+    s14 -> s15 [label = "xform";];
+    s14 -> s17 [label = "xform";];
+}
