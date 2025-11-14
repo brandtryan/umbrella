@@ -7,7 +7,7 @@
 [![Mastodon Follow](https://img.shields.io/mastodon/follow/109331703950160316?domain=https%3A%2F%2Fmastodon.thi.ng&style=social)](https://mastodon.thi.ng/@toxi)
 
 > [!NOTE]
-> This is one of 211 standalone projects, maintained as part
+> This is one of 210 standalone projects, maintained as part
 > of the [@thi.ng/umbrella](https://github.com/thi-ng/umbrella/) monorepo
 > and anti-framework.
 >
@@ -247,7 +247,7 @@ format.
 
 ```ts tangle:export/readme-parse-elements.ts
 import { defmulti, DEFAULT } from "@thi.ng/defmulti";
-import { parse } from "@thi.ng/sax";
+import { parse, type ParseElement } from "@thi.ng/sax";
 import * as tx from "@thi.ng/transducers";
 
 // using the SVG example doc defined above
@@ -255,15 +255,15 @@ import * as tx from "@thi.ng/transducers";
 
 // coerces given attribute IDs into numeric values and
 // keeps all other attribs
-const numericAttribs = (e, ...ids: string[]) =>
+const numericAttribs = (e: ParseElement, ...ids: string[]) =>
     ids.reduce(
         (acc, id) => (acc[id] = parseFloat(e.attribs[id]), acc),
-        { ...e.attribs }
+        <Record<string,any>>{ ...e.attribs }
     );
 
 // returns iterator of parsed & filtered children of given element
 // (iterator is used to avoid extraneous copying at call sites)
-const parsedChildren = (e) =>
+const parsedChildren = (e: ParseElement) =>
     tx.iterator(
         tx.comp(
             tx.map(parseElement),
