@@ -1,9 +1,10 @@
 import { defAtom } from "@thi.ng/atom";
-import { stream, reactive } from "@thi.ng/rstream";
+import { reactive, sync, fromRAF } from "@thi.ng/rstream";
+import type { Stream } from "@thi.ng/rstream";
 import { serialize } from "@thi.ng/rstream-dot";
 import { gestureStream } from "@thi.ng/rstream-gestures";
-import { extract, initGraph, node, node1 } from "@thi.ng/rstream-graph";
-import { map } from "@thi.ng/transducers";
+import { initGraph, node, node1 } from "@thi.ng/rstream-graph";
+import { choices, comp, dedupe, map } from "@thi.ng/transducers";
 
 // atom for storing dataflow results (optional, here only for
 // debugging/stringifying graph state)

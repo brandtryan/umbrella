@@ -20,6 +20,7 @@
 		"@thi.ng/dot": "workspace:^",
 		"@thi.ng/equiv": "workspace:^",
 		"@thi.ng/hiccup-html": "workspace:^",
+		"@thi.ng/paths": "workspace:^",
 		"@thi.ng/rdom": "workspace:^",
 		"@thi.ng/rdom-canvas": "workspace:^",
 		"@thi.ng/rstream": "workspace:^",
