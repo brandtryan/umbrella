@@ -1,16 +1,17 @@
+import { defAtom } from "@thi.ng/atom";
 import { div, section, span } from "@thi.ng/hiccup-html";
-import { $attribs, $compile, $style, $replace } from "@thi.ng/rdom";
-import { fromTuple, fromInterval } from "@thi.ng/rstream";
-import type { StreamObj, StreamSync } from "@thi.ng/rstream";
-
-document.addEventListener("DOMContentLoaded", () => {
-	console.log("DOMContentLoaded");
-});
-
-// const tup: StreamObj<(string | number[])[], number> = fromTuple([
-// 	"#w010001",
-// 	[500, 122, 3, 77],
-// ]);
+import { $compile } from "@thi.ng/rdom";
+import {
+	sync,
+	syncRAF,
+	fromTuple,
+	fromRAF,
+	reactive,
+	stream,
+} from "@thi.ng/rstream";
+import { gestureStream } from "@thi.ng/rstream-gestures";
+import { add, initGraph, node, node1 } from "@thi.ng/rstream-graph";
+import { map, pluck, filter, dedupe } from "@thi.ng/transducers";
 
 const tree = div(
 	"#tree",
@@ -5109,4 +5110,8 @@ const tree = div(
 		)
 	)
 );
-$compile(tree).mount(document.getElementById("app")!);
+
+document.addEventListener("DOMContentLoaded", () => {
+	$compile(tree).mount(document.getElementById("app")!);
+	console.log("DOMContentLoaded");
+});

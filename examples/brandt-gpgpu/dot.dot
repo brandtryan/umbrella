@@ -1,0 +1,175 @@
+digraph G {
+    // --- Graph & Style Configuration ---
+    rankdir = LR;
+    splines = ortho;
+    nodesep = 0.5;
+    ranksep = 1.0;
+    bgcolor = "#fdfdfd";
+    
+    graph [
+        label = "plan.dot: Kinetic Typography PRE-GPGPU Dataflow\n(@thi.ng/rstream-graph topology)", 
+        fontname = "Inter", 
+        fontsize = 18, 
+        labelloc = t,
+        color = "#d9d9d9"
+    ];
+    
+    node [
+        fontname = "Inter", 
+        fontsize = 11, 
+        shape = box, 
+        style = "rounded,filled", 
+        color = "#cccccc",
+        fillcolor = "#ffffff"
+    ];
+    
+    edge [
+        fontname = "Inter", 
+        fontsize = 9, 
+        color = "#555555"
+    ];
+    
+    // --- Node Style Definitions ---
+    node [shape=box, style="rounded,filled"];
+    // A process or calculation (e.g., a transducer)
+    edge [fillcolor="#EBF8FF", color="#BDE3F8"];
+    // A stream of data
+    node [shape=cylinder, fillcolor="#F0FFF4", color="#C6F6D5"];
+    // An external source (user input, rAF)
+    node [shape=parallelogram, fillcolor="#FFFBEB", color="#FEEFC8"];
+    // A final output (DOM)
+    node [shape=note, fillcolor="#FAFAFA", color="#E0E0E0"];
+    // A key @thi.ng/rstream function
+    edge [shape=invhouse, fillcolor="#FEE2FF", color="#F5B0FF"];
+
+    // --- External Sources ---
+    // These are *not* in the graph spec, but feed into it.
+    subgraph cluster_L0_Sources {
+        label = "Layer 0: External Stream Sources";
+        style = "rounded,filled";
+        fillcolor = "#f9f9f9";
+        color = "#d9d9d9";
+        
+        RAF [label="fromRAF()\n(Metronome @ 60fps)", class="source thi_fn"];
+        Gestures [label="gestureStream()\n(Mouse Wheel Events)", class="source thi_fn"];
+        PageLogic [label="PageTimerLogic\n(Stateful Transducer)", class="process"];
+        StressLogic [label="Stress/Relaxation\nControl Logic", class="process"];
+        
+        Gestures -> PageLogic [label="triggers"];
+    }
+
+    // --- Layer 4a: Control Stream Sync ---
+    // These are the first nodes in the rstream-graph spec
+    subgraph cluster_L4a_Controls {
+        label = "Layer 4a: Control Stream Sync\n(@thi.ng/rstream)";
+        style = "rounded,filled";
+        fillcolor = "#f9f9f9";
+        color = "#d9d9d9";
+
+        SyncRAF_Page [label="syncRAF()\n(Debounces Page Turns)", class="process thi_fn"];
+        SyncRAF_ActiveSet [label="syncRAF()\n(Debounces Active Set)", class="process thi_fn"];
+        SyncRAF_Stress [label="syncRAF()\n(Debounces Stress Scalar)", class="process thi_fn"];
+        
+        ActiveSet_Stream [label="Active Word Set Stream\n(e.g., [430, 470])", class="stream"];
+        Stress_Stream [label="Stress Scalar Stream\n(e.g., 0.85)", class="stream"];
+
+        PageLogic -> SyncRAF_ActiveSet;
+        StressLogic -> SyncRAF_Stress;
+        Gestures -> SyncRAF_Page;
+        
+        SyncRAF_ActiveSet -> ActiveSet_Stream [label="emits range"];
+        SyncRAF_Stress -> Stress_Stream [label="emits scalar"];
+    }
+    
+    // --- Layer 3: GPGPU Physics Core ---
+    // This is the main computational part of the graph
+    subgraph cluster_L3_GPGPU {
+        label = "Layer 3: GPGPU Physics Core\n(PRE-GPGPU Filtering)";
+        style = "rounded,filled";
+        fillcolor = "#f7f7f7";
+        color = "#d9d9d9";
+
+        // Internal GPGPU data
+        NoiseField [label="Procedural Noise Field\n(additive() noise)", fillcolor="#FFFBEB"];
+        Uniforms [label="Shader Uniforms\n(u_time, u_activeRange, u_stress)", fillcolor="#FFFBEB"];
+        
+        // Internal GPGPU state
+        FBO_A [label="FBO_A (Texture)\n(Current State)", class="stream"];
+        FBO_B [label="FBO_B (Texture)\n(Next State)", class="stream"];
+        
+        // Graph Nodes
+        L3_Physics_Trigger [label="L3_Physics_Trigger\n(sync() node)", class="process thi_fn"];
+        L3_GPGPU_Shader [label="L3_GPGPU_Shader\n(map() transducer)\nRuns shader, sets uniforms", class="process"];
+        L3_Readback [label="L3_CPU_Readback\n(gl.readPixels())", class="process"];
+        L3_Raw_Stream [label="Raw Vector Stream\n(Full Float32Array)", class="stream"];
+
+        // Internal GPGPU flow
+        L3_Physics_Trigger -> L3_GPGPU_Shader [label="emits {frame, activeSet}"];
+        L3_GPGPU_Shader -> Uniforms [label="sets uniforms"];
+        L3_GPGPU_Shader -> FBO_B [label="writes next state"];
+        NoiseField -> L3_GPGPU_Shader [label="provides functions"];
+        FBO_A -> L3_GPGPU_Shader [label="reads current state"];
+        FBO_B -> FBO_A [label="frame flip (read)", style=dashed, constraint=false];
+        
+        // Readback flow
+        FBO_B -> L3_Readback [label="reads for CPU"];
+        L3_Readback -> L3_Raw_Stream [label="emits raw data"];
+        
+        // This is a subtle but key part of the PRE-GPGPU model:
+        // The Readback needs the activeSet to pass it along
+        // to the CPU filter. We bundle it.
+        L3_GPGPU_Shader -> L3_Readback [label="passes {activeSet}\nalong for filtering", style=dashed, color="#888"];
+    }
+    
+    // --- Layer 4b: Dataflow & Filtering ---
+    subgraph cluster_L4b_Dataflow {
+        label = "Layer 4b: Reactive Dataflow (Bridge)\n(@thi.ng/rstream)";
+        style = "rounded,filled";
+        fillcolor = "#f9f9f9";
+        color = "#d9d9d9";
+        
+        L4_Filter_Transducer [label="L4_Filter_Transducer\n(map() transducer)\nFilters raw array, builds sparse CSS obj", class="process"];
+        L4_Filtered_Stream [label="Filtered CSS Stream\n(Sparse Style Object)", class="stream"];
+        L4_Final_Sync [label="L4_Final_Sync\n(sync() node)", class="process thi_fn"];
+        L4_Final_Tuple_Stream [label="Final Synchronized Stream\n(Labeled Tuple)", class="stream"];
+        
+        L4_Filter_Transducer -> L4_Filtered_Stream [label="emits sparse object"];
+        L4_Filtered_Stream -> L4_Final_Sync [label="data input"];
+        L4_Final_Sync -> L4_Final_Tuple_Stream [label="emits final tuple"];
+    }
+    
+    // --- Layer 5: VDOM-less Visualization ---
+    subgraph cluster_L5_Renderer {
+        label = "Layer 5: VDOM-less Visualization\n(@thi.ng/rdom)";
+        style = "rounded,filled";
+        fillcolor = "#f7f7f7";
+        color = "#d9d9d9";
+        
+        L5_rdom_Subscribers [label="L5_rdom_Subscribers\n(Word attribute streams)", class="process"];
+        L5_Targeted_Update [label="Targeted, Isolated Update\n(style.fontVariationSettings)", class="output"];
+        L5_Live_DOM [label="Live DOM Node\n(<span>)", class="output"];
+        
+        L5_rdom_Subscribers -> L5_Targeted_Update [label="triggers DOM mutation"];
+        L5_Targeted_Update -> L5_Live_DOM [label="updates"];
+    }
+
+    // --- Inter-Cluster Connections (The `initGraph` wiring) ---
+    
+    // 1. External Sources -> Control Sync (Layer 4a)
+    Gestures -> SyncRAF_Page [ltail=cluster_L0_Sources, lhead=cluster_L4a_Controls];
+    PageLogic -> SyncRAF_ActiveSet [ltail=cluster_L0_Sources, lhead=cluster_L4a_Controls];
+    StressLogic -> SyncRAF_Stress [ltail=cluster_L0_Sources, lhead=cluster_L4a_Controls];
+    
+    // 2. Engine & Controls -> GPGPU Physics (Layer 3)
+    RAF -> L3_Physics_Trigger [ltail=cluster_L0_Sources, lhead=cluster_L3_GPGPU, label="frame (trigger)"];
+    ActiveSet_Stream -> L3_Physics_Trigger [ltail=cluster_L4a_Controls, lhead=cluster_L3_GPGPU, label="activeSet (uniform data)"];
+    
+    // 3. GPGPU (Layer 3) -> Dataflow (Layer 4b)
+    L3_Raw_Stream -> L4_Filter_Transducer [ltail=cluster_L3_GPGPU, lhead=cluster_L4b_Dataflow, label="raw stream w/ {activeSet}"];
+    
+    // 4. Controls (Layer 4a) -> Dataflow (Layer 4b)
+    Stress_Stream -> L4_Final_Sync [ltail=cluster_L4a_Controls, lhead=cluster_L4b_Dataflow, label="control input"];
+    
+    // 5. Dataflow (Layer 4b) -> Renderer (Layer 5)
+    L4_Final_Tuple_Stream -> L5_rdom_Subscribers [ltail=cluster_L4b_Dataflow, lhead=cluster_L5_Renderer, label="final state"];
+}
