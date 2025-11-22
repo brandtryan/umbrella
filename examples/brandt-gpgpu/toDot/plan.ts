@@ -11,9 +11,8 @@ import { choices, comp, dedupe, map } from "@thi.ng/transducers";
 const db = defAtom({});
 
 // zoom event stream
-// const zoom = gestureStream(document.getElementById("app")!);
+const zoom = gestureStream(document.getElementById("app")!);
 
-// --- Tier 2 Model Calculation ---
 const BASE_WPM = 238;
 const C_MEDIUM = 0.85;
 const ADJUSTED_WPM = BASE_WPM * C_MEDIUM;

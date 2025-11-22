@@ -7,7 +7,7 @@ digraph G {
     bgcolor = "#fdfdfd";
     
     graph [
-        label = "plan.dot: Kinetic Typography PRE-GPGPU Dataflow\n(@thi.ng/rstream-graph topology)", 
+        label = "Kinetic Typography GPGPU Dataflow\n(@thi.ng/rstream-graph topology)", 
         fontname = "Inter", 
         fontsize = 18, 
         labelloc = t,
@@ -17,7 +17,7 @@ digraph G {
     node [
         fontname = "Inter", 
         fontsize = 11, 
-        shape = box, 
+        shape = box,
         style = "rounded,filled", 
         color = "#cccccc",
         fillcolor = "#ffffff"
@@ -26,7 +26,7 @@ digraph G {
     edge [
         fontname = "Inter", 
         fontsize = 9, 
-        color = "#555555"
+        color = "#2eb0f6"
     ];
     
     // --- Node Style Definitions ---
@@ -45,23 +45,53 @@ digraph G {
     // --- External Sources ---
     // These are *not* in the graph spec, but feed into it.
     subgraph cluster_L0_Sources {
-        label = "Layer 0: External Stream Sources";
+        label = "Layer 0:\nExternal Stream Sources";
         style = "rounded,filled";
         fillcolor = "#f9f9f9";
         color = "#d9d9d9";
         
         RAF [label="fromRAF()\n(Metronome @ 60fps)", class="source thi_fn"];
         Gestures [label="gestureStream()\n(Mouse Wheel Events)", class="source thi_fn"];
-        PageLogic [label="PageTimerLogic\n(Stateful Transducer)", class="process"];
-        StressLogic [label="Stress/Relaxation\nControl Logic", class="process"];
+        PageLogic [label="PageTimerLogic\n(Stateful Transducer)", class="source thi_fn"];
+        StressLogic [label="Stress/Relaxation\n(Control Logic)", class="source thi_fn"];
         
         Gestures -> PageLogic [label="triggers"];
     }
 
+    // --- Layer 1: Initialization & Static Foundation
+    subgraph cluster_L1_Initialization {
+        label = "Layer 1:\nInitialization & Static Foundation";
+        style = "rounded,filled";
+        fillcolor = "#f9f9f9";
+        color = "#d9d9d9";
+
+        Hiccup_Blueprint [label="Hiccup Blueprint", class="source thi_fn"];
+        Browser_DOM [label="Browser DOM\n(Static Text Layout)", class="process"];
+        Coordinate_Extraction [label="Coordinate Extraction", class="process"];
+        Initial_ECS_Seeding [label="Initial ECS Seeding"];
+        
+        Hiccup_Blueprint -> Browser_DOM [label="Renders to DOM"];
+        Browser_DOM -> Coordinate_Extraction [label="Uses getBoundingClientRect()"];
+        Coordinate_Extraction -> Initial_ECS_Seeding [label="Converts pixel data to component values"];
+
+
+    }
+
+    // --- Layer 2: ECS Data Core
+    subgraph cluster_L2_ECS_Data_Core {
+        label = "Layer 2:\nECS Data Core";
+        style = "rounded,filled";
+        fillcolor = "#f9f9f9";
+        color = "#d9d9d9";
+
+        ECS_Entities [label="ECS Entities"];
+        Typed_Array_Components_SOA [label="Typed Array Components SOA"];
+
+    }
     // --- Layer 4a: Control Stream Sync ---
     // These are the first nodes in the rstream-graph spec
     subgraph cluster_L4a_Controls {
-        label = "Layer 4a: Control Stream Sync\n(@thi.ng/rstream)";
+        label = "Layer 4a:\nControl Stream Sync\n(@thi.ng/rstream)";
         style = "rounded,filled";
         fillcolor = "#f9f9f9";
         color = "#d9d9d9";
@@ -73,9 +103,7 @@ digraph G {
         ActiveSet_Stream [label="Active Word Set Stream\n(e.g., [430, 470])", class="stream"];
         Stress_Stream [label="Stress Scalar Stream\n(e.g., 0.85)", class="stream"];
 
-        PageLogic -> SyncRAF_ActiveSet;
-        StressLogic -> SyncRAF_Stress;
-        Gestures -> SyncRAF_Page;
+
         
         SyncRAF_ActiveSet -> ActiveSet_Stream [label="emits range"];
         SyncRAF_Stress -> Stress_Stream [label="emits scalar"];
@@ -84,7 +112,7 @@ digraph G {
     // --- Layer 3: GPGPU Physics Core ---
     // This is the main computational part of the graph
     subgraph cluster_L3_GPGPU {
-        label = "Layer 3: GPGPU Physics Core\n(PRE-GPGPU Filtering)";
+        label = "Layer 3:\nGPGPU Physics Core\n(PRE-GPGPU Filtering)";
         style = "rounded,filled";
         fillcolor = "#f7f7f7";
         color = "#d9d9d9";
@@ -98,6 +126,7 @@ digraph G {
         FBO_B [label="FBO_B (Texture)\n(Next State)", class="stream"];
         
         // Graph Nodes
+        L3_Map_ECS_Data_to_GPU_Texture [label="Map ECS Data to GPU Texture", class="process"];
         L3_Physics_Trigger [label="L3_Physics_Trigger\n(sync() node)", class="process thi_fn"];
         L3_GPGPU_Shader [label="L3_GPGPU_Shader\n(map() transducer)\nRuns shader, sets uniforms", class="process"];
         L3_Readback [label="L3_CPU_Readback\n(gl.readPixels())", class="process"];
@@ -107,6 +136,7 @@ digraph G {
         L3_Physics_Trigger -> L3_GPGPU_Shader [label="emits {frame, activeSet}"];
         L3_GPGPU_Shader -> Uniforms [label="sets uniforms"];
         L3_GPGPU_Shader -> FBO_B [label="writes next state"];
+        L3_Map_ECS_Data_to_GPU_Texture -> FBO_A [label="writes current state"];
         NoiseField -> L3_GPGPU_Shader [label="provides functions"];
         FBO_A -> L3_GPGPU_Shader [label="reads current state"];
         FBO_B -> FBO_A [label="frame flip (read)", style=dashed, constraint=false];
@@ -118,17 +148,17 @@ digraph G {
         // This is a subtle but key part of the PRE-GPGPU model:
         // The Readback needs the activeSet to pass it along
         // to the CPU filter. We bundle it.
-        L3_GPGPU_Shader -> L3_Readback [label="passes {activeSet}\nalong for filtering", style=dashed, color="#888"];
+        L3_GPGPU_Shader -> L3_Readback [xlabel="passes {activeSet}\nalong for filtering", style=dashed, color="#8e8a8aff"];
     }
     
     // --- Layer 4b: Dataflow & Filtering ---
     subgraph cluster_L4b_Dataflow {
-        label = "Layer 4b: Reactive Dataflow (Bridge)\n(@thi.ng/rstream)";
+        label = "Layer 4b:\nReactive Dataflow (Bridge)\n(@thi.ng/rstream)";
         style = "rounded,filled";
         fillcolor = "#f9f9f9";
         color = "#d9d9d9";
         
-        L4_Filter_Transducer [label="L4_Filter_Transducer\n(map() transducer)\nFilters raw array, builds sparse CSS obj", class="process"];
+        L4_Filter_Transducer [label="L4_Filter_Transducer\n(map() transducer)\nFilters raw array\nbuilds sparse CSS obj", class="process thi_fn"];
         L4_Filtered_Stream [label="Filtered CSS Stream\n(Sparse Style Object)", class="stream"];
         L4_Final_Sync [label="L4_Final_Sync\n(sync() node)", class="process thi_fn"];
         L4_Final_Tuple_Stream [label="Final Synchronized Stream\n(Labeled Tuple)", class="stream"];
@@ -140,7 +170,7 @@ digraph G {
     
     // --- Layer 5: VDOM-less Visualization ---
     subgraph cluster_L5_Renderer {
-        label = "Layer 5: VDOM-less Visualization\n(@thi.ng/rdom)";
+        label = "Layer 5:\nVDOM-less Visualization\n(@thi.ng/rdom)";
         style = "rounded,filled";
         fillcolor = "#f7f7f7";
         color = "#d9d9d9";
@@ -159,7 +189,12 @@ digraph G {
     Gestures -> SyncRAF_Page [ltail=cluster_L0_Sources, lhead=cluster_L4a_Controls];
     PageLogic -> SyncRAF_ActiveSet [ltail=cluster_L0_Sources, lhead=cluster_L4a_Controls];
     StressLogic -> SyncRAF_Stress [ltail=cluster_L0_Sources, lhead=cluster_L4a_Controls];
-    
+
+    // new layers and flows
+    Initial_ECS_Seeding -> Typed_Array_Components_SOA [ltail=cluster_L1_Initialization, lhead=cluster_L2_ECS_Data_Core, label="Seeding Data"];
+    Initial_ECS_Seeding -> ECS_Entities [ltail=cluster_L1_Initialization, lhead=cluster_L2_ECS_Data_Core, label="Seeding IDs"];
+    Typed_Array_Components_SOA -> L3_Map_ECS_Data_to_GPU_Texture [ltail=cluster_L2_ECS_Data_Core, lhead=cluster_L3_GPGPU, label="The data mapped to GPU memory"];
+
     // 2. Engine & Controls -> GPGPU Physics (Layer 3)
     RAF -> L3_Physics_Trigger [ltail=cluster_L0_Sources, lhead=cluster_L3_GPGPU, label="frame (trigger)"];
     ActiveSet_Stream -> L3_Physics_Trigger [ltail=cluster_L4a_Controls, lhead=cluster_L3_GPGPU, label="activeSet (uniform data)"];

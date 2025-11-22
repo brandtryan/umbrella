@@ -10,11 +10,11 @@ Let's refine the mock-up based on your excellent points.
 
 ### 1\. The Labeled Tuple (What `sync` Creates)
 
-[cite\_start]You're right, the `sync()` operator creates a labeled tuple (a plain JavaScript object)[cite: 1663, 1694]. Based on our `sync()` config, the object emitted by the `/synchronizer/node` will look like this every time `coreFboData` fires:
+You're right, the `sync()` operator creates a labeled tuple (a plain JavaScript object). Based on our `sync()` config, the object emitted by the `/synchronizer/node` will look like this every time `coreFboData` fires:
 
 ```javascript
 {
-  [cite_start]gpgpu: Float32Array([...]), // The RAW data from the FBO readback [cite: 1660]
+  gpgpu: Float32Array([...]), // The RAW data from the FBO readback
   pageTurn: "PREV",           // The last-emitted value from this stream
   readSpeed: {
     position: 450,            // The current "center" word index
@@ -58,13 +58,12 @@ import { Stream, sync, reactive } from "@thi.ng/rstream";
 /**
  * L3: Core_FBO_Data
  * Emits the raw Float32Array from the GPGPU readback.
- [cite_start]* [cite: 1658, 1660]
  */
 const coreFboData = new Stream("core-fbo-data");
 
 /**
  * L4: Input_PageTurn
- * (Same as before) [cite_start][cite: 1661]
+ * (Same as before)
  */
 const inputPageTurn = gestureStream(/*...*/)
   // ... (transducers)
@@ -90,7 +89,7 @@ const graphSpec = {
 	/**
 	 * L4: Transform_Synchronizer
 	 * (Same as before)
-	 * [cite_start]Combines all inputs into a labeled tuple. [cite: 1663]
+	 * Combines all inputs into a labeled tuple.
 	 */
 	synchronizer: {
 		fn: sync({
