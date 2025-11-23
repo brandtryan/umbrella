@@ -1,0 +1,148 @@
+digraph KineticTypographyImplementation {
+    // ---------------------------------------------------------
+    // Global Settings
+    // ---------------------------------------------------------
+    rankdir=TB;
+    newrank=true;
+    splines=ortho;
+    nodesep=0.8;
+    ranksep=1.0;
+    fontname="Helvetica Neue";
+    fontsize=14;
+    compound=true;
+
+    // ---------------------------------------------------------
+    // Node Styles
+    // ---------------------------------------------------------
+    node [fontname="Helvetica", fontsize=10, style="filled", penwidth=1.5];
+    
+    // Streams / Graph Nodes (Logic)
+    node [shape=box, fillcolor="#ffffff", color="#333333"];
+    
+    // Libraries (@thi.ng) - Octagon
+    node [shape=octagon, fillcolor="#e1f5fe", color="#0277bd"];
+
+    // Data / State (Arrays, Atoms) - Cylinder
+    node [shape=cylinder, fillcolor="#fff9c4", color="#fbc02d", margin="0.2,0.1"];
+
+    // HTML/DOM Elements
+    node [shape=note, fillcolor="#ffebee", color="#c62828"];
+
+    // ---------------------------------------------------------
+    // External Inputs (Code References)
+    // ---------------------------------------------------------
+    { rank=same; RAF_Source; Gesture_Source; Stress_Reactive; }
+    RAF_Source [label="rafEngine\n(fromRAF)", shape=ellipse, style=dashed, color="#555"];
+    Gesture_Source [label="gestures\n(gestureStream)", shape=ellipse, style=dashed, color="#555"];
+    Stress_Reactive [label="stressControl\n(reactive)", shape=ellipse, style=dashed, color="#555"];
+
+    // ---------------------------------------------------------
+    // Layer 1: Initialization (DOM Scanning)
+    // ---------------------------------------------------------
+    subgraph cluster_L1 {
+        label="Layer 1: Source & Seeding\n(initLayer1)";
+        style=filled; fillcolor="#f3e5f5"; color="#8e24aa";
+
+        DOM_Words [label="span.word\n(DOM Elements)", shape=note];
+        L1_Logic [label="initLayer1()\ngetBoundingClientRect()", shape=box];
+        Word_Data [label="wordData\n[{id, rect}...]", shape=cylinder];
+
+        DOM_Words -> L1_Logic -> Word_Data;
+    }
+
+    // ---------------------------------------------------------
+    // Layer 2: ECS Data Core
+    // ---------------------------------------------------------
+    subgraph cluster_L2 {
+        label="Layer 2: ECS Data Core\n(initLayer2)";
+        style=filled; fillcolor="#e8eaf6"; color="#3949ab";
+
+        ECS_Instance [label="ECS<CompSpecs>\n(capacity: 5000)", shape=octagon];
+        
+        subgraph cluster_Components {
+            label="Memory Mapped Components (F32)";
+            style=dashed; color="#9fa8da";
+            
+            Comp_Coords [label="coordinates\n(size: 2)", shape=cylinder];
+            Comp_PosTic [label="curr_pos_tic_forces\n(size: 4)\n[wght, wdth, ital, cont]", shape=cylinder];
+            Comp_PrevTic [label="prev_pos_tic_forces\n(size: 4)", shape=cylinder];
+            Comp_VelTic [label="vel_tic_forces\n(size: 4)", shape=cylinder];
+        }
+
+        L1_Logic -> ECS_Instance [label="Seed Entities", lhead=cluster_L2];
+    }
+
+    // ---------------------------------------------------------
+    // Layer 3: Core FBO Data (The rstream-graph node)
+    // ---------------------------------------------------------
+    subgraph cluster_L3 {
+        label="Layer 3: Physics Engine\n(node: core_fbo_data)";
+        style=filled; fillcolor="#e0f2f1"; color="#00897b";
+
+        L3_Node [label="core_fbo_data\n(Stream Node)", shape=box, penwidth=2];
+        
+        // Internal Logic (Mocked or Real)
+        GPGPU_Logic [label="GPGPU Physics\n(Simulated)", shape=octagon, style=dashed];
+        Raw_FBO_Buffer [label="rawFboData\n(Float32Array)", shape=cylinder];
+
+        L3_Node -> GPGPU_Logic [style=dotted];
+        GPGPU_Logic -> Raw_FBO_Buffer [style=dotted];
+    }
+
+    // ---------------------------------------------------------
+    // Layer 4: Reactive Dataflow (initGraph)
+    // ---------------------------------------------------------
+    subgraph cluster_L4 {
+        label="Layer 4: Reactive Dataflow\n(@thi.ng/rstream-graph)";
+        style=filled; fillcolor="#fff3e0"; color="#fb8c00";
+
+        // Nodes defined in 'graf' config
+        Page_Logic [label="page_logic\n(map: activeRange)", shape=box];
+        Active_Words [label="active_words_stream\n(syncRAF)", shape=box];
+        Synced_Stress [label="synced_stress_stream\n(syncRAF)", shape=box];
+        
+        // The Critical Synchronizer
+        Synchronizer [label="synchronizer\n(fn: sync)", shape=octagon, penwidth=3, color="#d84315"];
+
+        // Flow
+        Page_Logic -> Active_Words;
+        
+        // Convergence
+        Active_Words -> Synchronizer [label="activeSet"];
+        Synced_Stress -> Synchronizer [label="stress"];
+    }
+
+    // ---------------------------------------------------------
+    // Layer 5: Output & Transformation
+    // ---------------------------------------------------------
+    subgraph cluster_L5 {
+        label="Layer 5: Transformer & Render\n(VDOM-less)";
+        style=filled; fillcolor="#ffebee"; color="#e53935";
+
+        CSS_Trans [label="css_transformer\n(Map Tuple -> Styles)", shape=box];
+        Debug_DB [label="db (Atom)\nDebug Output", shape=cylinder];
+        Real_DOM [label="font-variation-settings\n(Targeted Update)", shape=note];
+
+        CSS_Trans -> Debug_DB [label="Update State"];
+        CSS_Trans -> Real_DOM [style=dashed, label="Future: rdom"];
+    }
+
+    // ---------------------------------------------------------
+    // Global Connections
+    // ---------------------------------------------------------
+
+    // Input wiring
+    RAF_Source -> L3_Node [label="frame"];
+    Gesture_Source -> Page_Logic [label="src"];
+    Stress_Reactive -> Synced_Stress [label="src"];
+
+    // Cross-Layer Wiring
+    ECS_Instance -> GPGPU_Logic [label="Texture Upload\n(Concept)", style=dotted];
+    
+    // L3 Output feeding L4 Sync
+    L3_Node -> Synchronizer [label="gpgpu\n(FBO Readback)", color="#d84315", penwidth=2];
+
+    // L4 Sync feeding L5 Transformer
+    Synchronizer -> CSS_Trans [label="tuple\n{gpgpu, activeSet, stress}", penwidth=2];
+
+}

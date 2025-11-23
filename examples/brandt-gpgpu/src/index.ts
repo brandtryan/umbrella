@@ -1,24 +1,209 @@
 import { defAtom } from "@thi.ng/atom";
 import { ECS } from "@thi.ng/ecs";
-import { div, section, span } from "@thi.ng/hiccup-html";
+import { div, section, span, style } from "@thi.ng/hiccup-html";
 import { $compile } from "@thi.ng/rdom";
 import { sync, syncRAF, fromRAF, reactive } from "@thi.ng/rstream";
 import { serialize } from "@thi.ng/rstream-dot";
 import { gestureStream } from "@thi.ng/rstream-gestures";
 import { initGraph, node, node1 } from "@thi.ng/rstream-graph";
-import { map } from "@thi.ng/transducers";
+import { keys, map, takeWhile, vals } from "@thi.ng/transducers";
+
+// Global State Container (for graph access)
+let GLOBAL_ECS_DATA: any = null;
 
 //-- Layer 1: Source
 document.addEventListener("DOMContentLoaded", (event) => {
 	console.log("DOM fully loaded and parsed");
 	$compile(tree).mount(document.getElementById("app")!);
-	initLayer1();
-	run();
+
+	const l1Data = initLayer1();
+	const l2Data = initLayer2(l1Data);
+
+	// EXPOSE L2 DATA GLOBALLY
+	GLOBAL_ECS_DATA = l2Data;
+
+	// Initialize static ID lookup
+	const orderedIDs = l1Data.wordData.map((item) => item.id);
+	domIdsStream.next(orderedIDs);
+
+	run(l2Data);
 });
 
-// ========================================================================
-// LAYER 1: Coordinate Extraction
-// ========================================================================
+const BASE_WPM = 238;
+const C_MEDIUM = 0.85;
+const ADJUSTED_WPM = BASE_WPM * C_MEDIUM;
+
+/***************
+ * EXTERNAL (RAW) Sources
+ ***************/
+const domIdsStream = reactive<string[]>([]);
+domIdsStream.id = "dom_ids_stream";
+
+const rafEngine = fromRAF();
+rafEngine.id = "raf-engine";
+
+const gestures = gestureStream(document.getElementById("app")!);
+gestures.id = "gestures-source";
+
+const stressControl = reactive(0.5);
+stressControl.id = "stress-control-source";
+
+const pageLogicTransducer = map((gestureEvent) => {
+	// MOCK DATA: For now, just select a range of words to animate
+	// In real app, this comes from scroll position
+	const activeRange = [0, 20];
+	return activeRange;
+});
+
+const db = defAtom({}); // debugging
+
+const graf = initGraph(db, {
+	/***************
+	 * PageLogic Node
+	 *****************/
+	page_logic: {
+		fn: node1(pageLogicTransducer),
+		ins: {
+			src: { stream: () => gestures },
+		},
+		outs: { "*": "active_range_debug" },
+	},
+	/***************
+	 * activeWordsStream Node
+	 *****************/
+	active_words_stream: {
+		fn: (inputs: any) => syncRAF(inputs.src),
+		ins: {
+			src: { stream: "/page_logic/node" },
+		},
+		outs: { "*": "active_words_debug" },
+	},
+	/***************
+	 * syncedStressStream Node
+	 *****************/
+	synced_stress_stream: {
+		fn: (inputs: any) => syncRAF(inputs.src),
+		ins: {
+			src: { stream: () => stressControl },
+		},
+		outs: { "*": "synced_stress_debug" },
+	},
+	/***************
+	 * Layer 3 --- Core_FBO_Data
+	 *****************/
+	core_fbo_data: {
+		fn: node(
+			map((frame) => {
+				// 1. ACCESS REAL DATA
+				if (!GLOBAL_ECS_DATA) return new Float32Array(0);
+
+				const ticData = GLOBAL_ECS_DATA.curr_pos_tic_forces.vals; // Fixed: .vals
+
+				if (!ticData) {
+					return new Float32Array(0);
+				}
+
+				// 2. SIMULATE PHYSICS (Temporary JS Loop)
+				// We wiggle the values to prove it works
+				const time = Date.now() * 0.005; // Speed
+				for (let i = 0; i < ticData.length; i += 4) {
+					// Wiggle Weight (Axis 0)
+					ticData[i] = 300 + Math.sin(time + i * 0.1) * 100;
+					// Wiggle Width (Axis 1)
+					ticData[i + 1] = 100 + Math.cos(time + i * 0.13) * 20;
+				}
+
+				return ticData;
+			})
+		),
+		ins: { frame: { stream: () => rafEngine } },
+		outs: { "*": "raw_fbo_data" },
+	},
+	/***************
+	 * Layer 4 --- Transform/Synchronize
+	 *****************/
+	synchronizer: {
+		fn: sync,
+		ins: {
+			gpgpu: { stream: "/core_fbo_data/node" },
+			activeSet: { stream: "/active_words_stream/node" },
+			stress: { stream: "/synced_stress_stream/node" },
+		},
+		outs: { "*": "sync_tuple" },
+	},
+
+	/***************
+	 * Layer 5 --- CSS_Transformer
+	 *****************/
+	css_transformer: {
+		fn: node(
+			map((inputs: any) => {
+				const tuple = inputs.tuple;
+				const domIds = inputs.domIds;
+
+				const { gpgpu, activeSet, stress } = tuple;
+				const [startIndex, endIndex] = activeSet;
+
+				const activeStyles: { [key: string]: object } = {};
+
+				const STRIDE = 4;
+				const OFF_WGHT = 0;
+				const OFF_WDTH = 1;
+				const OFF_ITAL = 2;
+				const OFF_CONT = 3;
+
+				for (let i = startIndex; i <= endIndex; i++) {
+					const baseIdx = i * STRIDE;
+					if (baseIdx >= gpgpu.length) break;
+
+					const wght = gpgpu[baseIdx + OFF_WGHT];
+					const wdth = gpgpu[baseIdx + OFF_WDTH];
+					const ital = gpgpu[baseIdx + OFF_ITAL];
+					const cont = gpgpu[baseIdx + OFF_CONT];
+
+					const id = domIds[i];
+
+					if (id) {
+						activeStyles[id] = {
+							style: {
+								"--wght": wght.toFixed(1),
+								"--wdth": wdth.toFixed(1),
+								"--ital": ital.toFixed(1),
+								"--cont": cont.toFixed(1),
+							},
+						};
+					}
+				}
+				return activeStyles;
+			})
+		),
+		ins: {
+			tuple: { stream: "/synchronizer/node" },
+			domIds: { stream: () => domIdsStream },
+		},
+		outs: { "*": "css_styles_debug" },
+	},
+});
+
+// *** CRITICAL FIX: Subscribe to the Output to Start the Engine ***
+// This pulls data through the entire graph
+graf.css_transformer.node.subscribe({
+	next: (styles: any) => {
+		// Apply styles to the actual DOM
+		for (const id in styles) {
+			const el = document.getElementById(id);
+			if (el) {
+				const s = styles[id].style;
+				for (const key in s) {
+					el.style.setProperty(key, s[key]);
+				}
+			}
+		}
+	},
+	// error: (e: any) => console.error("Graph Error:", e),
+});
+
+// ... (L1, L2, CompSpecs, Init functions remain identical) ...
 const initLayer1 = () => {
 	const wordElements = document.querySelectorAll(".word");
 	const wordData: { id: string; rect: DOMRect }[] = [];
@@ -31,9 +216,6 @@ const initLayer1 = () => {
 	return { wordData };
 };
 
-// ========================================================================
-// LAYER 2: ECS Data Core
-// ========================================================================
 interface CompSpecs {
 	coordinates: Float32Array;
 	curr_pos_tic_forces: Float32Array;
@@ -44,10 +226,8 @@ interface CompSpecs {
 const initLayer2 = (seedData: {
 	wordData: { id: string; rect: DOMRect }[];
 }) => {
-	// 1. Init ECS World
 	const ecs = new ECS<CompSpecs>({ capacity: 5000 });
 
-	// 2. Define Components
 	const coordinates = ecs.defComponent({
 		id: "coordinates",
 		type: "f32",
@@ -73,7 +253,6 @@ const initLayer2 = (seedData: {
 		default: () => [0, 0, 0, 0],
 	})!;
 
-	// 3. Define a Group (Optional but good for iteration)
 	ecs.defGroup([
 		coordinates,
 		curr_pos_tic_forces,
@@ -81,30 +260,14 @@ const initLayer2 = (seedData: {
 		vel_tic_forces,
 	])!;
 
-	// 4. Seed the ECS with L1 data
 	for (const word of seedData.wordData) {
 		const p = word.rect;
 		const wordCoords = new Float32Array([
 			p.x + p.width / 2,
 			p.y + p.height / 2,
 		]);
-		// Placeholder initial values for font axes
-		const currentTicPos = new Float32Array([
-			300, // wght
-			100, // wdth
-			0, // ital
-			0, // cont
-		]);
-
-		// Placeholder initial values for font axes
-		const previousTicPos = new Float32Array([
-			300, // wght
-			100, // wdth
-			0, // ital
-			0, // cont
-		]);
-
-		// Placeholder initial values for tic velocities
+		const currentTicPos = new Float32Array([300, 100, 0, 0]);
+		const previousTicPos = new Float32Array([300, 100, 0, 0]);
 		const velTicForces = new Float32Array([0, 0, 0, 0]);
 
 		ecs.defEntity({
@@ -117,12 +280,11 @@ const initLayer2 = (seedData: {
 	return {
 		ecs,
 		coordinates,
-		curr_pos_tic_forces, // curr_pos_tic_forces,
-		prev_pos_tic_forces, // prev_pos_tic_forces,
-		vel_tic_forces, // vel_tic_forces,
+		curr_pos_tic_forces,
+		prev_pos_tic_forces,
+		vel_tic_forces,
 	};
 };
-
 const tree = div(
 	"#tree",
 	{},
@@ -5218,47 +5380,52 @@ const tree = div(
 			span("#w410502.word", {}, "of "),
 			span("#w410503.word", {}, "it. ")
 		)
-	)
-	// graf.synchronizer.node,
+	),
+	graf.css_transformer.node
 );
 
 // ========================================================================
 // EXECUTION & DEBUG
 // ========================================================================
-const run = () => {
-	const l1Data = initLayer1();
-	const l2Data = initLayer2(l1Data);
-
+const run = (l2Data: any) => {
 	const debugEl = document.getElementById("debug-output")!;
 
-	const coordsBuffer = l2Data.coordinates.vals;
-	const ticPosBuffer = l2Data.curr_pos_tic_forces.vals;
-	const ticVelBuffer = l2Data.vel_tic_forces.vals;
-	const sourceWord = document.querySelector(".word");
+	const updateDebug = () => {
+		if (!l2Data) return;
 
-	let output = `[ SYSTEM ONLINE ]\n`;
-	output += `---------------------------------\n`;
-	output += `L1 Source:   "${sourceWord!.textContent}"\n`;
-	output += `\n`;
-	output += `L2 Engine:   @thi.ng/ecs\n`;
-	output += `Entities:    ${l2Data.ecs.idgen.used}\n`;
-	output += `Component:   'coordinates' (f32, size=2)\n`;
-	output += `Component:   'curr_pos_tic_forces' (f32, size=4)\n`;
-	output += `Component:   'prev_pos_tic_forces' (f32, size=4)\n`;
-	output += `Component:   'vel_tic_forces' (f32, size=4)\n`;
-	output += `---------------------------------\n`;
-	if (sourceWord) {
-		output += `Entity #0 Memory View ('${sourceWord.id}'):\n`;
-		output += `Coord X:  ${coordsBuffer[0].toFixed(2)}\n`;
-		output += `Coord Y:  ${coordsBuffer[1].toFixed(2)}\n`;
-		output += `wght:     ${ticPosBuffer[0].toFixed(2)}\n`;
-		output += `wdth:     ${ticPosBuffer[1].toFixed(2)}\n`;
-		output += `ital:     ${ticPosBuffer[2].toFixed(2)}\n`;
-		output += `cont:     ${ticPosBuffer[3].toFixed(2)}\n`;
-		output += `wght_vel: ${ticVelBuffer[0].toFixed(2)}\n`;
-		output += `wdth_vel: ${ticVelBuffer[1].toFixed(2)}\n`;
-		output += `ital_vel: ${ticVelBuffer[2].toFixed(2)}\n`;
-		output += `cont_vel: ${ticVelBuffer[3].toFixed(2)}\n`;
-	}
-	debugEl.innerText = output;
+		const coordsBuffer = l2Data.coordinates.vals;
+		const ticPosBuffer = l2Data.curr_pos_tic_forces.vals; // Fixed: .vals
+
+		const e0_x = coordsBuffer[0];
+		const e0_y = coordsBuffer[1];
+		const e0_wght = ticPosBuffer[0];
+		const e0_wdth = ticPosBuffer[1];
+		const e0_ital = ticPosBuffer[2];
+		const e0_cont = ticPosBuffer[3];
+
+		const sourceWord = document.querySelector(".word");
+
+		let output = `[ SYSTEM ONLINE ]\n`;
+		output += `---------------------------------\n`;
+		if (sourceWord) output += `L1 Source:   "${sourceWord.textContent}"\n`;
+		output += `\n`;
+		output += `L2 Engine:   @thi.ng/ecs\n`;
+		output += `Entities:    ${l2Data.ecs.idgen.used}\n`;
+		output += `Component:   'curr_pos_tic_forces' (f32, size=4)\n`;
+		output += `---------------------------------\n`;
+		if (sourceWord) {
+			output += `Entity #0 Memory View ('${sourceWord.id}'):\n`;
+			output += `Coord X:  ${e0_x.toFixed(2)}\n`;
+			output += `Coord Y:  ${e0_y.toFixed(2)}\n`;
+			output += `wght:     ${e0_wght.toFixed(2)}\n`;
+			output += `wdth:     ${e0_wdth.toFixed(2)}\n`;
+			output += `ital:     ${e0_ital.toFixed(2)}\n`;
+			output += `cont:     ${e0_cont.toFixed(2)}\n`;
+		}
+		if (debugEl) debugEl.innerText = output;
+
+		requestAnimationFrame(updateDebug);
+	};
+
+	updateDebug();
 };

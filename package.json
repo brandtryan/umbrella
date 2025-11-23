@@ -39,5 +39,9 @@
 		"tool:prepare": "yarn tool:cleanup && yarn tool:imports && yarn tool:exports && yarn doc:readme && yarn tool:searchindex && yarn tool:deps",
 		"tool:tangle": "yarn @thi.ng run tool:tangle"
 	},
-	"packageManager": "yarn@4.11.0"
+	"packageManager": "yarn@4.11.0",
+	"dependencies": {
+		"@thi.ng/expose": "workspace:^",
+		"@thi.ng/rstream-dot": "workspace:^"
+	}
 }

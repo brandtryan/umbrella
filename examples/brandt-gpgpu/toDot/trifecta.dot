@@ -5,7 +5,7 @@ digraph KineticTypographyPipeline {
     rankdir = TB;
     newrank = true;
     // Allows ranking across clusters
-    splines = ortho;
+    splines = true;
     // Orthogonal edges for circuit-board look
     nodesep = 0.8;
     ranksep = 1.0;
