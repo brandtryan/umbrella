@@ -294,7 +294,7 @@ const tree = div(
 		div(
 			"#w0000.line",
 			{},
-			span("#w000000.word", {}, "My "),
+			span("#w000000.word", { $style: { "--axis-wdth": 300 } }, "My "),
 			span("#w000001.word", {}, "teachers "),
 			span("#w000002.word", {}, "look "),
 			span("#w000003.word", {}, "at "),
