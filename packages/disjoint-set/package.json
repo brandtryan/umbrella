@@ -1,6 +1,6 @@
 {
 	"name": "@thi.ng/disjoint-set",
-	"version": "1.1.34",
+	"version": "1.1.37",
 	"description": "TypedArray-based disjoint set implementation with quick union & path compression",
 	"type": "module",
 	"module": "./index.js",
@@ -39,7 +39,7 @@
 		"tool:tangle": "../../node_modules/.bin/tangle src/**/*.ts"
 	},
 	"devDependencies": {
-		"esbuild": "^0.25.12",
+		"esbuild": "^0.27.0",
 		"typedoc": "^0.28.14",
 		"typescript": "^5.9.3"
 	},

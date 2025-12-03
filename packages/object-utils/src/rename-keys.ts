@@ -20,7 +20,7 @@ export const renameKeysMap = <K, V>(
 	out?: Map<K, V>
 ) => {
 	out = out || empty(src, Map);
-	for (let [k, v] of src) {
+	for (const [k, v] of src) {
 		out!.set(km.has(k) ? km.get(k)! : k, v);
 	}
 	return out;
@@ -49,7 +49,7 @@ export const renameKeysObj = <T>(
 	km: { [id in keyof T]?: PropertyKey },
 	out: any = {}
 ) => {
-	for (let k in src) {
+	for (const k in src) {
 		out[km.hasOwnProperty(k) ? km[k] : k] = src[k];
 	}
 	return out;
@@ -68,7 +68,8 @@ export const renameKeysObj = <T>(
  * desired, the format is `{ oldname: [newname, xform] }`, where `xform` is a
  * 2-arg function, receiving the original value of `oldname` and the entire
  * `src` object as 2nd arg. The return value of that function will be used as
- * the value of `newname`.
+ * the value of `newname`, but only used if this result is on-nullish as well
+ * (otherwise skips setting that key).
  *
  * @example
  * ```ts tangle:../export/rename-transformed.ts
@@ -104,8 +105,11 @@ export const renameTransformedKeys = <T extends object, K extends keyof T>(
 	for (let $k in keys) {
 		const spec = keys[$k];
 		const [k, fn] = isArray(spec) ? spec : [spec];
-		const val = src[$k];
-		if (val != null) res[k] = fn ? fn(val, src) : val;
+		let val = src[$k];
+		if (val != null) {
+			val = fn ? fn(val, src) : val;
+			if (val != null) res[k] = val;
+		}
 	}
 	return res;
 };

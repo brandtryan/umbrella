@@ -7,7 +7,7 @@
 [![Mastodon Follow](https://img.shields.io/mastodon/follow/109331703950160316?domain=https%3A%2F%2Fmastodon.thi.ng&style=social)](https://mastodon.thi.ng/@toxi)
 
 > [!NOTE]
-> This is one of 210 standalone projects, maintained as part
+> This is one of 211 standalone projects, maintained as part
 > of the [@thi.ng/umbrella](https://github.com/thi-ng/umbrella/) monorepo
 > and anti-framework.
 >
@@ -82,11 +82,12 @@ Browser ESM import:
 
 [JSDelivr documentation](https://www.jsdelivr.com/)
 
-Package sizes (brotli'd, pre-treeshake): ESM: 821 bytes
+Package sizes (brotli'd, pre-treeshake): ESM: 828 bytes
 
 ## Dependencies
 
 - [@thi.ng/api](https://github.com/thi-ng/umbrella/tree/develop/packages/api)
+- [@thi.ng/canvas](https://github.com/thi-ng/umbrella/tree/develop/packages/canvas)
 - [@thi.ng/checks](https://github.com/thi-ng/umbrella/tree/develop/packages/checks)
 - [@thi.ng/diff](https://github.com/thi-ng/umbrella/tree/develop/packages/diff)
 - [@thi.ng/errors](https://github.com/thi-ng/umbrella/tree/develop/packages/errors)
@@ -218,23 +219,31 @@ import { canvas } from "@thi.ng/hdom-components";
 
 ### HDPI support
 
-The canvas component automatically adjusts its size for HDPI displays by
-adding CSS `width` & `height` properties and pre-scaling the drawing
-context accordingly before any shapes are processed. For fullscreen
-canvases simply set the `width` & `height` attribs to:
+By default, the canvas component automatically adjusts its size for HDPI
+displays by adding CSS `width` & `height` properties and pre-scaling the drawing
+context accordingly before any shapes are processed. Since v4.2.0 the density
+can also be directly controlled via the `__dpr` control attribute. For
+fullscreen canvases simply set the `width` & `height` attribs to:
 
 ```ts
 import { canvas } from "@thi.ng/hdom-components";
 
 [canvas,
     {
+        // fullscreen canvas (assuming no borders)
         width: window.innerWidth,
-        height: window.innerHeight
+        height: window.innerHeight,
+        // force fixed pixel density (else defaults to window.devicePixelRatio)
+        __dpr: 1
     },
     // shapes
     ...
 ]
 ```
+
+See [thi.ng/hiccup-canvas
+readme](https://docs.thi.ng/umbrella/hiccup-canvas/#device-pixel-ratio) for
+further details.
 
 ## SVG conversion
 

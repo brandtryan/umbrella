@@ -7,7 +7,7 @@
 [![Mastodon Follow](https://img.shields.io/mastodon/follow/109331703950160316?domain=https%3A%2F%2Fmastodon.thi.ng&style=social)](https://mastodon.thi.ng/@toxi)
 
 > [!NOTE]
-> This is one of 210 standalone projects, maintained as part
+> This is one of 211 standalone projects, maintained as part
 > of the [@thi.ng/umbrella](https://github.com/thi-ng/umbrella/) monorepo
 > and anti-framework.
 >
@@ -86,6 +86,8 @@ The root shape/group support the following special attributes:
 - `__background`: background color. If given, fills the canvas will given color
   before drawing
 - `__clear`: clear background flag. If true clears the canvas before drawing
+- `__dpr`: device pixel ratio aka pixel density override (else defaults to
+  `window.devicePixelRatio`)
 
 Also see relevant section in the [thi.ng/hiccup-canvas
 README](https://github.com/thi-ng/umbrella/blob/develop/packages/hiccup-canvas/README.md#special-attributes)...
@@ -123,7 +125,7 @@ Browser ESM import:
 
 [JSDelivr documentation](https://www.jsdelivr.com/)
 
-Package sizes (brotli'd, pre-treeshake): ESM: 689 bytes
+Package sizes (brotli'd, pre-treeshake): ESM: 718 bytes
 
 ## Dependencies
 

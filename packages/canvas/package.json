@@ -1,6 +1,6 @@
 {
 	"name": "@thi.ng/canvas",
-	"version": "1.0.28",
+	"version": "1.1.3",
 	"description": "Canvas creation & HDPI support helpers",
 	"type": "module",
 	"module": "./index.js",
@@ -39,7 +39,7 @@
 		"tool:tangle": "../../node_modules/.bin/tangle src/**/*.ts"
 	},
 	"devDependencies": {
-		"esbuild": "^0.25.12",
+		"esbuild": "^0.27.0",
 		"tools": "workspace:^",
 		"typedoc": "^0.28.14",
 		"typescript": "^5.9.3"

@@ -13,7 +13,7 @@
 	},
 	"devDependencies": {
 		"typescript": "^5.9.3",
-		"vite": "^7.2.2"
+		"vite": "^7.2.4"
 	},
 	"dependencies": {
 		"@thi.ng/canvas": "workspace:^",
@@ -50,6 +50,7 @@
 		"fractal",
 		"generative",
 		"image",
+		"math",
 		"matrix",
 		"random",
 		"visualization"

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 import { NO_OP } from "@thi.ng/api/api";
+import { adaptDPI } from "@thi.ng/canvas";
 import { isArray } from "@thi.ng/checks/is-array";
 import { isNotStringAndIterable } from "@thi.ng/checks/is-not-string-iterable";
 import { diffArray } from "@thi.ng/diff/array";
@@ -55,14 +56,6 @@ export const canvas = {
 		const cattribs = { ...attribs };
 		delete cattribs.__diff;
 		delete cattribs.__normalize;
-		const dpr = window.devicePixelRatio || 1;
-		if (dpr !== 1) {
-			!cattribs.style && (cattribs.style = {});
-			cattribs.style.width = `${cattribs.width}px`;
-			cattribs.style.height = `${cattribs.height}px`;
-			cattribs.width *= dpr;
-			cattribs.height *= dpr;
-		}
 		return [
 			"canvas",
 			cattribs,
@@ -74,8 +67,10 @@ export const canvas = {
 					__normalize: attribs.__normalize !== false,
 					__release: attribs.__release === true,
 					__serialize: false,
-					__clear: attribs.__clear,
-					scale: dpr !== 1 ? dpr : null,
+					__clear: attribs.__clear !== false,
+					__dpr: attribs.__dpr ?? window.devicePixelRatio,
+					__width: cattribs.width,
+					__height: cattribs.height,
 				},
 				...body,
 			],
@@ -94,8 +89,13 @@ export const createTree = (
 	const attribs = tree[1];
 	if (attribs) {
 		if (attribs.__skip) return;
-		if (attribs.__clear !== false) {
-			ctx!.clearRect(0, 0, canvas.width, canvas.height);
+		if (
+			(attribs.__width !== undefined &&
+				attribs.__width != canvas.dataset.origWidth) ||
+			(attribs.__height !== undefined &&
+				attribs.__height != canvas.dataset.origHeight)
+		) {
+			adaptDPI(canvas, attribs.__width, attribs.__height, 1);
 		}
 	}
 	draw(ctx!, tree);
@@ -134,7 +134,7 @@ export const normalizeTree = (opts: Partial<HDOMOpts>, tree: any): any => {
 		return normalizeTree(opts, tree.deref());
 	} else if (isNotStringAndIterable(tree)) {
 		const res = [];
-		for (let t of tree) {
+		for (const t of tree) {
 			const n = normalizeTree(opts, t);
 			n != null && res.push(n);
 		}

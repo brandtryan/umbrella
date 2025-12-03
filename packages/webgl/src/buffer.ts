@@ -5,6 +5,7 @@ import {
 	typedArrayType,
 	type TypedArray,
 } from "@thi.ng/api/typedarray";
+import { isArray } from "@thi.ng/checks/is-array";
 import { isPlainObject } from "@thi.ng/checks/is-plain-object";
 import type { AttribPool } from "@thi.ng/vector-pools";
 import type { IWebGLBuffer, IndexBufferSpec } from "./api/buffers.js";
@@ -101,19 +102,40 @@ export const defBuffer = (
 ) => new WebGLArrayBuffer(gl, data, target, mode, retain);
 
 /**
- * Takes a model spec and compiles all buffers (attributes, indices) and shader
- * (if not already compiled), then returns compiled spec, ready for use with
- * {@link draw}.
+ * Takes a model spec (or array of specs) and compiles all buffers (attributes,
+ * indices) and shaders (if not already compiled), then returns compiled spec(s),
+ * ready for use with {@link draw}.
  *
  * @param gl
  * @param spec
  * @param mode
  */
-export const compileModel = (
+export function compileModel(
 	gl: WebGLRenderingContext,
 	spec: ModelSpec | UncompiledModelSpec,
-	mode = gl.STATIC_DRAW
-) => {
+	mode?: GLenum
+): ModelSpec;
+export function compileModel(
+	gl: WebGLRenderingContext,
+	spec: (ModelSpec | UncompiledModelSpec)[],
+	mode?: GLenum
+): ModelSpec[];
+export function compileModel(
+	gl: WebGLRenderingContext,
+	spec: any,
+	mode?: GLenum
+) {
+	return isArray(spec)
+		? spec.map((x) => __compileModel(gl, x, mode))
+		: __compileModel(gl, spec, mode);
+}
+
+/** @internal */
+const __compileModel = (
+	gl: WebGLRenderingContext,
+	spec: ModelSpec | UncompiledModelSpec,
+	mode: GLenum = gl.STATIC_DRAW
+): ModelSpec => {
 	if (spec.attribPool) {
 		spec.attribs = compileAttribPool(
 			gl,
@@ -169,7 +191,7 @@ const __compileAttribs = (
 	mode: GLenum
 ) => {
 	if (attribs) {
-		for (let id in attribs) {
+		for (const id in attribs) {
 			__initBuffer(gl, attribs[id], gl.ARRAY_BUFFER, mode);
 		}
 	}
@@ -225,7 +247,7 @@ export const compileAttribPool = (
 ) => {
 	const buf = defBuffer(gl, pool.bytes(), target, mode, true);
 	const spec = <ModelAttributeSpecs>{};
-	for (let id of ids || Object.keys(pool.specs)) {
+	for (const id of ids || Object.keys(pool.specs)) {
 		const attr = pool.specs[id];
 		spec[id] = {
 			buffer: buf,

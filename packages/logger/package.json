@@ -1,6 +1,6 @@
 {
 	"name": "@thi.ng/logger",
-	"version": "3.2.6",
+	"version": "3.2.9",
 	"description": "Basis types for arbitrary & hierarchical logging",
 	"type": "module",
 	"module": "./index.js",
@@ -39,7 +39,7 @@
 		"tool:tangle": "../../node_modules/.bin/tangle src/**/*.ts"
 	},
 	"devDependencies": {
-		"esbuild": "^0.25.12",
+		"esbuild": "^0.27.0",
 		"typedoc": "^0.28.14",
 		"typescript": "^5.9.3"
 	},

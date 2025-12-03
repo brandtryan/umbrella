@@ -1,6 +1,6 @@
 {
 	"name": "@thi.ng/timestamp",
-	"version": "1.1.26",
+	"version": "1.1.29",
 	"description": "Timestamp getter wrapping (in order of preference) `process.hrtime.bigint()`, `performance.now()` or `Date.now()`",
 	"type": "module",
 	"module": "./index.js",
@@ -39,7 +39,7 @@
 		"tool:tangle": "../../node_modules/.bin/tangle src/**/*.ts"
 	},
 	"devDependencies": {
-		"esbuild": "^0.25.12",
+		"esbuild": "^0.27.0",
 		"typedoc": "^0.28.14",
 		"typescript": "^5.9.3"
 	},

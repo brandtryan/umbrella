@@ -1,10 +1,14 @@
 // SPDX-License-Identifier: Apache-2.0
+import type { IClear, ICopy, IEmpty } from "@thi.ng/api";
+import { implementsFunction } from "@thi.ng/checks/implements-function";
 import type { BidirIndexOpts, SerializedBidirIndex } from "./api.js";
 
 /**
  * Bi-directional index to map arbitrary keys to numeric IDs and vice versa.
  */
-export class BidirIndex<T> {
+export class BidirIndex<T>
+	implements IClear, ICopy<BidirIndex<T>>, IEmpty<BidirIndex<T>>
+{
 	fwd: Map<T, number>;
 	rev: Map<number, T>;
 	nextID: number;
@@ -28,6 +32,30 @@ export class BidirIndex<T> {
 	 */
 	[Symbol.iterator]() {
 		return this.entries();
+	}
+
+	clear() {
+		this.fwd.clear();
+		this.rev.clear();
+		this.nextID = 0;
+	}
+
+	copy() {
+		const result = new BidirIndex<T>();
+		result.fwd = implementsFunction(this.fwd, "copy")
+			? this.fwd.copy()
+			: new Map(this.fwd);
+		result.rev = new Map(this.rev);
+		result.nextID = this.nextID;
+		return result;
+	}
+
+	empty() {
+		const result = new BidirIndex<T>();
+		if (implementsFunction(this.fwd, "empty")) {
+			result.fwd = this.fwd.empty();
+		}
+		return result;
 	}
 
 	/**
@@ -113,7 +141,7 @@ export class BidirIndex<T> {
 	 */
 	addAll(keys: Iterable<T>) {
 		const res: number[] = [];
-		for (let k of keys) {
+		for (const k of keys) {
 			res.push(this.add(k));
 		}
 		return res;
@@ -127,7 +155,7 @@ export class BidirIndex<T> {
 	 */
 	addAllUnique(keys: Iterable<T>) {
 		const res = new Set<number>();
-		for (let k of keys) {
+		for (const k of keys) {
 			res.add(this.add(k));
 		}
 		return res;
@@ -159,7 +187,7 @@ export class BidirIndex<T> {
 	 * @param keys
 	 */
 	deleteAll(keys: Iterable<T>) {
-		for (let k of keys) this.delete(k);
+		for (const k of keys) this.delete(k);
 	}
 
 	/**
@@ -168,7 +196,7 @@ export class BidirIndex<T> {
 	 * @param ids
 	 */
 	deleteAllIDs(ids: Iterable<number>) {
-		for (let id of ids) this.deleteID(id);
+		for (const id of ids) this.deleteID(id);
 	}
 
 	/**
@@ -236,7 +264,7 @@ const __iterate = <A, B>(
 	fail: boolean
 ) => {
 	const res: B[] = [];
-	for (let k of keys) {
+	for (const k of keys) {
 		const val = index.get(k);
 		if (val === undefined) {
 			if (fail) throw new Error(`unknwon key/ID: ${k}`);

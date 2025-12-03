@@ -7,7 +7,7 @@
 [![Mastodon Follow](https://img.shields.io/mastodon/follow/109331703950160316?domain=https%3A%2F%2Fmastodon.thi.ng&style=social)](https://mastodon.thi.ng/@toxi)
 
 > [!NOTE]
-> This is one of 210 standalone projects, maintained as part
+> This is one of 211 standalone projects, maintained as part
 > of the [@thi.ng/umbrella](https://github.com/thi-ng/umbrella/) monorepo
 > and anti-framework.
 >
@@ -33,6 +33,7 @@
   - [grayscale](#grayscale)
   - [hsbl](#hsbl)
   - [icc](#icc)
+  - [maxsize](#maxsize)
   - [nest](#nest)
   - [output](#output)
     - [Templated output paths](#templated-output-paths)
@@ -234,6 +235,11 @@ Assign ICC profile (from preset: `p3`, `srgb`, `cmyk` or from file). Can only be
 given directly prior to [output](#output), overrides input ICC (if any) and only
 used if output format actually supports it.
 
+### maxsize
+
+Conditional version of [resize](#resize) operator, only applied if one of the
+sides exceeds the configured size limit.
+
 ### nest
 
 Performing nested branches/pipelines of operations with no effect on image state
@@ -375,7 +381,7 @@ For Node.js REPL:
 const imago = await import("@thi.ng/imago");
 ```
 
-Package sizes (brotli'd, pre-treeshake): ESM: 5.20 KB
+Package sizes (brotli'd, pre-treeshake): ESM: 5.31 KB
 
 ## Dependencies
 

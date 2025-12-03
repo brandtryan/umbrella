@@ -1,6 +1,6 @@
 # Change Log
 
-- **Last updated**: 2025-10-25T22:30:00Z
+- **Last updated**: 2025-12-03T22:43:13Z
 - **Generator**: [thi.ng/monopub](https://thi.ng/monopub)
 
 All notable changes to this project will be documented in this file.
@@ -10,6 +10,18 @@ See [Conventional Commits](https://conventionalcommits.org/) for commit guidelin
 
 **Note:** Unlisted _patch_ versions only involve non-code or otherwise excluded changes
 and/or version bumps of transitive dependencies.
+
+### [6.9.90](https://github.com/thi-ng/umbrella/tree/@thi.ng/webgl@6.9.90) (2025-12-03)
+
+#### ♻️ Refactoring
+
+- update for-loops (use const where possible) ([5ceaf1a](https://github.com/thi-ng/umbrella/commit/5ceaf1a))
+
+### [6.9.88](https://github.com/thi-ng/umbrella/tree/@thi.ng/webgl@6.9.88) (2025-11-25)
+
+#### ♻️ Refactoring
+
+- update `compileModel()` to also accept array of model specs ([bf43a0c](https://github.com/thi-ng/umbrella/commit/bf43a0c))
 
 ### [6.9.30](https://github.com/thi-ng/umbrella/tree/@thi.ng/webgl@6.9.30) (2025-01-14)
 

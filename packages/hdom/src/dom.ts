@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
+import { deref } from "@thi.ng/api/deref";
 import { implementsFunction } from "@thi.ng/checks/implements-function";
 import { isArray } from "@thi.ng/checks/is-array";
+import { isFunction } from "@thi.ng/checks/is-function";
 import { isNotStringAndIterable } from "@thi.ng/checks/is-not-string-iterable";
 import { isString } from "@thi.ng/checks/is-string";
 import { ATTRIB_JOIN_DELIMS, SVG_TAGS } from "@thi.ng/hiccup/api";
-import { css } from "@thi.ng/hiccup/css";
 import { formatPrefixes } from "@thi.ng/hiccup/prefix";
 import { XML_SVG } from "@thi.ng/prefixes/xml";
 import type { HDOMImplementation, HDOMOpts } from "./api.js";
@@ -62,7 +63,7 @@ export const createTree = <T>(
 	}
 	if (isNotStringAndIterable(tree)) {
 		const res = [];
-		for (let t of tree) {
+		for (const t of tree) {
 			res.push(createTree(opts, impl, parent, t, insert, init));
 		}
 		return res;
@@ -109,14 +110,14 @@ export const hydrateTree = <T>(
 			);
 		}
 		__maybeInitElement(el, tree);
-		for (let a in attribs) {
+		for (const a in attribs) {
 			a[0] === "o" && a[1] === "n" && impl.setAttrib(el, a, attribs[a]);
 		}
 		for (let n = tree.length, i = 2; i < n; i++) {
 			hydrateTree(opts, impl, el, tree[i], i - 2);
 		}
 	} else if (isNotStringAndIterable(tree)) {
-		for (let t of tree) {
+		for (const t of tree) {
 			hydrateTree(opts, impl, parent, t, index);
 			index++;
 		}
@@ -188,7 +189,7 @@ export const cloneWithNewAttribs = (el: Element, attribs: any) => {
 export const setContent = (el: Element, body: any) => (el.textContent = body);
 
 export const setAttribs = (el: Element, attribs: any) => {
-	for (let k in attribs) {
+	for (const k in attribs) {
 		setAttrib(el, k, attribs[k], attribs);
 	}
 	return el;
@@ -327,9 +328,15 @@ export const removeAttribs = (el: Element, attribs: string[], prev: any) => {
 	}
 };
 
-export const setStyle = (el: Element, styles: any) => (
-	el.setAttribute("style", css(styles)), el
-);
+export const setStyle = (el: Element, rules: any) => {
+	let v: any;
+	for (const r in rules) {
+		v = deref(rules[r]);
+		if (isFunction(v)) v = v(rules);
+		if (v != null) (<HTMLElement>el).style.setProperty(r, v);
+	}
+	return el;
+};
 
 /**
  * Adds event listener (possibly with options).

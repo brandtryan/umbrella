@@ -48,7 +48,7 @@ export interface MatchMultipleOpts<T> {
  *
  * // tag union
  * console.log(
- *   query(DB, [matchStrings("tags", ["a", "b"])])
+ *   query(DB, [matchStrings("tags", ["a", "b"], { union: true })])
  * );
  * // here returns full DB...
  * // since each item either has `a` and/or `b` tags
@@ -85,37 +85,38 @@ export const matchStrings = <T extends QueryObj = QueryObj>(
  * intersection or union queries with optional negation/exclusions. Matches set
  * of given values against an item's chosen field of values and by default only
  * succeeds if all provided `includes` can be matched (aka intersection query)
- * and there're no values from `excludes` present.
+ * and if there're no values from `excludes` present.
  *
  * @remarks
- * If the `union` option is true, only one of the provided values needs to
- * match. Exclusions _always_ take precedence.
+ * If the `union` option is true, only one of the provided `includes` values
+ * needs to match. Exclusions _always_ take precedence.
  *
  * Note: See {@link matchStrings} for a syntax sugar & examples of this
  * function, aimed at matching `string[]` options.
  *
  * @param key
- * @param matches
+ * @param includes
+ * @param excludes
  * @param opts
  */
 export const matchMultiple = <T extends QueryObj = QueryObj, V = any>(
 	key: QueryTerm["q"][0],
 	includes: V[],
-	excludes: V[],
+	excludes?: V[],
 	opts: Partial<MatchMultipleOpts<V>> = {}
 ): QueryTerm<T> => {
 	const { union = false, value: valueFn } = opts;
-	return excludes.length
+	return excludes?.length
 		? {
 				q: [
 					key,
 					(values: any) => {
 						const $values = valueFn ? valueFn(values) : <V[]>values;
-						for (let x of excludes) {
+						for (const x of excludes) {
 							if ($values.includes(x)) return false;
 						}
 						let match = false;
-						for (let x of includes) {
+						for (const x of includes) {
 							if ($values.includes(x)) {
 								match = true;
 								if (union) break;
