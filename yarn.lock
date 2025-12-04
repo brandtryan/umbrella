@@ -492,6 +492,75 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@example/brandt-first-organism@workspace:examples/brandt-first-organism":
+  version: 0.0.0-use.local
+  resolution: "@example/brandt-first-organism@workspace:examples/brandt-first-organism"
+  dependencies:
+    "@thi.ng/api": "workspace:^"
+    "@thi.ng/hiccup-html": "workspace:^"
+    "@thi.ng/meta-css": "workspace:^"
+    "@thi.ng/rdom": "workspace:^"
+    "@thi.ng/rstream": "workspace:^"
+    "@thi.ng/rstream-gestures": "workspace:^"
+    "@thi.ng/rstream-graph": "workspace:^"
+    "@thi.ng/scenegraph": "workspace:^"
+    "@thi.ng/shader-ast": "workspace:^"
+    "@thi.ng/webgl": "workspace:^"
+    typescript: "npm:^5.9.3"
+    vite: "npm:^7.2.4"
+  languageName: unknown
+  linkType: soft
+
+"@example/brandt-gpgpu@workspace:examples/brandt-gpgpu":
+  version: 0.0.0-use.local
+  resolution: "@example/brandt-gpgpu@workspace:examples/brandt-gpgpu"
+  dependencies:
+    "@thi.ng/api": "workspace:^"
+    "@thi.ng/atom": "workspace:^"
+    "@thi.ng/dot": "workspace:^"
+    "@thi.ng/ecs": "workspace:^"
+    "@thi.ng/equiv": "workspace:^"
+    "@thi.ng/expose": "workspace:^"
+    "@thi.ng/hiccup-html": "workspace:^"
+    "@thi.ng/paths": "workspace:^"
+    "@thi.ng/rdom": "workspace:^"
+    "@thi.ng/rdom-canvas": "workspace:^"
+    "@thi.ng/rstream": "workspace:^"
+    "@thi.ng/rstream-dot": "workspace:^"
+    "@thi.ng/rstream-gestures": "workspace:^"
+    "@thi.ng/rstream-graph": "workspace:^"
+    "@thi.ng/shader-ast": "workspace:^"
+    "@thi.ng/shader-ast-stdlib": "workspace:^"
+    "@thi.ng/transducers": "workspace:^"
+    "@thi.ng/webgl": "workspace:^"
+    typescript: "npm:^5.9.3"
+    vite: "npm:^7.2.2"
+  languageName: unknown
+  linkType: soft
+
+"@example/brandt-reactive-lightbulb@workspace:examples/brandt-reactive-lightbulb":
+  version: 0.0.0-use.local
+  resolution: "@example/brandt-reactive-lightbulb@workspace:examples/brandt-reactive-lightbulb"
+  dependencies:
+    "@thi.ng/api": "workspace:^"
+    "@thi.ng/bench": "workspace:^"
+    "@thi.ng/dl-asset": "workspace:^"
+    "@thi.ng/expose": "workspace:^"
+    "@thi.ng/hiccup-carbon-icons": "workspace:^"
+    "@thi.ng/hiccup-html": "workspace:^"
+    "@thi.ng/msgpack": "workspace:^"
+    "@thi.ng/parse": "workspace:^"
+    "@thi.ng/rdom": "workspace:^"
+    "@thi.ng/rdom-components": "workspace:^"
+    "@thi.ng/rstream": "workspace:^"
+    "@thi.ng/strings": "workspace:^"
+    "@thi.ng/transducers": "workspace:^"
+    "@thi.ng/transducers-binary": "workspace:^"
+    typescript: "npm:^5.9.2"
+    vite: "npm:^7.0.6"
+  languageName: unknown
+  linkType: soft
+
 "@example/canvas-dial@workspace:examples/canvas-dial":
   version: 0.0.0-use.local
   resolution: "@example/canvas-dial@workspace:examples/canvas-dial"
@@ -652,6 +721,46 @@ __metadata:
     "@thi.ng/transducers-async": "workspace:^"
     typescript: "npm:^5.9.3"
     vite: "npm:^7.2.4"
+  languageName: unknown
+  linkType: soft
+
+"@example/dataflow-rdom-basics@workspace:examples/dataflow-rdom-basics":
+  version: 0.0.0-use.local
+  resolution: "@example/dataflow-rdom-basics@workspace:examples/dataflow-rdom-basics"
+  dependencies:
+    "@thi.ng/api": "workspace:^"
+    "@thi.ng/checks": "workspace:^"
+    "@thi.ng/compose": "workspace:^"
+    "@thi.ng/hiccup-css": "workspace:^"
+    "@thi.ng/hiccup-html": "workspace:^"
+    "@thi.ng/meta-css": "workspace:^"
+    "@thi.ng/random": "workspace:^"
+    "@thi.ng/rdom": "workspace:^"
+    "@thi.ng/rstream": "workspace:^"
+    "@thi.ng/rstream-dot": "workspace:^"
+    "@thi.ng/rstream-graph": "workspace:^"
+    "@thi.ng/transducers": "workspace:^"
+    typescript: "npm:^5.9.3"
+    vite: "npm:^7.2.2"
+  languageName: unknown
+  linkType: soft
+
+"@example/dataflow-rstream-sync@workspace:examples/dataflow-rstream-sync":
+  version: 0.0.0-use.local
+  resolution: "@example/dataflow-rstream-sync@workspace:examples/dataflow-rstream-sync"
+  dependencies:
+    "@thi.ng/api": "workspace:^"
+    "@thi.ng/atom": "workspace:^"
+    "@thi.ng/equiv": "workspace:^"
+    "@thi.ng/paths": "workspace:^"
+    "@thi.ng/rdom": "workspace:^"
+    "@thi.ng/rstream": "workspace:^"
+    "@thi.ng/rstream-dot": "workspace:^"
+    "@thi.ng/rstream-gestures": "workspace:^"
+    "@thi.ng/rstream-graph": "workspace:^"
+    "@thi.ng/transducers": "workspace:^"
+    typescript: "npm:^5.9.3"
+    vite: "npm:^7.2.2"
   languageName: unknown
   linkType: soft
 
@@ -4611,7 +4720,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@thi.ng/dot@npm:^2.1.123, @thi.ng/dot@workspace:packages/dot":
+"@thi.ng/dot@npm:^2.1.123, @thi.ng/dot@workspace:^, @thi.ng/dot@workspace:packages/dot":
   version: 0.0.0-use.local
   resolution: "@thi.ng/dot@workspace:packages/dot"
   dependencies:
@@ -7237,6 +7346,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/react@npm:^19.2.7":
+  version: 19.2.7
+  resolution: "@types/react@npm:19.2.7"
+  dependencies:
+    csstype: "npm:^3.2.2"
+  checksum: 10/dc0b756eee2c9782d282ae47eaa8d537b2a569eb889a6808c4b172d70fb690b2b1d8fe6239db451aa1c90d2a947cc21c9b537ce177ba9e6121468e403e4079c5
+  languageName: node
+  linkType: hard
+
 "@types/unist@npm:*":
   version: 3.0.3
   resolution: "@types/unist@npm:3.0.3"
@@ -7488,6 +7606,13 @@ __metadata:
   version: 1.1.0
   resolution: "console-control-strings@npm:1.1.0"
   checksum: 10/27b5fa302bc8e9ae9e98c03c66d76ca289ad0c61ce2fe20ab288d288bee875d217512d2edb2363fc83165e88f1c405180cf3f5413a46e51b4fe1a004840c6cdb
+  languageName: node
+  linkType: hard
+
+"csstype@npm:^3.2.2":
+  version: 3.2.3
+  resolution: "csstype@npm:3.2.3"
+  checksum: 10/ad41baf7e2ffac65ab544d79107bf7cd1a4bb9bab9ac3302f59ab4ba655d5e30942a8ae46e10ba160c6f4ecea464cc95b975ca2fefbdeeacd6ac63f12f99fe1f
   languageName: node
   linkType: hard
 
@@ -8579,6 +8704,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
+    "@thi.ng/expose": "workspace:^"
+    "@thi.ng/rstream-dot": "workspace:^"
+    "@types/react": "npm:^19.2.7"
     bun-types: "npm:1.3.2"
     esbuild: "npm:^0.27.0"
     html-minifier-terser: "npm:^7.2.0"
@@ -8963,6 +9091,61 @@ __metadata:
   version: 1.0.2
   resolution: "util-deprecate@npm:1.0.2"
   checksum: 10/474acf1146cb2701fe3b074892217553dfcf9a031280919ba1b8d651a068c9b15d863b7303cb15bd00a862b498e6cf4ad7b4a08fb134edd5a6f7641681cb54a2
+  languageName: node
+  linkType: hard
+
+"vite@npm:^7.0.6, vite@npm:^7.2.2":
+  version: 7.2.6
+  resolution: "vite@npm:7.2.6"
+  dependencies:
+    esbuild: "npm:^0.25.0"
+    fdir: "npm:^6.5.0"
+    fsevents: "npm:~2.3.3"
+    picomatch: "npm:^4.0.3"
+    postcss: "npm:^8.5.6"
+    rollup: "npm:^4.43.0"
+    tinyglobby: "npm:^0.2.15"
+  peerDependencies:
+    "@types/node": ^20.19.0 || >=22.12.0
+    jiti: ">=1.21.0"
+    less: ^4.0.0
+    lightningcss: ^1.21.0
+    sass: ^1.70.0
+    sass-embedded: ^1.70.0
+    stylus: ">=0.54.8"
+    sugarss: ^5.0.0
+    terser: ^5.16.0
+    tsx: ^4.8.1
+    yaml: ^2.4.2
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  peerDependenciesMeta:
+    "@types/node":
+      optional: true
+    jiti:
+      optional: true
+    less:
+      optional: true
+    lightningcss:
+      optional: true
+    sass:
+      optional: true
+    sass-embedded:
+      optional: true
+    stylus:
+      optional: true
+    sugarss:
+      optional: true
+    terser:
+      optional: true
+    tsx:
+      optional: true
+    yaml:
+      optional: true
+  bin:
+    vite: bin/vite.js
+  checksum: 10/c640ed9c91957749287af2f483f5b5024a56718ba7cf32b0e2c398772fdf7fdb9fd5f97665c41712d4e9422c14009e283d0b69ac1b64b4f91474625bebe324de
   languageName: node
   linkType: hard
 

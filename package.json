@@ -42,6 +42,7 @@
 	"packageManager": "yarn@4.11.0",
 	"dependencies": {
 		"@thi.ng/expose": "workspace:^",
-		"@thi.ng/rstream-dot": "workspace:^"
+		"@thi.ng/rstream-dot": "workspace:^",
+		"@types/react": "^19.2.7"
 	}
 }
