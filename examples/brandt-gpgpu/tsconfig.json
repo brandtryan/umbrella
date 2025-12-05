@@ -1,6 +1,12 @@
 {
 	"extends": "../tsconfig.json",
-	"include": ["src/**/*", "graph-with-rdom.ts", "src/circle.ts", "toDot/plan.ts"],
+	"include": [
+		"src/**/*",
+		"graph-with-rdom.ts",
+		"src/circle.ts",
+		"toDot/plan.ts",
+		"archive/05DEC2025index.ts"
+	],
 	"exclude": ["./node_modules", "./dist"],
 	"compilerOptions": {}
 }
