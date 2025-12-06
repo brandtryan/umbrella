@@ -1,6 +1,13 @@
 import * as Content from "./html";
-import { draw, defQuadModel, glCanvas, readPixels } from "@thi.ng/webgl";
+import {
+	draw,
+	defQuadModel,
+	glCanvas,
+	readPixels,
+	PASSTHROUGH_VS_UV,
+} from "@thi.ng/webgl";
 import { $compile } from "@thi.ng/rdom";
+import { fit, clamp } from "@thi.ng/math";
 import {
 	defMain,
 	uniform,
@@ -14,16 +21,16 @@ import {
 	$xy,
 	$x,
 	$y,
-	// BUILT_INS
-	gl_fragCoord,
-	gl_fragColor,
-	// TYPES
+	// BUILT_INS,
+	// TYPES,
 	type Vec3Term, // Use "term' for general inputs (vars or expressions)"
 	type FloatTerm,
 	type Vec2Sym,
 } from "@thi.ng/shader-ast";
 import { snoise3 } from "@thi.ng/shader-ast-stdlib";
-import { div, div as divi } from "@thi.ng/hiccup-html";
+import { div } from "@thi.ng/hiccup-html";
+import { fromRAF } from "@thi.ng/rstream";
+import { count } from "@thi.ng/transducers";
 
 // 2. Sort and Assemble
 // Object.keys is not guaranteed to be ordered, so we sort by the number in "pageXX"
@@ -38,7 +45,8 @@ const sortedPages = Object.keys(Content)
 	.map((key) => Content[key as keyof typeof Content]); // Grab the actual Hiccup content
 
 // 3. Wrap in a container
-const bookRoot = ["div#text-container", ...sortedPages];
+// const bookRoot = div(id: "text-container",...sortedPages);
+const book = div({ id: "text-container" }, ...sortedPages);
 
 // 1. Create the Context (No need to append to DOM)
 const canvas = document.createElement("canvas");
@@ -71,8 +79,8 @@ const getAxisNoise = (
 };
 
 export const multiAxisShader = defMain(() => {
-	// 1. FIX: Use gl_FragCoord to get the pixel position
-	let uv: Vec2Sym = sym(div_ide($xy(gl_fragCoord), u_resolution));
+	// 1. Use gl_FragCoord to get the pixel position
+	let uv: Vec2Sym = sym(div_ide($xy(sym("gl_FragCoord")), u_resolution));
 	// fix aspect ratio
 	assign($x(uv), mul($x(uv), div_ide($x(u_resolution), $y(u_resolution))));
 
@@ -109,7 +117,7 @@ export const multiAxisShader = defMain(() => {
 	assign(output, mul(output, add(1.0, mul(u_stress, 2.0))));
 
 	// 6. OUTPUT
-	return [assign(gl_FragColor, output)];
+	return [assign(sym("gl_FragColor"), output)];
 });
 
 // 2. Define Model
@@ -118,10 +126,9 @@ const model = defQuadModel({
 	gl: gl,
 	// just need to provide the frag shader (my noise logic)
 	shader: {
+		vs: PASSTHROUGH_VS_UV,
 		fs: multiAxisShader,
 	},
-
-	// UNIFORMS
 	uniforms: {
 		u_time: "float",
 		u_stress: "float",
@@ -170,6 +177,9 @@ async function bakeWordPositions() {
 	// 2. Select all words
 	const words = document.querySelectorAll(".word");
 	const totalWords = words.length;
+
+	// FILL THE CACHE
+	domNodes = Array.from(words) as HTMLElement[]; // Store references for the loop
 
 	// 3. Allocate Memory (Re-use if exists to avoid GC thrashing on resize)
 	if (!wordLayoutMap || wordLayoutMap.length !== totalWords * STRIDE) {
@@ -232,22 +242,170 @@ async function bakeWordPositions() {
 async function start() {
 	// Step 1: Mount the DOM
 	// We use $compile to turn the Hiccup into DOM nodes and append to app
-	$compile(bookRoot).mount(document.getElementById("app")!);
+	$compile(book).mount(document.getElementById("app")!);
 
 	// Step 2: Wait for fonts
 	await document.fonts.ready;
 	console.log("Fonts loaded. Layout is stable.");
 
-	// Step 3: Bake Positions
+	// STEP 3: Bake Positions
+	// Now that DOM is stable, we scan it and fill the Float32Array
+	// (This uses the function we wrote in the previous turn)
 	const wordMap = await bakeWordPositions();
 
-	// Step 4: Start the Storm
-	// Initialize WebGL, Input listeners, and the Animations Loop
-	// initInputs();
-
-	requestAnimationFrame((time) => {
-		wordMap;
-	});
+	// STEP 4: Start the "Storm"
+	// Initialize WebGL, Input Listeners, and the Animation Loop
 }
 
 start();
+
+// --- GLOBAL STATE ---
+// We keep this mutable for performance in the loop
+const state = {
+	// The "Stress" level (0.0 to 1.0)
+	stress: 0.0,
+	// When did the user last move?
+	lastActionTime: Date.now(),
+	// Which "Page" are they currently viewing?
+	currentPage: 0,
+	// Current window dimensions (cached for speed)
+	vw: window.innerWidth,
+	vh: window.innerHeight,
+};
+export function initInputs(reBakeCallback: () => void) {
+	// 1. SCROLL LISTENER (The "Activity" Monitor)
+	window.addEventListener(
+		"scroll",
+		() => {
+			// A. Reset Stress (Movement relieves tension)
+			state.stress = Math.max(0, state.stress - 0.05);
+			state.lastActionTime = Date.now();
+
+			// B. Update Page Index (For culling)
+			// Assuming strict 100vh pages
+			state.currentPage = Math.round(window.scrollY / window.innerHeight);
+		},
+		{ passive: true }
+	);
+
+	// 2. RESIZE LISTENER (The Layout Breaker)
+	let resizeTimer: any;
+	window.addEventListener("resize", () => {
+		clearTimeout(resizeTimer);
+		// Debounce: Wait 200ms after resize stops before re-calculating
+		resizeTimer = setTimeout(() => {
+			state.vw = window.innerWidth;
+			state.vh = window.innerHeight;
+			reBakeCallback(); // Call the bake function again
+		}, 200);
+	});
+}
+
+// SETTINGS
+const BUFFER_DIM = 512; // Width/Height of your noise texture
+const NOISE_SCALE = 2.5; // How "zoomed out" the noise clouds are
+const BUFFER_MASK = BUFFER_DIM - 1; // 511
+
+// Helper to get array index from screen coordinates
+function getBufferIndex(
+	screenX: number,
+	screenY: number,
+	bufferW: number,
+	bufferH: number
+) {
+	// 1. Normalize Pixels -> 0..1
+	let u = screenX / state.vw;
+	let v = screenY / state.vh;
+
+	// 2. Scale & Wrap (Texture Tiling)
+	u *= NOISE_SCALE;
+	v *= NOISE_SCALE;
+
+	// 3. Map to Integer Coordinates (0..511)
+	const bufX = Math.floor(u * bufferW) & BUFFER_MASK;
+	const bufY = Math.floor(v * bufferH) & BUFFER_MASK;
+
+	// 4. Return Index (Stride of 4 for RGBA)
+	return (bufY * bufferW + bufX) * 4;
+}
+// DOM CACHE: We need the reference to the actual DOM nodes.
+// Populated during your "Bake" phase.
+export let domNodes: HTMLElement[] = [];
+
+// ASSUMING YOU HAVE THESE FROM PREVIOUS STEPS:
+// updateNoise(time, stress) -> Returns Uint8Array (The Storm)
+// wordLayoutMap -> Float32Array (The Map)
+
+export function tick(time: number, wordLayoutMap: Float32Array) {
+	const now = Date.now();
+
+	// --- A. LOGIC: Calculate Stress ---
+	// If idle for > 1 second, stress rises.
+	if (now - state.lastActionTime > 1000) {
+		// Rise slowly (takes ~10 seconds to max out)
+		state.stress = Math.min(1.0, state.stress + 0.005);
+	}
+
+	// --- B. GPU: Run the Storm ---
+	// Pass time (seconds) and stress to WebGL
+	// Returns a 512x512x4 Uint8Array
+	const noiseBuffer = updateNoise(time * 0.001, state.stress);
+
+	// --- C. LOOP: The Flashlight ---
+	// Iterate over every word in the book
+	const count = wordLayoutMap.length / 4; // Stride is 4
+
+	for (let i = 0; i < count; i++) {
+		const ptr = i * 4;
+
+		// 1. CULLING (The Optimization)
+		// If the word is not on the current page, skip it immediately.
+		// You might want to check (state.currentPage +/- 1) for smooth transitions.
+		if (wordLayoutMap[ptr + 2] !== state.currentPage) continue;
+
+		// 2. GET COORDS
+		const wx = wordLayoutMap[ptr];
+		const wy = wordLayoutMap[ptr + 1];
+
+		// 3. SAMPLE THE STORM
+		const idx = getBufferIndex(wx, wy, BUFFER_DIM, BUFFER_DIM);
+
+		// Read RGBA (0-255)
+		const valWght = noiseBuffer[idx]; // R
+		const valWdth = noiseBuffer[idx + 1]; // G
+		const valItal = noiseBuffer[idx + 2]; // B
+		const valCont = noiseBuffer[idx + 3]; // A
+
+		// 4. THRESHOLDING (The "Twitch" Logic)
+		// Only update DOM if the noise is "loud" enough.
+		// This prevents the whole page from shimmering constantly.
+		const threshold = 180; // Out of 255
+
+		if (valWght > threshold || valItal > 240) {
+			const el = domNodes[i]; // Needs to be populated in bake step!
+			if (!el) continue;
+
+			// -- Axis 1: Weight (100 to 900) --
+			// Map 0-255 noise to 100-900 weight
+			// Using a bit of stress to amplify the range
+			const targetWght = fit(valWght, 0, 255, 100, 900);
+
+			// -- Axis 2: Width (50 to 100) --
+			const targetWdth = fit(valWdth, 0, 255, 75, 100);
+
+			// -- Axis 3: Italic (0 or 1) --
+			// Needs a very high threshold to snap
+			const targetItal = valItal > 220 ? 1 : 0;
+
+			// APPLY TO DOM
+			// Optimization: Set CSS variables instead of full font-settings string
+			el.style.setProperty("--wght", targetWght.toFixed(0));
+			el.style.setProperty("--wdth", targetWdth.toFixed(0));
+			el.style.setProperty("--ital", String(targetItal));
+		}
+	}
+
+	// --- D. REPEAT ---
+	requestAnimationFrame((t) => tick(t, wordLayoutMap));
+	console.log(wordLayoutMap);
+}
