@@ -1,4 +1,3 @@
-import * as Content from "./html";
 import { ConsoleLogger, ROOT } from "@thi.ng/logger";
 import {
 	defMultiPass,
@@ -35,6 +34,7 @@ import {
 } from "@thi.ng/shader-ast";
 import { snoise3 } from "@thi.ng/shader-ast-stdlib";
 import { div as hDiv } from "@thi.ng/hiccup-html";
+import * as Content from "./07WORKING_stressAtRestHybridDecAndImpApproachHTML";
 
 ROOT.set(new ConsoleLogger());
 
@@ -81,6 +81,7 @@ if (DEBUG_VIEW) {
 const gl = canvas.gl;
 if (!gl) throw new Error("WebGL2 not supported!");
 
+// REVERTED: Strict check for float extension
 if (!gl.getExtension("EXT_color_buffer_float")) {
 	console.error(
 		"EXT_color_buffer_float not supported! Falling back to WebGL 2 defaults."
@@ -206,16 +207,14 @@ const fsFactory: ShaderFn = (gl, unis, ins, outs) => {
 
 			let output = sym(vec4(r, g, b, a));
 
-			// DEBUG LOGIC
-			let normalizedCoords = sym(div($xy(gl.gl_FragCoord), u_resolution));
-			let debugOutput = vec4(normalizedCoords, float(0.0), float(1.0));
-
-			return [
-				pos,
+			// Increases intensity based on stress level
+			assign(
 				output,
-				normalizedCoords,
-				assign(fragColor, debugOutput),
-			];
+				mul(output, add(float(1.0), mul(u_stress, float(2.0))))
+			);
+
+			// REVERTED: Output the NOISE (output), not the debug gradient (debugOutput)
+			return [pos, output, assign(fragColor, output)];
 		}),
 	];
 };
@@ -223,7 +222,6 @@ const fsFactory: ShaderFn = (gl, unis, ins, outs) => {
 // Custom Debug Pass Shader
 const debugFs: ShaderFn = (gl, unis, ins, outs) => [
 	defMain(() => [
-		// Ensure ins.v_uv is defined in varying config below!
 		assign(outs.fragColor, texture(unis.tex, ins.v_uv as Vec2Term)),
 	]),
 ];
@@ -236,6 +234,7 @@ const pipeline = defMultiPass({
 	height: DATA_DIM,
 	textures: {
 		data: {
+			// REVERTED: Back to 32-bit Float
 			format: TextureFormat.RGBA32F,
 			filter: gl.NEAREST,
 		},
@@ -284,7 +283,7 @@ const pipeline = defMultiPass({
 // --- 4. APP LOGIC ---
 
 const state = {
-	stress: 2.0,
+	stress: 0.0,
 	lastActionTime: Date.now(),
 	vw: window.innerWidth,
 	vh: window.innerHeight,
@@ -368,6 +367,7 @@ function initInputs() {
 	});
 }
 
+// REVERTED: Back to Float32Array
 const cpuBuffer = new Float32Array(MAX_WORDS * 4);
 
 function tick(time: number) {
@@ -394,6 +394,8 @@ function tick(time: number) {
 	pipeline.update(time);
 
 	const fboTexture = pipeline.textures["data"];
+
+	// REVERTED: Read as FLOAT
 	readTexture(gl, fboTexture, TextureFormat.RGBA, gl.FLOAT, cpuBuffer);
 
 	// --- DEBUGGER UPDATE ---
@@ -412,9 +414,11 @@ Word 0: [${r}, ${g}, ${b}, ${a}]`;
 	for (let i = 0; i < count; i++) {
 		const idx = i * 4;
 
+		// REVERTED: No / 255.0 division needed for floats
 		const valWght = cpuBuffer[idx];
 		const valWdth = cpuBuffer[idx + 1];
 		const valItal = cpuBuffer[idx + 2];
+		const valCont = cpuBuffer[idx + 3];
 
 		const el = state.domNodes[i];
 		if (!el) continue;
@@ -422,10 +426,12 @@ Word 0: [${r}, ${g}, ${b}, ${a}]`;
 		const targetWght = fit(valWght, 0, 1, 100, 900);
 		const targetWdth = fit(valWdth, 0, 1, 75, 100);
 		const targetItal = valItal > 0.85 ? 1 : 0;
+		const targetCont = fit(valCont, 0, 1, 0, 100);
 
 		el.style.setProperty("--wght", targetWght.toFixed(0));
 		el.style.setProperty("--wdth", targetWdth.toFixed(0));
-		el.style.setProperty("--ital", String(targetItal));
+		el.style.setProperty("--ital", targetItal.toFixed(0));
+		el.style.setProperty("--cont", targetCont.toFixed(0));
 	}
 
 	requestAnimationFrame(tick);
