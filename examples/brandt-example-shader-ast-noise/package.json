@@ -1,0 +1,36 @@
+{
+	"name": "@example/brandt-example-shader-ast-noise",
+	"version": "0.0.1",
+	"private": true,
+	"description": "TODO",
+	"repository": "https://github.com/thi-ng/umbrella",
+	"author": "Karsten Schmidt <k+npm@thi.ng>",
+	"license": "Apache-2.0",
+	"scripts": {
+		"start": "vite --host --open",
+		"build": "tsc && vite build --base='./'",
+		"preview": "vite preview --host --open"
+	},
+	"devDependencies": {
+		"@thi.ng/meta-css": "workspace:^",
+		"typescript": "^5.9.3",
+		"vite": "^7.2.4"
+	},
+	"dependencies": {
+		"@thi.ng/colored-noise": "workspace:^",
+		"@thi.ng/logger": "workspace:^",
+		"@thi.ng/shader-ast": "workspace:^",
+		"@thi.ng/shader-ast-glsl": "workspace:^",
+		"@thi.ng/shader-ast-stdlib": "workspace:^",
+		"@thi.ng/transducers": "workspace:^",
+		"@thi.ng/vectors": "workspace:^",
+		"@thi.ng/webgl": "workspace:^"
+	},
+	"browser": {
+		"process": false
+	},
+	"thi.ng": {
+		"readme": false,
+		"screenshot": "examples/brandt-example-shader-ast-noise.png"
+	}
+}

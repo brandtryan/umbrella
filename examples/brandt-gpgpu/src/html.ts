@@ -5,8 +5,9 @@ const word = (text: string, index: number) =>
 	span(
 		{
 			class: "word",
-			"data-i": index, // Magic sauce ro Float32Array
+			"data-i": index, // Magic sauce ro Float32Array,
 		},
+
 		text + " " // xtra space for layout
 	);
 
