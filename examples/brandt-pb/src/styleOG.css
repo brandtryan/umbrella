@@ -1,0 +1,95 @@
+@font-face {
+	font-family: Ikarus;
+	src: url("./Ikarus.woff2") format("woff2-variations");
+	font-weight: 47 900;
+	font-stretch: 60% 140%;
+	font-display: swap;
+	unicode-range: U+00-7F, U+2014;
+}
+
+html {
+	background-color: #213547;
+	color: #f1f1f1f5;
+	font-family: Ikarus, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+		Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji",
+		"Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+	font-feature-settings:
+		"kern" 1,
+		"liga" 1,
+		"ss02" 1,
+		"ss03" 1,
+		"ss04" 1,
+		"ss06" 1,
+		"ss10" 1,
+		"ss11" 1,
+		"ss12" 1;
+	font-synthesis: none;
+	font-variation-settings: "ital" 0, "cont" 0, "wght" 300, "wdth" 100;
+	text-rendering: geometricPrecision;
+}
+
+body {
+	display: grid;
+	border: 1px solid cornflowerblue;
+	font-size: clamp(0.875rem, 1vw + 0.6rem, 1.4rem);
+	line-height: clamp(1.181rem, 1.4vw + 0.84rem, 2.1rem);
+	margin: 0;
+}
+
+.page {
+	border: 1px solid fuchsia;
+	content-visibility: auto;
+	min-height: 100vh;
+	overflow: visible;
+	place-content: center left;
+	margin: 0 auto;
+	transition: background-color 0.3s ease;
+	white-space: nowrap;
+	width: fit-content;
+}
+
+.page.page-active {
+	background-color: #2a4a63;
+	/* different background for active */
+}
+
+
+/* p {
+	margin-block: 0;
+} */
+
+p.line {
+	display: block;
+	border: 1px dashed salmon;
+	letter-spacing: 0;
+	word-spacing: 0.12rem;
+	font-kerning: normal;
+	/* margin-block: 0; */
+	/* width: 100%; */
+	margin-left: 1rem;
+	margin-right: 1rem;
+}
+
+/* Word ID display on hover */
+.word:hover::after {
+	content: attr(id);
+	display: block;
+	place-self: center;
+	position: absolute;
+	top: 10px;
+	background-color: rgba(0, 0, 0, 0.5);
+	color: rgb(159, 189, 245);
+	padding: 6px 8px;
+	border-radius: 5px;
+	font-size: 1.1rem;
+	font-family: system-ui, sans-serif;
+	font-variation-settings: normal;
+	font-weight: 700;
+	font-stretch: normal;
+	line-height: 1.2;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 10;
+	white-space: nowrap;
+	pointer-events: none;
+}

@@ -557,6 +557,40 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@example/brandt-mdn-webgl-tutorial@workspace:examples/brandt-mdn-webgl-tutorial":
+  version: 0.0.0-use.local
+  resolution: "@example/brandt-mdn-webgl-tutorial@workspace:examples/brandt-mdn-webgl-tutorial"
+  dependencies:
+    "@thi.ng/api": "workspace:^"
+    "@thi.ng/hiccup-html": "workspace:^"
+    "@thi.ng/meta-css": "workspace:^"
+    "@thi.ng/rdom": "workspace:^"
+    typescript: "npm:^5.9.3"
+    vite: "npm:^7.2.4"
+  languageName: unknown
+  linkType: soft
+
+"@example/brandt-pb@workspace:examples/brandt-pb":
+  version: 0.0.0-use.local
+  resolution: "@example/brandt-pb@workspace:examples/brandt-pb"
+  dependencies:
+    "@thi.ng/api": "workspace:^"
+    "@thi.ng/hiccup-html": "workspace:^"
+    "@thi.ng/malloc": "workspace:^"
+    "@thi.ng/rdom": "workspace:^"
+    "@thi.ng/rstream": "workspace:^"
+    "@thi.ng/rstream-gestures": "workspace:^"
+    "@thi.ng/shader-ast": "workspace:^"
+    "@thi.ng/shader-ast-stdlib": "workspace:^"
+    "@thi.ng/soa": "workspace:^"
+    "@thi.ng/transducers": "workspace:^"
+    "@thi.ng/vectors": "workspace:^"
+    "@thi.ng/webgl": "workspace:^"
+    typescript: "npm:^5.9.3"
+    vite: "npm:^7.2.4"
+  languageName: unknown
+  linkType: soft
+
 "@example/brandt-pkg-ecs@workspace:examples/brandt-pkg-ecs":
   version: 0.0.0-use.local
   resolution: "@example/brandt-pkg-ecs@workspace:examples/brandt-pkg-ecs"
@@ -1794,19 +1828,6 @@ __metadata:
     "@thi.ng/rstream": "workspace:^"
     "@thi.ng/strings": "workspace:^"
     "@thi.ng/transducers": "workspace:^"
-    typescript: "npm:^5.9.3"
-    vite: "npm:^7.2.4"
-  languageName: unknown
-  linkType: soft
-
-"@example/mdn-webgl-tutorial@workspace:examples/mdn-webgl-tutorial":
-  version: 0.0.0-use.local
-  resolution: "@example/mdn-webgl-tutorial@workspace:examples/mdn-webgl-tutorial"
-  dependencies:
-    "@thi.ng/api": "workspace:^"
-    "@thi.ng/hiccup-html": "workspace:^"
-    "@thi.ng/meta-css": "workspace:^"
-    "@thi.ng/rdom": "workspace:^"
     typescript: "npm:^5.9.3"
     vite: "npm:^7.2.4"
   languageName: unknown

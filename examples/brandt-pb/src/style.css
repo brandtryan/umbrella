@@ -1,0 +1,99 @@
+@font-face {
+	font-family: Ikarus;
+	src: url("./Ikarus.woff2") format("woff2-variations");
+	font-display: swap;
+	unicode-range: U+00-7F, U+2014;
+}
+
+@property --wght {
+	syntax: "<number>";
+	inherits: false;
+	initial-value: 300;
+}
+
+@property --wdth {
+	syntax: "<number>";
+	inherits: false;
+	initial-value: 100;
+}
+
+@property --ital {
+	syntax: "<number>";
+	inherits: false;
+	initial-value: 0;
+}
+
+@property --cont {
+	syntax: "<number>";
+	inherits: false;
+	initial-value: 0;
+}
+
+/* Base and Typography */
+html {
+	background-color: #213547;
+	color: #f1f1f1f5;
+	height: 100%;
+	font-family: Ikarus, system-ui;
+	font-feature-settings: "kern" 1, "liga" 1, "ss02" 1, "ss03" 1, "ss04" 1,
+		"ss06" 1, "ss10" 1, "ss11" 1, "ss12" 1;
+	font-kerning: auto;
+	font-synthesis: none;
+	text-rendering: geometricPrecision;
+	font-size: clamp(16px, 1.03vw + 11.8px, 22px);
+	line-height: clamp(1.5, 1.6 + 0.55vh, 1.8);
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	overflow: hidden;
+}
+
+#app {
+	height: 100vh;
+	width: 100vw;
+	overflow-y: scroll;
+	scroll-snap-type: y mandatory;
+	scroll-behavior: smooth;
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
+
+#app::-webkit-scrollbar {
+	display: none;
+}
+
+/* Page Structure */
+.page {
+	display: grid;
+	justify-content: center;
+	align-content: center;
+	height: 100vh;
+	width: 100%;
+	overflow: hidden;
+	scroll-snap-align: start;
+}
+
+/* Line Styling */
+.line {
+	border: 1px goldenrod solid;
+	display: block;
+	max-width: 90vw;
+	white-space: preserve nowrap;
+	text-align: left;
+}
+
+/* Word Styling */
+.word {
+	display: inline-block;
+	--wght: 300;
+	--wdth: 100;
+	--ital: 0;
+	--cont: 0;
+
+	font-variation-settings: "wght" var(--wght), "wdth" var(--wdth),
+		"ital" var(--ital), "cont" var(--cont);
+}

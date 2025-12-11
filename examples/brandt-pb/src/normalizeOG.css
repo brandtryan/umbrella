@@ -1,0 +1,88 @@
+/*
+  Modern CSS Reset
+  https://piccalil.li/blog/a-modern-css-reset
+  Last Updated: September 25, 2025
+*/
+
+/* 1. Use a more intuitive box-sizing model on all elements. */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+/* 2. Remove default margin from the body and other common elements. */
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+dl,
+dd {
+	margin: 0;
+}
+
+/* 3. Set core root defaults. */
+html:focus-within {
+	scroll-behavior: smooth;
+}
+
+/* 4. Set core body defaults for a better starting point. */
+body {
+	height: 100%;
+}
+
+/* 5. Remove list styles on ul, ol elements with a role attribute, which suggests they are for navigation or pure data. */
+ul[role="list"],
+ol[role="list"] {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+/* 6. Make images and other media easier to work with by making them responsive by default. */
+img,
+picture,
+video,
+canvas,
+svg {
+	display: block;
+	max-width: 100%;
+}
+
+/* 7. Inherit fonts for form inputs and buttons for consistency. */
+input,
+button,
+textarea,
+select {
+	font: inherit;
+}
+
+/* 8. A modern touch: balance heading text for better readability. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	text-wrap: nowrap;
+}
+
+/* 9. Remove all animations and transitions for people that prefer not to see them. */
+@media (prefers-reduced-motion: reduce) {
+	html:focus-within {
+		scroll-behavior: auto;
+	}
+
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+}
