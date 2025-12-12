@@ -41,7 +41,7 @@ html {
 	font-synthesis: none;
 	text-rendering: geometricPrecision;
 	font-size: clamp(16px, 1.03vw + 11.8px, 22px);
-	line-height: clamp(1.5, 1.6 + 0.55vh, 1.8);
+	line-height: clamp(26px, 28px + 0.75vh, 39px);
 }
 
 html,
@@ -82,6 +82,7 @@ body {
 	border: 1px goldenrod solid;
 	display: block;
 	max-width: 90vw;
+	min-width: 400px;
 	white-space: preserve nowrap;
 	text-align: left;
 }

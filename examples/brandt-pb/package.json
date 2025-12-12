@@ -17,6 +17,8 @@
 	},
 	"dependencies": {
 		"@thi.ng/api": "workspace:^",
+		"@thi.ng/atom": "workspace:^",
+		"@thi.ng/equiv": "workspace:^",
 		"@thi.ng/hiccup-html": "workspace:^",
 		"@thi.ng/malloc": "workspace:^",
 		"@thi.ng/rdom": "workspace:^",
@@ -26,6 +28,7 @@
 		"@thi.ng/shader-ast-stdlib": "workspace:^",
 		"@thi.ng/soa": "workspace:^",
 		"@thi.ng/transducers": "workspace:^",
+		"@thi.ng/vector-pools": "workspace:^",
 		"@thi.ng/vectors": "workspace:^",
 		"@thi.ng/webgl": "workspace:^"
 	},

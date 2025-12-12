@@ -575,6 +575,8 @@ __metadata:
   resolution: "@example/brandt-pb@workspace:examples/brandt-pb"
   dependencies:
     "@thi.ng/api": "workspace:^"
+    "@thi.ng/atom": "workspace:^"
+    "@thi.ng/equiv": "workspace:^"
     "@thi.ng/hiccup-html": "workspace:^"
     "@thi.ng/malloc": "workspace:^"
     "@thi.ng/rdom": "workspace:^"
@@ -584,6 +586,7 @@ __metadata:
     "@thi.ng/shader-ast-stdlib": "workspace:^"
     "@thi.ng/soa": "workspace:^"
     "@thi.ng/transducers": "workspace:^"
+    "@thi.ng/vector-pools": "workspace:^"
     "@thi.ng/vectors": "workspace:^"
     "@thi.ng/webgl": "workspace:^"
     typescript: "npm:^5.9.3"

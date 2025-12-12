@@ -1,10 +1,16 @@
+import { AttribPool } from "@thi.ng/vector-pools";
+
 // 1. Define the expected message types for type safety
 type InitMessage = {
 	type: "INIT";
 	canvas: OffscreenCanvas;
+	physicsSAB: SharedArrayBuffer;
+	restPosBuffer: ArrayBuffer;
+	wordCount: number;
 	width: number;
 	height: number;
 };
+
 type UpdateMessage = { type: "UPDATE"; mouse: [number, number] };
 type WorkerMessage = InitMessage | UpdateMessage;
 
@@ -12,16 +18,11 @@ let gl: WebGL2RenderingContext | null = null;
 
 // 2. Set up the Standard Message Listener
 // We use the standard 'self.onmessage' to catch the initial handshake.
-self.onmessage = (e: MessageEvent<WorkerMessage>) => {
-	const msg = e.data;
-
-	// ------------------------------------------------------------------
-	// HANDSHAKE PHASE: One-time setup
-	// ------------------------------------------------------------------
-	if (msg.type === "INIT") {
+self.onmessage = (e) => {
+	if (e.data.type === "INIT") {
+		const msg = e.data as InitMessage; // Cast for safety
 		const canvas = msg.canvas;
 
-		// Guide Source 19: Request 'high-performance' power preference
 		// This is critical for preventing the browser from throttling the GPU.
 		gl = canvas.getContext("webgl2", {
 			powerPreference: "high-performance",
@@ -34,8 +35,6 @@ self.onmessage = (e: MessageEvent<WorkerMessage>) => {
 			return;
 		}
 
-		// Guide Source 23: Verify Floating Point Extensions
-		// Essential for "long-term numerical stability" in the simulation.
 		const ext = gl.getExtension("EXT_color_buffer_float");
 		if (!ext) {
 			console.error(
@@ -48,24 +47,51 @@ self.onmessage = (e: MessageEvent<WorkerMessage>) => {
 			vendor: gl.getParameter(gl.VENDOR),
 		});
 
-		// Start your simulation loop here
-		// requestAnimationFrame(renderLoop);
-	}
+		// 2. Rehydrate Physics State (The Shared Brain)
+		// Note: We use msg.wordCount here
+		const physicsState = new AttribPool({
+			mem: {
+				buf: msg.physicsSAB,
+				size: msg.physicsSAB.byteLength,
+				align: 16,
+				skipInitialization: true, // Critical!
+			},
+			num: msg.wordCount,
+			// Match main thread Schema EXACTLY
+			attribs: {
+				wght: { type: "f32", byteOffset: 0, size: 1, default: 300 },
+				wdth: { type: "f32", byteOffset: 4, size: 1, default: 100 },
+				ital: { type: "f32", byteOffset: 8, size: 1, default: 0 },
+				cont: { type: "f32", byteOffset: 12, size: 1, default: 0 },
+			},
+		});
 
-	// ------------------------------------------------------------------
-	// UPDATE PHASE: Continuous Data Flow
-	// ------------------------------------------------------------------
-	else if (msg.type === "UPDATE") {
-		if (!gl) return;
+		// Create Data Texture
+		const restTexture = gl.createTexture();
+		gl.bindTexture(gl.TEXTURE_2D, restTexture);
 
-		// Update your simulation state with new mouse/scroll data
-		// e.g., updateUniforms(msg.mouse);
+		// IMPORTANT: WebGL expects a buffer big enough for Width * Height.
+		// If wordCount < 64*64, the buffer might be too small.
+		// We pad it to fit the texture dimensions.
+		const textureSize = msg.width * msg.height * 4; // 4 floats per pixel
+		const fullBuffer = new Float32Array(textureSize);
+		fullBuffer.set(new Float32Array(msg.restPosBuffer)); // Copy data in
+
+		gl.texImage2D(
+			gl.TEXTURE_2D,
+			0,
+			gl.RGBA32F,
+			msg.width, // Use dynamic width
+			msg.height, // Use dynamic height
+			0,
+			gl.RGBA,
+			gl.FLOAT,
+			fullBuffer // Use the padded buffer
+		);
+
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+
+		console.log("Worker: Physics Ready. Words:", msg.wordCount);
 	}
 };
-
-function renderLoop(time: number) {
-	// This loop runs entirely on the worker thread.
-	// Perform simulation steps...
-
-	requestAnimationFrame(renderLoop);
-}
