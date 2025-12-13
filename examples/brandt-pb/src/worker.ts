@@ -1,4 +1,5 @@
 import { AttribPool } from "@thi.ng/vector-pools";
+import { exposeGlobal } from "@thi.ng/expose";
 
 // 1. Define the expected message types for type safety
 type InitMessage = {
@@ -42,6 +43,10 @@ self.onmessage = (e) => {
 			);
 		}
 
+		console.log(
+			`Worker: Init Pool. Start: 32, Buffer Size: ${msg.physicsSAB.byteLength}, Words: ${msg.wordCount}`
+		);
+
 		console.log("Worker: GPGPU Context Initialized", {
 			renderer: gl.getParameter(gl.RENDERER),
 			vendor: gl.getParameter(gl.VENDOR),
@@ -54,15 +59,16 @@ self.onmessage = (e) => {
 				buf: msg.physicsSAB,
 				size: msg.physicsSAB.byteLength,
 				align: 16,
+				start: 32,
 				skipInitialization: true, // Critical!
 			},
 			num: msg.wordCount,
 			// Match main thread Schema EXACTLY
 			attribs: {
-				wght: { type: "f32", byteOffset: 0, size: 1, default: 300 },
-				wdth: { type: "f32", byteOffset: 4, size: 1, default: 100 },
-				ital: { type: "f32", byteOffset: 8, size: 1, default: 0 },
-				cont: { type: "f32", byteOffset: 12, size: 1, default: 0 },
+				wght: { type: "f32", size: 1, byteOffset: 0, default: 300 },
+				wdth: { type: "f32", size: 1, byteOffset: 4, default: 100 },
+				ital: { type: "f32", size: 1, byteOffset: 8, default: 0 },
+				cont: { type: "f32", size: 1, byteOffset: 12, default: 0 },
 			},
 		});
 
@@ -75,7 +81,7 @@ self.onmessage = (e) => {
 		// We pad it to fit the texture dimensions.
 		const textureSize = msg.width * msg.height * 4; // 4 floats per pixel
 		const fullBuffer = new Float32Array(textureSize);
-		fullBuffer.set(new Float32Array(msg.restPosBuffer)); // Copy data in
+		fullBuffer.set(new Float32Array(msg.restPosBuffer, 4)); // Copy data in
 
 		gl.texImage2D(
 			gl.TEXTURE_2D,

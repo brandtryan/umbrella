@@ -19,6 +19,7 @@
 		"@thi.ng/api": "workspace:^",
 		"@thi.ng/atom": "workspace:^",
 		"@thi.ng/equiv": "workspace:^",
+		"@thi.ng/expose": "workspace:^",
 		"@thi.ng/hiccup-html": "workspace:^",
 		"@thi.ng/malloc": "workspace:^",
 		"@thi.ng/rdom": "workspace:^",

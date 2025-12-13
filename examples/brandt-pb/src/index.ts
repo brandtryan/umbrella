@@ -1,9 +1,9 @@
+import { exposeGlobal } from "@thi.ng/expose";
 import { div } from "@thi.ng/hiccup-html";
 import { $compile } from "@thi.ng/rdom";
-import { stream, tunnel } from "@thi.ng/rstream";
+import { postWorker, stream, tunnel } from "@thi.ng/rstream";
 import { AttribPool } from "@thi.ng/vector-pools";
 import * as Content from "./html";
-
 /********************
  * CONFIGURATION
  *********************/
@@ -54,10 +54,14 @@ const REST_POS = new AttribPool({
 	num: MAX_WORDS,
 	mem: { size: MAX_WORDS * 16 + 256 }, // 16 bytes per word
 	attribs: {
+		// x: { type: "f32", size: 1, byteOffset: 0 },
+		// y: { type: "f32", size: 1, byteOffset: 4 },
+		// page: { type: "f32", size: 1, byteOffset: 8 },
+		// id: { type: "f32", size: 1, byteOffset: 12 },
 		x: { type: "f32", size: 1, byteOffset: 0 },
 		y: { type: "f32", size: 1, byteOffset: 4 },
-		page: { type: "f32", size: 1, byteOffset: 8 },
-		id: { type: "f32", size: 1, byteOffset: 12 },
+		page: { type: "i8", size: 1, byteOffset: 8 },
+		id: { type: "i8", size: 1, byteOffset: 12 },
 	},
 });
 
@@ -81,7 +85,7 @@ function updateLayout() {
 		y[i] = absTop % window.innerHeight; // Local Y
 		page[i] = Math.floor(absTop / window.innerWidth); // Page Index
 		id[i] = i; // Store ID for shader use
-		state.domNodes[i] = words[i] as HTMLElement;
+		// state.domNodes[i] = words[i] as HTMLElement;
 	}
 
 	console.log(`Layout Updated
@@ -101,7 +105,7 @@ const POOL_START = 32;
 // 4 fields (wght, wdth, ital, cont) * 4 bytes = 16 bytes per word
 const stride = 16;
 const poolSize = state.wordCount * stride;
-const totalBytes = HEADER_SIZE + poolSize + 256; // +256 padding for safety
+const totalBytes = HEADER_SIZE + poolSize + 1024; // +256 padding for safety
 
 // SHARED BRAIN
 const SAB = new SharedArrayBuffer(totalBytes);
@@ -121,10 +125,10 @@ const PHYSICS_STATE = new AttribPool({
 	},
 	num: state.wordCount,
 	attribs: {
-		wght: { type: "f32", byteOffset: 0, size: 1, default: 300 },
-		wdth: { type: "f32", byteOffset: 4, size: 1, default: 100 },
-		ital: { type: "f32", byteOffset: 8, size: 1, default: 0 },
-		cont: { type: "f32", byteOffset: 12, size: 1, default: 0 },
+		wght: { type: "f32", size: 1, byteOffset: 0, default: 300 },
+		wdth: { type: "f32", size: 1, byteOffset: 4, default: 100 },
+		ital: { type: "f32", size: 1, byteOffset: 8, default: 0 },
+		cont: { type: "f32", size: 1, byteOffset: 12, default: 0 },
 	},
 });
 
@@ -172,14 +176,10 @@ canvas.height = DATA_DIM;
 canvas.style.display = "none";
 const offscreen = canvas.transferControlToOffscreen();
 
+// const worker = postWorker("./worker.ts");
 const worker = new Worker(new URL("./worker.ts", import.meta.url), {
 	type: "module",
 });
-
-// THE SILENCE BREAKER
-worker.onerror = (err) => {
-	console.error("Worker Crashed:", err.message, err.filename, err.lineno);
-};
 
 // 1. Configure the Tunnel correctly
 const simulation = tunnel({
@@ -192,20 +192,23 @@ const simulation = tunnel({
 		[msg.canvas, msg.restPosBuffer].filter((x) => !!x),
 });
 
+// THE SILENCE BREAKER
+worker.onerror = (err) => {
+	console.error("Worker Crashed:", err.message, err.filename, err.lineno);
+};
+
 const workerInput = stream();
 workerInput.subscribe(simulation);
-console.log("REST_POS:", REST_POS);
-console.log("REST_POS.attribs:", REST_POS?.attribs); // Use optional chaining for safety
-console.log("REST_POS.attribs.buf:", REST_POS?.attribs?.buf); // Use optional chaining for safety
+// console.log("REST_POS.pool.buf:", REST_POS?.pool?.buf); // Use optional chaining for safety
 // 2. Send the Full Payload
 workerInput.next({
 	type: "INIT",
 	canvas: offscreen,
 	// The Shared Brain (Reference)
-	physicsSAB: SAB,
+	// physicsSAB: SAB,
+	physicsSAB: PHYSICS_STATE.pool.buf,
 	// The Static Map (Transfer) - accessing the underlying buffer
-	restPosBuffer: REST_POS,
-	// restPosBuffer: REST_POS.pool.buf.slice(0),
+	restPosBuffer: REST_POS.pool.buf.slice(0),
 	// Metadata
 	wordCount: state.wordCount,
 	width: DATA_DIM,
