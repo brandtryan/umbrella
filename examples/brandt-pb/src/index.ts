@@ -1,7 +1,6 @@
-import { exposeGlobal } from "@thi.ng/expose";
+import { dateTime } from "@thi.ng/date";
 import { div } from "@thi.ng/hiccup-html";
 import { $compile } from "@thi.ng/rdom";
-import { postWorker, stream, tunnel } from "@thi.ng/rstream";
 import { AttribPool } from "@thi.ng/vector-pools";
 import * as Content from "./html";
 /********************
@@ -9,6 +8,7 @@ import * as Content from "./html";
  *********************/
 const DATA_DIM = 64;
 const MAX_WORDS = DATA_DIM * DATA_DIM;
+let WORD_COUNT: number;
 
 /********************
  * DOM SETUP
@@ -30,100 +30,47 @@ await document.fonts.ready;
  * STATE
  *********************/
 const state = {
-	stress: 0.0,
-	lastActionTime: Date.now(),
+	// new Atom?
+	urge_threshold: 0.0,
+	curr_stress: 0.0,
+	curr_urge: 0.0,
+	last_action_time: dateTime(),
 	vw: window.innerWidth,
 	vh: window.innerHeight,
 	scrollY: window.scrollY,
-	wordCount: 3297,
-	// domNodes: [] as HTMLElement[],
-	domNodes: [] as HTMLElement[],
+	curr_page: scrollY / window.innerHeight,
+	dom_nodes: [] as HTMLElement[],
+	node_y_pos: new Float32Array(MAX_WORDS),
+	word_count: 0,
 };
 
 /********************
- * WORD ANCHOR POSITIONS
+ * WORD DOM POSITIONS
  *********************/
 const words = document.querySelectorAll(".word");
-const count = words.length;
-state.domNodes = Array.from(words) as HTMLElement[];
-state.wordCount = count;
+state.dom_nodes = Array.from(words) as HTMLElement[];
+state.word_count = words.length;
 
-// 1. Create Pool (Interleaved x, y, page, id)
-// We use a normal ArrayBuffer (not Shared) because we transfer it.
-const REST_POS = new AttribPool({
-	num: MAX_WORDS,
-	mem: { size: MAX_WORDS * 16 + 256 }, // 16 bytes per word
-	attribs: {
-		// x: { type: "f32", size: 1, byteOffset: 0 },
-		// y: { type: "f32", size: 1, byteOffset: 4 },
-		// page: { type: "f32", size: 1, byteOffset: 8 },
-		// id: { type: "f32", size: 1, byteOffset: 12 },
-		x: { type: "f32", size: 1, byteOffset: 0 },
-		y: { type: "f32", size: 1, byteOffset: 4 },
-		page: { type: "i8", size: 1, byteOffset: 8 },
-		id: { type: "i8", size: 1, byteOffset: 12 },
-	},
-});
-
-function updateLayout() {
-	const binding = document.getElementById("book");
-	const offsetX = binding?.getBoundingClientRect()!.left || 0;
-
-	// 2. Accessors (Strided views)
-	const x = REST_POS.attribs.x;
-	const y = REST_POS.attribs.y;
-	const page = REST_POS.attribs.page;
-	const id = REST_POS.attribs.id;
-
-	// 3. Populate
-	for (let i = 0; i < count; i++) {
-		const rect = words[i].getBoundingClientRect();
-		const absTop = rect.top + window.scrollY;
-
-		// Write to Strided views
-		x[i] = rect.left - offsetX + rect.width * 0.5;
-		y[i] = absTop % window.innerHeight; // Local Y
-		page[i] = Math.floor(absTop / window.innerWidth); // Page Index
-		id[i] = i; // Store ID for shader use
-		// state.domNodes[i] = words[i] as HTMLElement;
-	}
-
-	console.log(`Layout Updated
-	Baked ${count} words.`);
-}
-
-updateLayout();
 /********************
  * MEMORY CONFIGURATION
  *********************/
-// 1. Define Header Specs
-// Byte 0-3: Stress (Float32)
-// Byte 4-7: Scroll/Page (Float32)
-// Byte 8-31: Reserved for future use
-const HEADER_SIZE = 32;
-const POOL_START = 32;
-// 4 fields (wght, wdth, ital, cont) * 4 bytes = 16 bytes per word
-const stride = 16;
-const poolSize = state.wordCount * stride;
-const totalBytes = HEADER_SIZE + poolSize + 1024; // +256 padding for safety
+// The GPU writes 4 floats (16 bytes) per word tightly packed.
+// We must match this stride exactly.
+const POOL_START = 0; // Simplify: Start at 0 to avoid offset headaches for now
+const STRIDE = 4 * 4; // 16 Bytes (4 floats * 4 bytes)
+const SAB = new SharedArrayBuffer(MAX_WORDS * STRIDE);
 
-// SHARED BRAIN
-const SAB = new SharedArrayBuffer(totalBytes);
-
-// 4. Create the Views
-// A. Global State View (The Header) - Float32 view of first 32 bytes
-const globalStateView = new Float32Array(SAB, 0, 8);
-
-// B. Physics Data Pool (The Body)
+// The Pool handles the Shared Buffer
+// Structure: [WGHT, WDTH, ITAL, CONT,   WGHT, WDTH...]
 const PHYSICS_STATE = new AttribPool({
 	mem: {
 		buf: SAB,
-		start: POOL_START, // Important: Don't touch the header bytes!
+		start: POOL_START,
 		size: SAB.byteLength,
-		align: 16, // Optimize for SIMD/WebGL alignment
-		skipInitialization: false, // You are the Creator
+		// CRITICAL: Type 'f32' implies 4 bytes.
+		// We ensure stride is effectively 4 floats.
 	},
-	num: state.wordCount,
+	num: state.word_count,
 	attribs: {
 		wght: { type: "f32", size: 1, byteOffset: 0, default: 300 },
 		wdth: { type: "f32", size: 1, byteOffset: 4, default: 100 },
@@ -131,86 +78,128 @@ const PHYSICS_STATE = new AttribPool({
 		cont: { type: "f32", size: 1, byteOffset: 12, default: 0 },
 	},
 });
-
 /********************
- * UPDATE LOOPS
+ * 1. LAYOUT & DATA PACKING
  *********************/
-// 1. Input Loop (Writes to Header)
-// Run this whenever inputs change (scroll, resize, etc.)
-function updateGlobals() {
-	// Write directly to shared memory. Worker sees this instantly.
-	globalStateView[0] = state.stress;
-	globalStateView[1] = state.scrollY;
-}
-function initInputs() {
-	window.addEventListener(
-		"scroll",
-		() => {
-			state.scrollY = window.scrollY;
-			state.stress = Math.max(0, state.stress - 0.05);
-			state.lastActionTime = Date.now();
-			updateGlobals(); // <-- update the shared brain!
-		},
-		{ passive: true }
-	);
+// We need a specific, dense buffer to send to the GPU Texture.
+// Structure: [x, y, page, id,  x, y, page, id...]
+const gpuInputBuffer = new Float32Array(MAX_WORDS * 4);
 
-	let timer: any;
-	window.addEventListener("resize", () => {
-		clearTimeout(timer);
-		timer = setTimeout(() => {
-			state.vh = window.innerHeight;
-			state.vw = window.innerWidth;
-			updateLayout();
-		}, 200);
-	});
+function updateLayout() {
+	const binding = document.getElementById("book");
+	const offsetX = binding?.getBoundingClientRect()!.left || 0;
+
+	for (let i = 0; i < state.word_count; i++) {
+		const rect = words[i].getBoundingClientRect();
+		const absTop = rect.top + window.scrollY; // "Fixed Anchor" Y
+		const absX = rect.left - offsetX + rect.width * 0.5; // "Fixed Anchor" X
+		const page = Math.floor(absTop / window.innerHeight);
+
+		// Pack for GPU
+		const idx = i * 4;
+		gpuInputBuffer[idx + 0] = absX;
+		gpuInputBuffer[idx + 1] = absTop;
+		gpuInputBuffer[idx + 2] = page;
+		gpuInputBuffer[idx + 3] = i; // Word ID
+
+		state.dom_nodes[i] = words[i] as HTMLElement;
+		// Cache Y pos for the render loop
+		state.node_y_pos[i] = absTop;
+	}
+	console.log(`Layout Updated. Words: ${state.word_count}`);
 }
 
-initInputs();
+updateLayout();
 
 /********************
- * CREATE OFFSCREEN CANVAS AND DISPATCH WORKER
+ * 2. WORKER INIT
  *********************/
 const canvas = document.createElement("canvas");
 canvas.width = DATA_DIM;
 canvas.height = DATA_DIM;
-canvas.style.display = "none";
 const offscreen = canvas.transferControlToOffscreen();
 
-// const worker = postWorker("./worker.ts");
-const worker = new Worker(new URL("./worker.ts", import.meta.url), {
+const worker = new Worker(new URL("./physics.ts", import.meta.url), {
 	type: "module",
 });
 
-// 1. Configure the Tunnel correctly
-const simulation = tunnel({
-	src: worker,
-	interrupt: false,
-	// CRITICAL: We must list ALL transferables here.
-	// We transfer the Canvas and the Rest Position Buffer (we don't need it on main anymore).
-	// We DO NOT transfer the SAB (it's shared).
-	transferables: (msg: any) =>
-		[msg.canvas, msg.restPosBuffer].filter((x) => !!x),
-});
+worker.postMessage(
+	{
+		type: "INIT",
+		canvas: offscreen,
+		physicsSAB: SAB,
+		restPosBuffer: gpuInputBuffer.buffer, // Input (Read-only by Worker)
+		wordCount: state.word_count,
+		width: DATA_DIM,
+		height: DATA_DIM,
+	},
+	[offscreen, gpuInputBuffer.buffer] // Transfer input buffer ownership
+);
 
-// THE SILENCE BREAKER
-worker.onerror = (err) => {
-	console.error("Worker Crashed:", err.message, err.filename, err.lineno);
-};
+/********************
+ * 3. RENDER LOOP (Main Thread)
+ *********************/
+const wght = PHYSICS_STATE.attribs.wght;
+const wdth = PHYSICS_STATE.attribs.wdth;
+const ital = PHYSICS_STATE.attribs.ital;
+const cont = PHYSICS_STATE.attribs.cont;
 
-const workerInput = stream();
-workerInput.subscribe(simulation);
-// console.log("REST_POS.pool.buf:", REST_POS?.pool?.buf); // Use optional chaining for safety
-// 2. Send the Full Payload
-workerInput.next({
-	type: "INIT",
-	canvas: offscreen,
-	// The Shared Brain (Reference)
-	// physicsSAB: SAB,
-	physicsSAB: PHYSICS_STATE.pool.buf,
-	// The Static Map (Transfer) - accessing the underlying buffer
-	restPosBuffer: REST_POS.pool.buf.slice(0),
-	// Metadata
-	wordCount: state.wordCount,
-	width: DATA_DIM,
-	height: DATA_DIM,
+function renderLoop() {
+	// 1. Update Worker Globals (Stress, Active Page)
+	// In a real app, use rstream here to throttle this
+	const scrollY = window.scrollY;
+	const viewHeight = window.innerHeight;
+	const currentPage = scrollY / viewHeight;
+
+	worker.postMessage({
+		type: "UPDATE_GLOBALS",
+		stress: state.curr_stress,
+		activePage: currentPage,
+	});
+
+	// Define a buffer so words don't pop in/out right at edge
+	const buffer = 200;
+	const viewTop = scrollY - buffer;
+	const viewBottom = scrollY + viewHeight + buffer;
+
+	// 2. Apply Physics from SAB to DOM
+	for (let i = 0; i < state.word_count; i++) {
+		// FAST CHECK: Is this word visible?
+		const y = state.node_y_pos[i];
+		if (y < viewTop || y > viewBottom) continue;
+
+		// Read directly from Shared Buffer
+		// The worker updated these bytes 1 frame ago
+		const w = wght[i];
+		const wd = wdth[i];
+		const it = ital[i];
+		const co = cont[i];
+
+		// Apply
+		// Use attributeStyleMap if available (faster), else fallback
+		const node = state.dom_nodes[i];
+
+        // Optimization: Check if style actually changed? 
+        // (Optional, but "setting" style is expensive even if value is same)
+        // For now, the view culling alone should fix the violations.
+        
+        node.style.fontVariationSettings = `'wght' ${w}, 'wdth' ${wd}, 'ital' ${it}`;
+    }
+
+    requestAnimationFrame(renderLoop);
+}
+
+renderLoop();
+
+/********************
+ * 4. EVENTS
+ *********************/
+// Simple test trigger
+window.addEventListener("scroll", () => {
+	state.curr_stress = Math.min(1.0, state.curr_stress + 0.05);
 });
+// Stress Decay
+setInterval(() => {
+	state.curr_stress *= 0.95;
+	if (state.curr_stress < 0.01) state.curr_stress = 0;
+}, 100);

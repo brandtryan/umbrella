@@ -4,9 +4,9 @@ import { div, section, span } from "@thi.ng/hiccup-html";
 const word = (text: string) =>
 	span(
 		{
+			active: false,
 			class: "word",
 		},
-
 		text + " " // xtra space for layout
 	);
 
