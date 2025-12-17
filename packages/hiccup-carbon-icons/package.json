@@ -42,8 +42,8 @@
 	},
 	"devDependencies": {
 		"@thi.ng/hiccup": "^5.3.33",
-		"esbuild": "^0.27.0",
-		"typedoc": "^0.28.14",
+		"esbuild": "^0.27.2",
+		"typedoc": "^0.28.15",
 		"typescript": "^5.9.3"
 	},
 	"keywords": [
