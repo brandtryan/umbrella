@@ -60,59 +60,86 @@ interface PhysicsUniforms {
 // -----------------------------------------------------------------------------
 // 2. SHADER LOGIC
 // -----------------------------------------------------------------------------
-const additiveNoise = (uv: Vec2Sym, time: FloatSym) =>
-	additive("vec2", snoise2, 4)(add(uv, time), vec2(2), float(0.5));
+// const additiveNoise = (uv: Vec2Sym, time: FloatSym) =>
+// 	additive("vec2", snoise2, 4)(add(uv, time), vec2(2), float(0.5));
 //
+
+// SAFE Noise  using symbols:
+const safeNoise = (p: any) => snoise2(sym(p));
+
 const physicsShader = (w: number, h: number): ShaderSpec => ({
 	vs: (gl: any, _: any, attribs: any) => [
-		defMain(() => {
-			return [assign(gl.gl_Position, vec4(attribs.position, 0, 1))];
-		}),
+		defMain(() => [assign(gl.gl_Position, vec4(attribs.position, 0, 1))]),
 	],
 	fs: (gl: any, unis: any, _: any, outs: any) => [
 		defMain(() => {
-			// 1. Explicitly create a symbol for UV. The second argument to sym() is optional.
-			let uv = sym(
-				"vec2",
-				div($xy(gl.gl_FragCoord), vec2(float(w), float(h)))
-			);
-			// 2. Explicitly create a symbol for the texture read (was _sfe)
+			// 1. UV
+			let uv = sym(div($xy(gl.gl_FragCoord), vec2(float(w), float(h))));
+
+			// 2. Texture Read
 			let restData = sym(texture(unis.u_restPos, uv));
+			let pageIndex = $z(restData);
 
-			// Activity check
-			let dist = abs(sub($z(restData), unis.u_activePage));
-			let isActive = smoothstep(float(0.8), float(0.2), sym(dist));
+			// 3. Activity Check
+			// PROBLEM WAS HERE: 'dist' was being inlined but failing.
+			// We make it a symbol now.
+			let dist = sym(abs(sub(pageIndex, unis.u_activePage)));
 
-			// Physics Calculations
-			// 3. Explicitly create a symbol for the result (was _sff)
-			let noiseVal = fit1101(additiveNoise(uv, unis.u_time));
-			// We MUST cast noiseVal to vec4 or vec3 if we use it in mix/mul with vectors,
-			// but here it looks like we are using it as a float scalar, which is fine.
+			// isActive uses 'dist', so 'dist' must be declared before this line runs
+			let isActive = smoothstep(float(0.8), float(0.2), dist);
 
-			// tic is used multiple times, so we sym() it too
-			let tic = sym<"float">(
-				mul(noiseVal, mul(unis.u_stress as Term<"float">, isActive))
-			);
+			// 4. Noise Logic
+			let noiseVal: any = sym(float(0.0));
+			let amp: any = sym(float(0.5));
+			let nPos: any = sym(add(uv, unis.u_time));
+
+			// Octave 1
+			assign(noiseVal, add(noiseVal, mul(safeNoise(nPos), amp)));
+			assign(nPos, add(nPos, vec2(2.0)));
+			assign(amp, mul(amp, float(0.5)));
+
+			// Octave 2
+			assign(noiseVal, add(noiseVal, mul(safeNoise(nPos), amp)));
+			assign(nPos, add(nPos, vec2(2.0)));
+			assign(amp, mul(amp, float(0.5)));
+
+			// Octave 3
+			assign(noiseVal, add(noiseVal, mul(safeNoise(nPos), amp)));
+			assign(nPos, add(nPos, vec2(2.0)));
+			assign(amp, mul(amp, float(0.5)));
+
+			// Octave 4
+			assign(noiseVal, add(noiseVal, mul(safeNoise(nPos), amp)));
+
+			let normNoise = fit1101(noiseVal as any);
+
+			// 5. Force Calculation
+			// uses isActive -> uses dist
+			let tic = sym(mul(normNoise, mul(unis.u_stress, isActive)));
 
 			return [
-				// 4. IMPORTANT: We must "declare" our symbols here
+				// DECLARATION ORDER MATTERS:
 				uv,
+				restData,
+				dist, // <--- NEW: Explicitly declare dist
+				noiseVal,
+				amp,
+				nPos,
 				tic,
 
-				// 5. Now we can use them
 				assign(
 					outs.fragColor,
 					vec4(
-						add(float(300), mul(tic, float(400))), // wght
-						mix(float(100), float(85), tic), // wdth
-						mul(tic, float(12)), // ital
-						float(0) // cont
+						add(float(300), mul(tic, float(400))),
+						mix(float(100), float(85), tic),
+						mul(tic, float(12)),
+						float(0)
 					)
 				),
 			];
 		}),
 	],
-	attribs: { position: "vec2" },
+	attribs: { position: "vec2" } as const,
 	uniforms: {
 		u_restPos: "sampler2D",
 		u_time: "float",
@@ -120,13 +147,13 @@ const physicsShader = (w: number, h: number): ShaderSpec => ({
 		u_activePage: "float",
 	},
 });
-
 // -----------------------------------------------------------------------------
 // 3. RUNTIME
 // -----------------------------------------------------------------------------
 let gl: WebGL2RenderingContext;
 let model: ModelSpec;
 let sabView: Float32Array;
+let fbo: WebGLFramebuffer;
 let state = { stress: 0, activePage: 0 };
 let width: number, height: number;
 
@@ -153,13 +180,14 @@ function init(msg: InitMessage) {
 		return;
 	}
 
-	sabView = new Float32Array(msg.physicsSAB, 32);
+	sabView = new Float32Array(msg.physicsSAB);
 
 	const texData = new Float32Array(width * height * 4);
 	texData.set(new Float32Array(msg.restPosBuffer));
 
-	const tex = gl.createTexture();
-	gl.bindTexture(gl.TEXTURE_2D, tex);
+	const inputTex = gl.createTexture();
+	gl.activeTexture(gl.TEXTURE0); // Bind to unit 0
+	gl.bindTexture(gl.TEXTURE_2D, inputTex);
 	gl.texImage2D(
 		gl.TEXTURE_2D,
 		0,
@@ -174,11 +202,51 @@ function init(msg: InitMessage) {
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 
-	model = compileModel(gl, {
-		...defQuadModel({ uv: false }),
-		shader: defShader(gl, physicsShader(width, height)) as any,
-		uniforms: {},
-	});
+	// 3. OUTPUT TEXTURE & FBO
+	// We need a place to render the results (wght, wdth, ital, cont)
+	// so we can read them back as floats.
+	const outputTex = gl.createTexture();
+	gl.activeTexture(gl.TEXTURE1); // Temp bind to configure
+	gl.bindTexture(gl.TEXTURE_2D, outputTex);
+	// null = allocate memory but don't fill it yet
+	gl.texImage2D(
+		gl.TEXTURE_2D,
+		0,
+		gl.RGBA32F,
+		width,
+		height,
+		0,
+		gl.RGBA,
+		gl.FLOAT,
+		null
+	);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+
+	// Create the Framebuffer
+	fbo = gl.createFramebuffer()!;
+	gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
+	// Attach the output texture to the "Color 0" slot of the FBO
+	gl.framebufferTexture2D(
+		gl.FRAMEBUFFER,
+		gl.COLOR_ATTACHMENT0,
+		gl.TEXTURE_2D,
+		outputTex,
+		0
+	);
+
+	// Check status
+	if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) {
+		console.error("FBO Incomplete");
+	}
+
+	// Unbind FBO (go back to screen) for safety, though we'll rebind in loop
+	gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+
+	// 4. Model Setup
+	model = defQuadModel({ uv: false });
+	model.shader = defShader(gl, physicsShader(width, height));
+	compileModel(gl, model);
 
 	requestAnimationFrame(loop);
 }
@@ -186,17 +254,26 @@ function init(msg: InitMessage) {
 function loop(t: number) {
 	if (!gl) return;
 
+	// 1. Update Uniforms
+	// Important: Tell shader that u_restPos is on Texture Unit 0
 	model.uniforms!.u_restPos = 0;
 	model.uniforms!.u_time = t * 0.001;
 	model.uniforms!.u_stress = state.stress;
 	model.uniforms!.u_activePage = state.activePage;
 
+	// 2. Bind the OFFSCREEN FBO
+	// This redirects drawing from the canvas to our Float Texture
+	gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
 	gl.viewport(0, 0, width, height);
+
+	// 3. Draw
 	draw(model);
+
+	// 4. Read Pixels
+	// Now valid because the bound framebuffer (fbo) is RGBA32F (Float)
 	gl.readPixels(0, 0, width, height, gl.RGBA, gl.FLOAT, sabView);
 
-	// Send heartbeat to main thread
-	// Send time 't' just to prove its changing
+	// Heartbeat
 	self.postMessage({ type: "TICK", time: t });
 
 	requestAnimationFrame(loop);

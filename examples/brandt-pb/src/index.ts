@@ -252,30 +252,29 @@ btn.onclick = () => {
 stats.appendChild(document.createElement("div")).id = "stats-text";
 stats.appendChild(btn);
 
+// Track the "previous" values so we can calculate the difference
+let lastMainFrames = 0;
+let lastWorkerFrames = 0;
+
 // 3. Update HUD every second
 setInterval(() => {
-	const now = performance.now();
-	// const delta = now - lastTime;
+	// Calculate how many frames passed in the last 1000ms
+	const currentMainFPS = mainFrames - lastMainFrames;
+	const currentWorkerFPS = workerFrames - lastWorkerFrames;
+
+	// Save current total for the next check
+	lastMainFrames = mainFrames;
+	lastWorkerFrames = workerFrames;
 
 	const text = document.getElementById("stats-text");
 	if (text) {
 		text.innerHTML = `
             <strong>SYSTEM STATUS</strong><br>
             ----------------<br>
-            Main FPS:   ${mainFrames}<br>
-            Worker FPS: ${workerFrames}<br>
+            Main FPS:   ${currentMainFPS}<br>
+            Worker FPS: ${currentWorkerFPS}<br>
             Stress:     ${state.curr_stress.toFixed(2)}<br>
             Words:      ${state.word_count}
         `;
 	}
-
-	// Reset counters
-	// mainFrames = 0;
-	// workerFrames = 0;
-	// lastTime = now;
 }, 1000);
-
-// 4. Hook into Main Loop for FPS counting
-// Modify your existing renderLoop to increment 'mainFrames'
-const originalRenderLoop = renderLoop;
-// (Note: You don't need to redefine renderLoop, just add 'mainFrames++' inside your existing function)
