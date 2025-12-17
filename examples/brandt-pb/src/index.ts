@@ -29,6 +29,10 @@ await document.fonts.ready;
 /********************
  * STATE
  *********************/
+let mainFrames = 0;
+let workerFrames = 0;
+let lastTime = performance.now();
+
 const state = {
 	// new Atom?
 	urge_threshold: 0.0,
@@ -145,6 +149,8 @@ const ital = PHYSICS_STATE.attribs.ital;
 const cont = PHYSICS_STATE.attribs.cont;
 
 function renderLoop() {
+	mainFrames++;
+	workerFrames++;
 	// 1. Update Worker Globals (Stress, Active Page)
 	// In a real app, use rstream here to throttle this
 	const scrollY = window.scrollY;
@@ -179,14 +185,14 @@ function renderLoop() {
 		// Use attributeStyleMap if available (faster), else fallback
 		const node = state.dom_nodes[i];
 
-        // Optimization: Check if style actually changed? 
-        // (Optional, but "setting" style is expensive even if value is same)
-        // For now, the view culling alone should fix the violations.
-        
-        node.style.fontVariationSettings = `'wght' ${w}, 'wdth' ${wd}, 'ital' ${it}`;
-    }
+		// Optimization: Check if style actually changed?
+		// (Optional, but "setting" style is expensive even if value is same)
+		// For now, the view culling alone should fix the violations.
 
-    requestAnimationFrame(renderLoop);
+		node.style.fontVariationSettings = `'wght' ${w}, 'wdth' ${wd}, 'ital' ${it}, 'cont' ${co}`;
+	}
+
+	requestAnimationFrame(renderLoop);
 }
 
 renderLoop();
@@ -203,3 +209,73 @@ setInterval(() => {
 	state.curr_stress *= 0.95;
 	if (state.curr_stress < 0.01) state.curr_stress = 0;
 }, 100);
+
+// =========================================
+// DEBUG / STATS HUD
+// =========================================
+const stats = document.createElement("div");
+Object.assign(stats.style, {
+	position: "fixed",
+	top: "10px",
+	right: "10px",
+	background: "rgba(0, 0, 0, 0.8)",
+	color: "#0f0",
+	fontFamily: "monospace",
+	padding: "10px",
+	zIndex: "9999",
+	pointerEvents: "auto",
+	userSelect: "none",
+});
+document.body.appendChild(stats);
+
+// 1. Listen for Worker Heartbeat
+worker.onmessage = (e) => {
+	if (e.data.type === "TICK") {
+		workerFrames++;
+	}
+};
+
+// 2. Stress Test Button
+const btn = document.createElement("button");
+btn.innerText = "💥 ADD STRESS 💥";
+Object.assign(btn.style, {
+	marginTop: "10px",
+	padding: "5px 10px",
+	background: "#333",
+	color: "#fff",
+	border: "1px solid #555",
+	cursor: "pointer",
+});
+btn.onclick = () => {
+	state.curr_stress = 1.0; // Max stress instantly
+};
+stats.appendChild(document.createElement("div")).id = "stats-text";
+stats.appendChild(btn);
+
+// 3. Update HUD every second
+setInterval(() => {
+	const now = performance.now();
+	// const delta = now - lastTime;
+
+	const text = document.getElementById("stats-text");
+	if (text) {
+		text.innerHTML = `
+            <strong>SYSTEM STATUS</strong><br>
+            ----------------<br>
+            Main FPS:   ${mainFrames}<br>
+            Worker FPS: ${workerFrames}<br>
+            Stress:     ${state.curr_stress.toFixed(2)}<br>
+            Words:      ${state.word_count}
+        `;
+	}
+
+	// Reset counters
+	// mainFrames = 0;
+	// workerFrames = 0;
+	// lastTime = now;
+}, 1000);
+
+// 4. Hook into Main Loop for FPS counting
+// Modify your existing renderLoop to increment 'mainFrames'
+const originalRenderLoop = renderLoop;
+// (Note: You don't need to redefine renderLoop, just add 'mainFrames++' inside your existing function)

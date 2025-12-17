@@ -1,16 +1,10 @@
 import {
-	type Lit,
-	type Term,
-	type Type,
-	type Vec2Sym,
-} from "@thi.ng/shader-ast";
-import {
 	compileModel,
 	defQuadModel,
 	defShader,
 	draw,
 	type ModelSpec,
-	type GLSL,
+	type ShaderSpec,
 } from "@thi.ng/webgl";
 import {
 	assign,
@@ -27,8 +21,11 @@ import {
 	smoothstep,
 	mix,
 	sym, // <--- IMPORTANT: Added sym import
-	$z, // Added $z import
+	$z,
 	type FloatSym,
+	type Term,
+	type Vec2Sym,
+	$xy,
 } from "@thi.ng/shader-ast";
 import { additive, fit1101, snoise2 } from "@thi.ng/shader-ast-stdlib";
 
@@ -65,20 +62,20 @@ interface PhysicsUniforms {
 // -----------------------------------------------------------------------------
 const additiveNoise = (uv: Vec2Sym, time: FloatSym) =>
 	additive("vec2", snoise2, 4)(add(uv, time), vec2(2), float(0.5));
-
-const physicsShader = (w: number, h: number) => ({
-	vs: (gl: GLSL, _: unknown, attribs: any) => [
-		//@ts-ignore
+//
+const physicsShader = (w: number, h: number): ShaderSpec => ({
+	vs: (gl: any, _: any, attribs: any) => [
 		defMain(() => {
-			assign(gl.gl_Position<"any">, vec4(attribs.position, 0, 1));
+			return [assign(gl.gl_Position, vec4(attribs.position, 0, 1))];
 		}),
 	],
-	fs: (gl: GLSL, unis: PhysicsUniforms, _: unknown, outs: any) => [
+	fs: (gl: any, unis: any, _: any, outs: any) => [
 		defMain(() => {
-			// 1. Explicitly create a symbol for UV
-			//@ts-ignore
-			let uv: Vec2Sym = sym(div(gl.gl_FragCoord.xy, vec2(w, h)));
-
+			// 1. Explicitly create a symbol for UV. The second argument to sym() is optional.
+			let uv = sym(
+				"vec2",
+				div($xy(gl.gl_FragCoord), vec2(float(w), float(h)))
+			);
 			// 2. Explicitly create a symbol for the texture read (was _sfe)
 			let restData = sym(texture(unis.u_restPos, uv));
 
@@ -93,7 +90,7 @@ const physicsShader = (w: number, h: number) => ({
 			// but here it looks like we are using it as a float scalar, which is fine.
 
 			// tic is used multiple times, so we sym() it too
-			let tic = sym(
+			let tic = sym<"float">(
 				mul(noiseVal, mul(unis.u_stress as Term<"float">, isActive))
 			);
 
@@ -179,7 +176,7 @@ function init(msg: InitMessage) {
 
 	model = compileModel(gl, {
 		...defQuadModel({ uv: false }),
-		shader: defShader(gl, <any>physicsShader(width, height)),
+		shader: defShader(gl, physicsShader(width, height)) as any,
 		uniforms: {},
 	});
 
@@ -196,8 +193,11 @@ function loop(t: number) {
 
 	gl.viewport(0, 0, width, height);
 	draw(model);
-
 	gl.readPixels(0, 0, width, height, gl.RGBA, gl.FLOAT, sabView);
+
+	// Send heartbeat to main thread
+	// Send time 't' just to prove its changing
+	self.postMessage({ type: "TICK", time: t });
 
 	requestAnimationFrame(loop);
 }
