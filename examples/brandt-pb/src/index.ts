@@ -3,6 +3,9 @@ import { div } from "@thi.ng/hiccup-html";
 import { $compile } from "@thi.ng/rdom";
 import { AttribPool } from "@thi.ng/vector-pools";
 import * as Content from "./html";
+import { getPageCounts } from "./html";
+import { initNervousSystem } from "./nervous-system";
+
 /********************
  * CONFIGURATION
  *********************/
@@ -20,6 +23,9 @@ const sortedPages = Object.keys(Content)
 			parseInt(a.replace("page", "")) - parseInt(b.replace("page", ""))
 	)
 	.map((key) => Content[key as keyof typeof Content]);
+
+const pageWordCounts: number[] = getPageCounts(sortedPages);
+console.log("Word Counts per Page:", pageWordCounts);
 
 const book = div({ id: "pages" }, ...sortedPages);
 
@@ -82,6 +88,7 @@ const PHYSICS_STATE = new AttribPool({
 		cont: { type: "f32", size: 1, byteOffset: 12, default: 0 },
 	},
 });
+
 /********************
  * 1. LAYOUT & DATA PACKING
  *********************/
@@ -139,6 +146,8 @@ worker.postMessage(
 	},
 	[offscreen, gpuInputBuffer.buffer] // Transfer input buffer ownership
 );
+
+initNervousSystem(worker, pageWordCounts);
 
 /********************
  * 3. RENDER LOOP (Main Thread)
@@ -201,9 +210,9 @@ renderLoop();
  * 4. EVENTS
  *********************/
 // Simple test trigger
-window.addEventListener("scroll", () => {
-	state.curr_stress = Math.min(1.0, state.curr_stress + 0.05);
-});
+// window.addEventListener("scroll", () => {
+// 	state.curr_stress = Math.min(1.0, state.curr_stress + 0.05);
+// });
 // Stress Decay
 setInterval(() => {
 	state.curr_stress *= 0.95;

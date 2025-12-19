@@ -11,6 +11,7 @@ const word = (text: string) =>
 	);
 
 // 2. Page Structure
+
 export const page1 = section(
 	{ class: "page" },
 	div(
@@ -4599,3 +4600,18 @@ export const page42 = section(
 	),
 	div({ class: "line" }, word("the"), word("end"), word("of"), word("it."))
 );
+
+export function countWordsInPage(node: any): number {
+	if (!Array.isArray(node)) return 0;
+	const [tag, attrs, ...children] = node;
+	let count = tag === "span" && attrs?.class === "word" ? 1 : 0;
+	for (const child of children) {
+		count += countWordsInPage(child);
+	}
+
+	return count;
+}
+
+export function getPageCounts(pages: any[]): number[] {
+	return pages.map(countWordsInPage);
+}

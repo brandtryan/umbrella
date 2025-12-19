@@ -7409,12 +7409,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bun-types@npm:1.3.4":
-  version: 1.3.4
-  resolution: "bun-types@npm:1.3.4"
+"bun-types@npm:1.3.5":
+  version: 1.3.5
+  resolution: "bun-types@npm:1.3.5"
   dependencies:
     "@types/node": "npm:*"
-  checksum: 10/5de8591f38c7b7bc2c58e0b2710df6753397a048621ebe86777fc60e868257544be31ad8e0aa1777c01911f93cb98abcb228c5e78aa08ed2bc316499cbe16139
+  checksum: 10/a5dd31ef705749fbe5d010c88dc3d08d6014705cf1cbea89eceef307f5c2fb3db6e75135a2ef676cdb479a4234af5022e551cc216767605feb5fbcd797261ae1
   languageName: node
   linkType: hard
 
@@ -8479,7 +8479,7 @@ __metadata:
     "@thi.ng/expose": "workspace:^"
     "@thi.ng/rstream-dot": "workspace:^"
     "@types/react": "npm:^19.2.7"
-    bun-types: "npm:1.3.4"
+    bun-types: "npm:1.3.5"
     esbuild: "npm:^0.27.2"
     html-minifier-terser: "npm:^7.2.0"
     tools: "workspace:^"
