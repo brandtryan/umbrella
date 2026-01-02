@@ -12,7 +12,7 @@ const word = (text: string) =>
 
 // 2. Page Structure
 
-export const page1 = section(
+export const page01 = section(
 	{ class: "page" },
 	div(
 		{ class: "line" },
@@ -40,7 +40,7 @@ export const page1 = section(
 		{ class: "line" },
 		word("just"),
 		word("laugh."),
-		word("It's"),
+		word("Itߴs"),
 		word("funny"),
 		word("to"),
 		word("them,"),
@@ -54,7 +54,7 @@ export const page1 = section(
 		word("cool"),
 		word("about"),
 		word("it—they"),
-		word("don't"),
+		word("donߴt"),
 		word("make"),
 		word("fun"),
 		word("of")
@@ -143,7 +143,7 @@ export const page1 = section(
 		word("the"),
 		word("truth"),
 		word("it"),
-		word("doesn't"),
+		word("doesnߴt"),
 		word("bother"),
 		word("me"),
 		word("at"),
@@ -164,7 +164,7 @@ export const page1 = section(
 		word("time.")
 	)
 );
-export const page2 = section(
+export const page02 = section(
 	{ class: "page" },
 	div(
 		{ class: "line" },
@@ -194,7 +194,7 @@ export const page2 = section(
 		word("week,"),
 		word("and"),
 		word("sometimes"),
-		word("I'll"),
+		word("Iߴll"),
 		word("bark"),
 		word("in")
 	),
@@ -214,7 +214,7 @@ export const page2 = section(
 		word("me"),
 		word("that"),
 		word("Jesus"),
-		word("didn't"),
+		word("didnߴt"),
 		word("appreciate"),
 		word("me")
 	),
@@ -231,14 +231,14 @@ export const page2 = section(
 	div(
 		{ class: "line" },
 		word("everything."),
-		word("She's"),
+		word("Sheߴs"),
 		word("mean"),
 		word("though"),
-		word("it's")
+		word("itߴs")
 	),
 	div(
 		{ class: "line" },
-		word("funny—there's"),
+		word("funny—thereߴs"),
 		word("always"),
 		word("that"),
 		word("question"),
@@ -246,15 +246,15 @@ export const page2 = section(
 	),
 	div(
 		{ class: "line" },
-		word("nuns—“is"),
+		word("nuns—‘is"),
 		word("she"),
-		word("mean?”—that"),
-		word("everyone's")
+		word("mean’—that"),
+		word("everyoneߴs")
 	),
 	div(
 		{ class: "line" },
 		word("always"),
-		word("talkin'"),
+		word("talkinߴ"),
 		word("about"),
 		word("whenever"),
 		word("you"),
@@ -275,7 +275,7 @@ export const page2 = section(
 	),
 	div(
 		{ class: "line" },
-		word("It's"),
+		word("Itߴs"),
 		word("always"),
 		word("how"),
 		word("mean"),
@@ -298,7 +298,7 @@ export const page2 = section(
 	),
 	div(
 		{ class: "line" },
-		word("you're"),
+		word("youߴre"),
 		word("not"),
 		word("looking"),
 		word("if"),
@@ -351,7 +351,7 @@ export const page2 = section(
 		word("nun"),
 		word("I"),
 		word("was"),
-		word("gonna'"),
+		word("gonnaߴ"),
 		word("have—but")
 	),
 	div(
@@ -360,7 +360,7 @@ export const page2 = section(
 		word("Sister"),
 		word("Agatha,"),
 		word("he"),
-		word("wasn't"),
+		word("wasnߴt"),
 		word("kidding.")
 	),
 	div(
@@ -376,7 +376,7 @@ export const page2 = section(
 	div(
 		{ class: "line" },
 		word("Jesus"),
-		word("didn't"),
+		word("didnߴt"),
 		word("appreciate"),
 		word("me"),
 		word("disrupting"),
@@ -408,7 +408,7 @@ export const page2 = section(
 	),
 	div({ class: "line" }, word("from"), word("shaking"), word("it."))
 );
-export const page3 = section(
+export const page03 = section(
 	{ class: "page" },
 	div(
 		{ class: "line" },
@@ -417,7 +417,7 @@ export const page3 = section(
 		word("though,"),
 		word("that"),
 		word("Jesus"),
-		word("didn't"),
+		word("didnߴt"),
 		word("mind"),
 		word("so")
 	),
@@ -463,7 +463,7 @@ export const page3 = section(
 		word("it,"),
 		word("if"),
 		word("He"),
-		word("didn't"),
+		word("didnߴt"),
 		word("want"),
 		word("to"),
 		word("help,")
@@ -473,7 +473,7 @@ export const page3 = section(
 		word("then"),
 		word("He"),
 		word("probably"),
-		word("didn't"),
+		word("didnߴt"),
 		word("care"),
 		word("too"),
 		word("much"),
@@ -529,13 +529,13 @@ export const page3 = section(
 		word("action"),
 		word("if"),
 		word("I"),
-		word("didn't"),
+		word("didnߴt"),
 		word("stop,"),
 		word("whatever")
 	),
 	div(
 		{ class: "line" },
-		word("that's"),
+		word("thatߴs"),
 		word("supposed"),
 		word("to"),
 		word("mean."),
@@ -549,7 +549,7 @@ export const page3 = section(
 		word("to"),
 		word("do"),
 		word("I"),
-		word("don't"),
+		word("donߴt"),
 		word("know—but"),
 		word("my"),
 		word("mom")
@@ -592,12 +592,12 @@ export const page3 = section(
 		word("for"),
 		word("taking"),
 		word("me"),
-		word("outta'"),
+		word("outtaߴ"),
 		word("the"),
 		word("game.")
 	)
 );
-export const page4 = section(
+export const page04 = section(
 	{ class: "page" },
 	div(
 		{ class: "line" },
@@ -605,11 +605,11 @@ export const page4 = section(
 		word("thing"),
 		word("is,"),
 		word("I"),
-		word("couldn't"),
+		word("couldnߴt"),
 		word("help"),
 		word("it—it"),
 		word("just"),
-		word("sorta'")
+		word("sortaߴ")
 	),
 	div(
 		{ class: "line" },
@@ -628,7 +628,7 @@ export const page4 = section(
 	div(
 		{ class: "line" },
 		word("friend"),
-		word("Justin's"),
+		word("Justinߴs"),
 		word("house"),
 		word("all"),
 		word("the"),
@@ -655,7 +655,7 @@ export const page4 = section(
 		word("an"),
 		word("asshole,"),
 		word("I"),
-		word("haven't"),
+		word("havenߴt"),
 		word("been")
 	),
 	div(
@@ -673,7 +673,7 @@ export const page4 = section(
 	div(
 		{ class: "line" },
 		word("sometimes,"),
-		word("like, ’Why'd"),
+		word("like, ‘Whyߴd"),
 		word("you"),
 		word("have"),
 		word("to"),
@@ -685,10 +685,10 @@ export const page4 = section(
 		word("dad"),
 		word("an"),
 		word("asshole?"),
-		word("That's"),
+		word("Thatߴs"),
 		word("my"),
 		word("dad,"),
-		word("man'—and"),
+		word("manߴ—and"),
 		word("I")
 	),
 	div(
@@ -703,7 +703,7 @@ export const page4 = section(
 		word("I"),
 		word("said,"),
 		word("I"),
-		word("couldn't")
+		word("couldnߴt")
 	),
 	div(
 		{ class: "line" },
@@ -714,24 +714,24 @@ export const page4 = section(
 		word("still"),
 		word("think"),
 		word("he"),
-		word("shouldn't")
+		word("shouldnߴt")
 	),
 	div(
 		{ class: "line" },
 		word("have"),
 		word("taken"),
 		word("me"),
-		word("outta'"),
+		word("outtaߴ"),
 		word("the"),
 		word("game.")
 	)
 );
-export const page5 = section(
+export const page05 = section(
 	{ class: "page" },
 	div(
 		{ class: "line" },
 		word("My"),
-		word("mom's"),
+		word("momߴs"),
 		word("taking"),
 		word("me"),
 		word("to"),
@@ -744,7 +744,7 @@ export const page5 = section(
 		word("to"),
 		word("see"),
 		word("if"),
-		word("something's"),
+		word("somethingߴs"),
 		word("wrong"),
 		word("with"),
 		word("me."),
@@ -790,13 +790,13 @@ export const page5 = section(
 		word("to"),
 		word("stop,"),
 		word("but"),
-		word("it's"),
+		word("itߴs"),
 		word("like"),
 		word("I"),
-		word("can't.")
+		word("canߴt.")
 	)
 );
-export const page6 = section(
+export const page06 = section(
 	{ class: "page" },
 	div(
 		{ class: "line" },
@@ -913,7 +913,7 @@ export const page6 = section(
 		word("other"),
 		word("one."),
 		word("Then"),
-		word("he'd"),
+		word("heߴd"),
 		word("go"),
 		word("up"),
 		word("the"),
@@ -947,7 +947,7 @@ export const page6 = section(
 		{ class: "line" },
 		word("again."),
 		word("It"),
-		word("wasn't"),
+		word("wasnߴt"),
 		word("like"),
 		word("a"),
 		word("little"),
@@ -1044,7 +1044,7 @@ export const page6 = section(
 	),
 	div({ class: "line" }, word("diving"), word("tank."))
 );
-export const page7 = section(
+export const page07 = section(
 	{ class: "page" },
 	div(
 		{ class: "line" },
@@ -1075,10 +1075,10 @@ export const page7 = section(
 	div(
 		{ class: "line" },
 		word("when"),
-		word("I'm"),
+		word("Iߴm"),
 		word("at"),
 		word("camp."),
-		word("It's"),
+		word("Itߴs"),
 		word("like"),
 		word("five"),
 		word("pools"),
@@ -1087,7 +1087,7 @@ export const page7 = section(
 	),
 	div(
 		{ class: "line" },
-		word("one, ’cause"),
+		word("one, ‘cause"),
 		word("there"),
 		word("are"),
 		word("special"),
@@ -1103,7 +1103,7 @@ export const page7 = section(
 		word("types"),
 		word("of"),
 		word("things."),
-		word("There's"),
+		word("Thereߴs"),
 		word("the")
 	),
 	div(
@@ -1136,7 +1136,7 @@ export const page7 = section(
 		word("thrown"),
 		word("out,"),
 		word("and"),
-		word("can't"),
+		word("canߴt"),
 		word("come")
 	),
 	div(
@@ -1146,7 +1146,7 @@ export const page7 = section(
 		word("a"),
 		word("day."),
 		word("Then"),
-		word("there's"),
+		word("thereߴs"),
 		word("the"),
 		word("six"),
 		word("foot")
@@ -1176,7 +1176,7 @@ export const page7 = section(
 		{ class: "line" },
 		word("hang"),
 		word("out’cause"),
-		word("there's"),
+		word("thereߴs"),
 		word("a"),
 		word("bar"),
 		word("there"),
@@ -1216,7 +1216,7 @@ export const page7 = section(
 		word("urine.")
 	)
 );
-export const page8 = section(
+export const page08 = section(
 	{ class: "page" },
 	div(
 		{ class: "line" },
@@ -1231,12 +1231,12 @@ export const page8 = section(
 	),
 	div(
 		{ class: "line" },
-		word("goin'"),
-		word("makin'"),
+		word("goinߴ"),
+		word("makinߴ"),
 		word("all"),
 		word("these"),
 		word("weird"),
-		word("noises—'cause")
+		word("noises—ߴcause")
 	),
 	div(
 		{ class: "line" },
@@ -1251,7 +1251,7 @@ export const page8 = section(
 	),
 	div(
 		{ class: "line" },
-		word("makin'"),
+		word("makinߴ"),
 		word("fun"),
 		word("of"),
 		word("him"),
@@ -1334,10 +1334,10 @@ export const page8 = section(
 		word("good"),
 		word("one"),
 		word("or"),
-		word("somethin'.")
+		word("somethinߴ.")
 	)
 );
-export const page9 = section(
+export const page09 = section(
 	{ class: "page" },
 	div(
 		{ class: "line" },
@@ -1355,7 +1355,7 @@ export const page9 = section(
 		word("Crazy"),
 		word("Charlie"),
 		word("was"),
-		word("lookin'"),
+		word("lookinߴ"),
 		word("at"),
 		word("me—it"),
 		word("was"),
@@ -1364,7 +1364,7 @@ export const page9 = section(
 	div(
 		{ class: "line" },
 		word("he"),
-		word("musta'"),
+		word("mustaߴ"),
 		word("been"),
 		word("thinking"),
 		word("of"),
@@ -1394,7 +1394,7 @@ export const page9 = section(
 		word("maybe"),
 		word("he"),
 		word("was"),
-		word("hopin'")
+		word("hopinߴ")
 	),
 	div(
 		{ class: "line" },
@@ -1402,7 +1402,7 @@ export const page9 = section(
 		word("we"),
 		word("would"),
 		word("never"),
-		word("get ’em,"),
+		word("get ‘em,"),
 		word("because"),
 		word("it")
 	),
@@ -1421,9 +1421,9 @@ export const page9 = section(
 	div(
 		{ class: "line" },
 		word("day"),
-		word("I've"),
+		word("Iߴve"),
 		word("been"),
-		word("doin'"),
+		word("doinߴ"),
 		word("the"),
 		word("barks"),
 		word("and"),
@@ -1462,14 +1462,14 @@ export const page9 = section(
 		word("My"),
 		word("mom"),
 		word("says"),
-		word("that's"),
+		word("thatߴs"),
 		word("ridiculous,")
 	),
 	div(
 		{ class: "line" },
 		word("but"),
 		word("she"),
-		word("wasn't"),
+		word("wasnߴt"),
 		word("there"),
 		word("to"),
 		word("see"),
@@ -1483,7 +1483,7 @@ export const page9 = section(
 		word("gave"),
 		word("me."),
 		word("It"),
-		word("wasn't"),
+		word("wasnߴt"),
 		word("like"),
 		word("an"),
 		word("adult")
@@ -1502,7 +1502,7 @@ export const page9 = section(
 	div(
 		{ class: "line" },
 		word("after"),
-		word("you've"),
+		word("youߴve"),
 		word("made"),
 		word("fun"),
 		word("of"),
@@ -1538,7 +1538,7 @@ export const page10 = section(
 		word("In"),
 		word("the"),
 		word("bullpen"),
-		word("there's"),
+		word("thereߴs"),
 		word("this"),
 		word("big"),
 		word("guy"),
@@ -1559,7 +1559,7 @@ export const page10 = section(
 	),
 	div(
 		{ class: "line" },
-		word("That's"),
+		word("Thatߴs"),
 		word("what"),
 		word("they"),
 		word("call"),
@@ -1570,7 +1570,7 @@ export const page10 = section(
 	),
 	div(
 		{ class: "line" },
-		word("missiles, ’cause"),
+		word("missiles, ‘cause"),
 		word("they"),
 		word("take"),
 		word("one"),
@@ -1608,7 +1608,7 @@ export const page10 = section(
 		word("is"),
 		word("the"),
 		word("best"),
-		word("launcher—he's"),
+		word("launcher—heߴs"),
 		word("the"),
 		word("biggest")
 	),
@@ -1616,7 +1616,7 @@ export const page10 = section(
 		{ class: "line" },
 		word("human"),
 		word("being"),
-		word("I've"),
+		word("Iߴve"),
 		word("ever"),
 		word("seen,"),
 		word("and"),
@@ -1658,17 +1658,17 @@ export const page10 = section(
 	div(
 		{ class: "line" },
 		word("friends"),
-		word("don't"),
+		word("donߴt"),
 		word("believe"),
 		word("me,"),
 		word("but"),
-		word("it's"),
+		word("itߴs"),
 		word("true—I")
 	),
 	div(
 		{ class: "line" },
 		word("mean,"),
-		word("it's"),
+		word("itߴs"),
 		word("not"),
 		word("like"),
 		word("I"),
@@ -1702,7 +1702,7 @@ export const page10 = section(
 		{ class: "line" },
 		word("behind"),
 		word("Rivi."),
-		word("I'm"),
+		word("Iߴm"),
 		word("probably"),
 		word("the"),
 		word("lightest"),
@@ -1716,7 +1716,7 @@ export const page10 = section(
 		word("my"),
 		word("friends,"),
 		word("and"),
-		word("that's"),
+		word("thatߴs"),
 		word("why"),
 		word("I"),
 		word("go"),
@@ -1734,7 +1734,7 @@ export const page10 = section(
 	),
 	div(
 		{ class: "line" },
-		word("I'm"),
+		word("Iߴm"),
 		word("a"),
 		word("missile"),
 		word("I"),
@@ -1751,10 +1751,10 @@ export const page10 = section(
 		word("bark—"),
 		word("I"),
 		word("guess"),
-		word("it's"),
+		word("itߴs"),
 		word("just"),
 		word("because"),
-		word("I'm"),
+		word("Iߴm"),
 		word("too"),
 		word("busy")
 	),
@@ -1770,8 +1770,8 @@ export const page10 = section(
 	div(
 		{ class: "line" },
 		word("that"),
-		word("I'm"),
-		word("gonna'"),
+		word("Iߴm"),
+		word("gonnaߴ"),
 		word("do."),
 		word("One"),
 		word("time"),
@@ -1803,9 +1803,9 @@ export const page10 = section(
 	div(
 		{ class: "line" },
 		word("water."),
-		word("I'm"),
+		word("Iߴm"),
 		word("thinking"),
-		word("I'll"),
+		word("Iߴll"),
 		word("tell"),
 		word("this"),
 		word("to"),
@@ -1814,8 +1814,8 @@ export const page10 = section(
 	),
 	div(
 		{ class: "line" },
-		word("I'm"),
-		word("gonna'"),
+		word("Iߴm"),
+		word("gonnaߴ"),
 		word("see"),
 		word("today,"),
 		word("since"),
@@ -1830,7 +1830,7 @@ export const page10 = section(
 		word("time"),
 		word("that"),
 		word("I"),
-		word("don't"),
+		word("donߴt"),
 		word("do"),
 		word("it.")
 	)
@@ -1851,19 +1851,19 @@ export const page11 = section(
 	),
 	div(
 		{ class: "line" },
-		word("tellin'"),
+		word("tellinߴ"),
 		word("me"),
 		word("that"),
-		word("it's"),
+		word("itߴs"),
 		word("not"),
 		word("a"),
 		word("psychiatrist"),
 		word("that"),
-		word("I'm")
+		word("Iߴm")
 	),
 	div(
 		{ class: "line" },
-		word("gonna'"),
+		word("gonnaߴ"),
 		word("see—but"),
 		word("a"),
 		word("neurologist,"),
@@ -1873,7 +1873,7 @@ export const page11 = section(
 	div(
 		{ class: "line" },
 		word("hell"),
-		word("that's"),
+		word("thatߴs"),
 		word("supposed"),
 		word("to"),
 		word("be."),
@@ -1884,7 +1884,7 @@ export const page11 = section(
 	),
 	div(
 		{ class: "line" },
-		word("don't"),
+		word("donߴt"),
 		word("like"),
 		word("crazy"),
 		word("people,"),
@@ -1920,7 +1920,7 @@ export const page11 = section(
 	div(
 		{ class: "line" },
 		word("when"),
-		word("I'm"),
+		word("Iߴm"),
 		word("praying"),
 		word("to"),
 		word("Jesus"),
@@ -1994,7 +1994,7 @@ export const page11 = section(
 	div(
 		{ class: "line" },
 		word("Charlie"),
-		word("doesn't"),
+		word("doesnߴt"),
 		word("count"),
 		word("as"),
 		word("a"),
@@ -2005,10 +2005,10 @@ export const page11 = section(
 	div(
 		{ class: "line" },
 		word("me—because"),
-		word("it's"),
+		word("itߴs"),
 		word("not"),
 		word("like"),
-		word("he's"),
+		word("heߴs"),
 		word("a"),
 		word("psycho"),
 		word("or")
@@ -2041,7 +2041,7 @@ export const page11 = section(
 		word("and"),
 		word("look"),
 		word("like"),
-		word("they're")
+		word("theyߴre")
 	),
 	div(
 		{ class: "line" },
@@ -2050,7 +2050,7 @@ export const page11 = section(
 		word("kill"),
 		word("somebody"),
 		word("or"),
-		word("somethin'."),
+		word("somethinߴ."),
 		word("Those")
 	),
 	div(
@@ -2120,11 +2120,11 @@ export const page12 = section(
 	),
 	div(
 		{ class: "line" },
-		word("children's"),
+		word("childrenߴs"),
 		word("books."),
-		word("I'm"),
-		word("gettin'"),
-		word("sorta'"),
+		word("Iߴm"),
+		word("gettinߴ"),
+		word("sortaߴ"),
 		word("nervous")
 	),
 	div(
@@ -2144,7 +2144,7 @@ export const page12 = section(
 		word("disease,"),
 		word("and"),
 		word("I"),
-		word("don't"),
+		word("donߴt"),
 		word("want"),
 		word("to"),
 		word("have"),
@@ -2161,7 +2161,7 @@ export const page12 = section(
 		word("stop"),
 		word("twitching"),
 		word("while"),
-		word("I'm")
+		word("Iߴm")
 	),
 	div(
 		{ class: "line" },
@@ -2170,7 +2170,7 @@ export const page12 = section(
 		word("doctor,"),
 		word("that"),
 		word("he"),
-		word("won't"),
+		word("wonߴt"),
 		word("think"),
 		word("I"),
 		word("have"),
@@ -2181,7 +2181,7 @@ export const page12 = section(
 		word("I"),
 		word("mean,"),
 		word("I"),
-		word("don't"),
+		word("donߴt"),
 		word("really"),
 		word("care"),
 		word("if"),
@@ -2226,7 +2226,7 @@ export const page12 = section(
 		{ class: "line" },
 		word("action,"),
 		word("and,"),
-		word("there's"),
+		word("thereߴs"),
 		word("one"),
 		word("thing"),
 		word("in"),
@@ -2237,17 +2237,17 @@ export const page12 = section(
 		{ class: "line" },
 		word("that"),
 		word("I"),
-		word("can't"),
+		word("canߴt"),
 		word("stand,"),
 		word("and"),
-		word("that's"),
+		word("thatߴs"),
 		word("my"),
 		word("mom"),
 		word("crying.")
 	),
 	div(
 		{ class: "line" },
-		word("It's"),
+		word("Itߴs"),
 		word("like"),
 		word("I"),
 		word("have"),
@@ -2256,19 +2256,19 @@ export const page12 = section(
 		word("just"),
 		word("because"),
 		word("my"),
-		word("mom's")
+		word("momߴs")
 	),
 	div(
 		{ class: "line" },
 		word("crying."),
 		word("I"),
-		word("don't"),
+		word("donߴt"),
 		word("even"),
 		word("have"),
 		word("to"),
 		word("know"),
 		word("what"),
-		word("it's")
+		word("itߴs")
 	),
 	div(
 		{ class: "line" },
@@ -2308,7 +2308,7 @@ export const page13 = section(
 		{ class: "line" },
 		word("So"),
 		word("anyway,"),
-		word("I'm"),
+		word("Iߴm"),
 		word("not"),
 		word("a"),
 		word("cry-baby"),
@@ -2317,7 +2317,7 @@ export const page13 = section(
 	),
 	div(
 		{ class: "line" },
-		word("it's"),
+		word("itߴs"),
 		word("just"),
 		word("that"),
 		word("one"),
@@ -2333,9 +2333,9 @@ export const page13 = section(
 		word("every"),
 		word("time."),
 		word("So"),
-		word("I'm"),
+		word("Iߴm"),
 		word("thinking"),
-		word("I'll"),
+		word("Iߴll"),
 		word("hold"),
 		word("in"),
 		word("the")
@@ -2358,8 +2358,8 @@ export const page13 = section(
 		word("minutes"),
 		word("while"),
 		word("the"),
-		word("doctor's"),
-		word("seein'"),
+		word("doctorߴs"),
+		word("seeinߴ"),
 		word("me."),
 		word("That")
 	),
@@ -2367,7 +2367,7 @@ export const page13 = section(
 		{ class: "line" },
 		word("way"),
 		word("he"),
-		word("won't"),
+		word("wonߴt"),
 		word("think"),
 		word("I"),
 		word("have"),
@@ -2378,7 +2378,7 @@ export const page13 = section(
 	),
 	div(
 		{ class: "line" },
-		word("won't"),
+		word("wonߴt"),
 		word("have"),
 		word("anything"),
 		word("to"),
@@ -2396,7 +2396,7 @@ export const page14 = section(
 		word("the"),
 		word("waiting"),
 		word("room"),
-		word("I'm"),
+		word("Iߴm"),
 		word("really"),
 		word("going"),
 		word("at"),
@@ -2406,7 +2406,7 @@ export const page14 = section(
 		{ class: "line" },
 		word("since"),
 		word("the"),
-		word("doctor's"),
+		word("doctorߴs"),
 		word("nowhere"),
 		word("in"),
 		word("sight."),
@@ -2465,7 +2465,7 @@ export const page14 = section(
 	div(
 		{ class: "line" },
 		word("since"),
-		word("I've"),
+		word("Iߴve"),
 		word("got"),
 		word("this"),
 		word("great"),
@@ -2482,7 +2482,7 @@ export const page14 = section(
 		word("doctor"),
 		word("shows"),
 		word("up."),
-		word("I'm"),
+		word("Iߴm"),
 		word("flipping")
 	),
 	div(
@@ -2499,7 +2499,7 @@ export const page14 = section(
 	div(
 		{ class: "line" },
 		word("even"),
-		word("read—I'm"),
+		word("read—Iߴm"),
 		word("stomping"),
 		word("my"),
 		word("feet,")
@@ -2523,7 +2523,7 @@ export const page14 = section(
 		word("If"),
 		word("I"),
 		word("could,"),
-		word("I'd"),
+		word("Iߴd"),
 		word("curl"),
 		word("my"),
 		word("toes"),
@@ -2542,7 +2542,7 @@ export const page14 = section(
 	div(
 		{ class: "line" },
 		word("underneath."),
-		word("I'm"),
+		word("Iߴm"),
 		word("grunting"),
 		word("every"),
 		word("other"),
@@ -2554,7 +2554,7 @@ export const page14 = section(
 		word("each"),
 		word("time,"),
 		word("and"),
-		word("can't"),
+		word("canߴt"),
 		word("seem"),
 		word("to"),
 		word("get")
@@ -2565,11 +2565,11 @@ export const page15 = section(
 	{ class: "page" },
 	div(
 		{ class: "line" },
-		word("That's"),
+		word("Thatߴs"),
 		word("the"),
 		word("thing"),
 		word("about"),
-		word("it—it's"),
+		word("it—itߴs"),
 		word("like"),
 		word("once")
 	),
@@ -2580,7 +2580,7 @@ export const page15 = section(
 		word("in"),
 		word("on"),
 		word("it,"),
-		word("you've"),
+		word("youߴve"),
 		word("got"),
 		word("to"),
 		word("get"),
@@ -2600,14 +2600,14 @@ export const page15 = section(
 	div(
 		{ class: "line" },
 		word("dives—if"),
-		word("it's"),
+		word("itߴs"),
 		word("off"),
 		word("by"),
 		word("just"),
 		word("a"),
 		word("little"),
 		word("bit"),
-		word("you've"),
+		word("youߴve"),
 		word("got")
 	),
 	div(
@@ -2638,7 +2638,7 @@ export const page15 = section(
 		word("think"),
 		word("that"),
 		word("they"),
-		word("didn't"),
+		word("didnߴt"),
 		word("hear"),
 		word("it,"),
 		word("and"),
@@ -2661,7 +2661,7 @@ export const page15 = section(
 	div(
 		{ class: "line" },
 		word("they"),
-		word("didn't"),
+		word("didnߴt"),
 		word("hear"),
 		word("that"),
 		word("one"),
@@ -2681,12 +2681,12 @@ export const page15 = section(
 		word("at"),
 		word("me"),
 		word("and"),
-		word("I'm")
+		word("Iߴm")
 	),
 	div(
 		{ class: "line" },
 		word("yanked"),
-		word("outta'"),
+		word("outtaߴ"),
 		word("the"),
 		word("class"),
 		word("by"),
@@ -2699,7 +2699,7 @@ export const page15 = section(
 		word("sent"),
 		word("to"),
 		word("the"),
-		word("principal's"),
+		word("principalߴs"),
 		word("office.")
 	)
 );
@@ -2708,9 +2708,9 @@ export const page16 = section(
 	div(
 		{ class: "line" },
 		word("I"),
-		word("don't"),
+		word("donߴt"),
 		word("really"),
-		word("wanna'"),
+		word("wannaߴ"),
 		word("look"),
 		word("up"),
 		word("at"),
@@ -2721,7 +2721,7 @@ export const page16 = section(
 		{ class: "line" },
 		word("now,"),
 		word("’cause"),
-		word("I'm"),
+		word("Iߴm"),
 		word("really"),
 		word("having"),
 		word("a"),
@@ -2749,7 +2749,7 @@ export const page16 = section(
 		word("smiling,"),
 		word("like"),
 		word("what"),
-		word("I'm"),
+		word("Iߴm"),
 		word("doing"),
 		word("is"),
 		word("the"),
@@ -2769,7 +2769,7 @@ export const page17 = section(
 	div(
 		{ class: "line" },
 		word("Luckily"),
-		word("there's"),
+		word("thereߴs"),
 		word("no"),
 		word("one"),
 		word("else"),
@@ -2792,11 +2792,11 @@ export const page17 = section(
 	div(
 		{ class: "line" },
 		word("room"),
-		word("I'd"),
+		word("Iߴd"),
 		word("really"),
 		word("be"),
-		word("feelin'"),
-		word("stupid—'cause")
+		word("feelinߴ"),
+		word("stupid—ߴcause")
 	),
 	div(
 		{ class: "line" },
@@ -2817,12 +2817,12 @@ export const page17 = section(
 		word("their"),
 		word("mom"),
 		word("like"),
-		word("they're"),
+		word("theyߴre"),
 		word("afraid"),
 		word("of"),
 		word("me")
 	),
-	div({ class: "line" }, word("or"), word("somethin'."))
+	div({ class: "line" }, word("or"), word("somethinߴ."))
 );
 export const page18 = section(
 	{ class: "page" },
@@ -2840,10 +2840,10 @@ export const page18 = section(
 	),
 	div(
 		{ class: "line" },
-		word("can't"),
+		word("canߴt"),
 		word("remember"),
 		word("when"),
-		word("I've"),
+		word("Iߴve"),
 		word("been"),
 		word("so"),
 		word("bad"),
@@ -2877,7 +2877,7 @@ export const page18 = section(
 		word("I"),
 		word("think"),
 		word("is"),
-		word("sorta'"),
+		word("sortaߴ"),
 		word("weird"),
 		word("since"),
 		word("she"),
@@ -2896,18 +2896,18 @@ export const page18 = section(
 	),
 	div(
 		{ class: "line" },
-		word("doin'"),
+		word("doinߴ"),
 		word("weird"),
 		word("stuff"),
 		word("like"),
 		word("that"),
 		word("when"),
-		word("I'm"),
+		word("Iߴm"),
 		word("around.")
 	),
 	div(
 		{ class: "line" },
-		word("They're"),
+		word("Theyߴre"),
 		word("always"),
 		word("taking"),
 		word("me"),
@@ -2923,12 +2923,12 @@ export const page18 = section(
 		word("Brandt?"),
 		word("Is"),
 		word("everything"),
-		word("okay?“")
+		word("okay?″")
 	),
 	div(
 		{ class: "line" },
 		word("like"),
-		word("I'm"),
+		word("Iߴm"),
 		word("some"),
 		word("kind"),
 		word("of"),
@@ -2949,9 +2949,9 @@ export const page18 = section(
 	div(
 		{ class: "line" },
 		word("but"),
-		word("it's"),
+		word("itߴs"),
 		word("like"),
-		word("I'm"),
+		word("Iߴm"),
 		word("not"),
 		word("retarded—I"),
 		word("just"),
@@ -2962,7 +2962,7 @@ export const page18 = section(
 		word("and"),
 		word("stuff,"),
 		word("which"),
-		word("isn't"),
+		word("isnߴt"),
 		word("the"),
 		word("same"),
 		word("thing"),
@@ -2976,7 +2976,7 @@ export const page18 = section(
 		word("Crazy"),
 		word("Charlie"),
 		word("really"),
-		word("isn't"),
+		word("isnߴt"),
 		word("crazy.")
 	)
 );
@@ -3005,7 +3005,7 @@ export const page19 = section(
 		word("can"),
 		word("talk,"),
 		word("and"),
-		word("I'm")
+		word("Iߴm")
 	),
 	div(
 		{ class: "line" },
@@ -3041,7 +3041,7 @@ export const page19 = section(
 		word("for"),
 		word("a"),
 		word("minute."),
-		word("We're")
+		word("Weߴre")
 	),
 	div(
 		{ class: "line" },
@@ -3050,7 +3050,7 @@ export const page19 = section(
 		word("the"),
 		word("hall"),
 		word("and"),
-		word("I'm"),
+		word("Iߴm"),
 		word("really"),
 		word("about")
 	),
@@ -3059,9 +3059,9 @@ export const page19 = section(
 		word("to"),
 		word("explode’"),
 		word("cause"),
-		word("it's"),
+		word("itߴs"),
 		word("like"),
-		word("there's"),
+		word("thereߴs"),
 		word("all"),
 		word("this")
 	),
@@ -3072,7 +3072,7 @@ export const page19 = section(
 		word("through"),
 		word("me"),
 		word("like"),
-		word("I've"),
+		word("Iߴve"),
 		word("just"),
 		word("been")
 	),
@@ -3080,7 +3080,7 @@ export const page19 = section(
 		{ class: "line" },
 		word("electrocuted—not"),
 		word("that"),
-		word("I've"),
+		word("Iߴve"),
 		word("ever"),
 		word("been")
 	),
@@ -3089,7 +3089,7 @@ export const page19 = section(
 		word("electrocuted"),
 		word("before,"),
 		word("but"),
-		word("I'm"),
+		word("Iߴm"),
 		word("thinking"),
 		word("this"),
 		word("is")
@@ -3104,7 +3104,7 @@ export const page19 = section(
 		word("if"),
 		word("I"),
 		word("was."),
-		word("I'm"),
+		word("Iߴm"),
 		word("sweating")
 	),
 	div(
@@ -3138,7 +3138,7 @@ export const page19 = section(
 		{ class: "line" },
 		word("again"),
 		word("if"),
-		word("everything's"),
+		word("everythingߴs"),
 		word("all"),
 		word("right.")
 	)
@@ -3147,7 +3147,7 @@ export const page20 = section(
 	{ class: "page" },
 	div(
 		{ class: "line" },
-		word("“I'm"),
+		word("“Iߴm"),
 		word("fine,”"),
 		word("I"),
 		word("say.")
@@ -3172,7 +3172,7 @@ export const page21 = section(
 		word("how"),
 		word("you"),
 		word("usually"),
-		word("act?“"),
+		word("act?”"),
 		word("he"),
 		word("asks.")
 	)
@@ -3215,7 +3215,7 @@ export const page27 = section(
 		{ class: "line" },
 		word("Only"),
 		word("inside"),
-		word("I'm"),
+		word("Iߴm"),
 		word("fighting"),
 		word("the"),
 		word("itches"),
@@ -3228,7 +3228,7 @@ export const page27 = section(
 		word("and"),
 		word("think"),
 		word("maybe"),
-		word("I'm"),
+		word("Iߴm"),
 		word("not"),
 		word("going"),
 		word("to")
@@ -3239,13 +3239,13 @@ export const page28 = section(
 	{ class: "page" },
 	div(
 		{ class: "line" },
-		word("“It's"),
+		word("“Itߴs"),
 		word("just"),
-		word("sorta'"),
+		word("sortaߴ"),
 		word("hot"),
 		word("in"),
 		word("here,"),
-		word("that's"),
+		word("thatߴs"),
 		word("all,”"),
 		word("I"),
 		word("say,")
@@ -3253,7 +3253,7 @@ export const page28 = section(
 	div(
 		{ class: "line" },
 		word("’cause"),
-		word("I'm"),
+		word("Iߴm"),
 		word("thinking"),
 		word("he"),
 		word("can"),
@@ -3270,7 +3270,7 @@ export const page29 = section(
 		word("says"),
 		word("then"),
 		word("that"),
-		word("that's"),
+		word("thatߴs"),
 		word("all"),
 		word("he"),
 		word("wanted"),
@@ -3306,8 +3306,8 @@ export const page29 = section(
 		word("when"),
 		word("I"),
 		word("think"),
-		word("he's"),
-		word("gonna'"),
+		word("heߴs"),
+		word("gonnaߴ"),
 		word("let"),
 		word("us"),
 		word("go"),
@@ -3339,7 +3339,7 @@ export const page30 = section(
 	{ class: "page" },
 	div(
 		{ class: "line" },
-		word("“I'm"),
+		word("“Iߴm"),
 		word("not"),
 		word("thirsty,”"),
 		word("I"),
@@ -3376,12 +3376,12 @@ export const page32 = section(
 	div(
 		{ class: "line" },
 		word("And"),
-		word("I'm"),
+		word("Iߴm"),
 		word("thinking,"),
 		word("yeah,"),
 		word("like"),
 		word("this"),
-		word("isn't"),
+		word("isnߴt"),
 		word("a"),
 		word("test.")
 	),
@@ -3459,10 +3459,10 @@ export const page32 = section(
 	),
 	div(
 		{ class: "line" },
-		word("I'm"),
+		word("Iߴm"),
 		word("smiling"),
 		word("like"),
-		word("I'm"),
+		word("Iߴm"),
 		word("in"),
 		word("on"),
 		word("his"),
@@ -3530,7 +3530,7 @@ export const page33 = section(
 		word("it,"),
 		word("but"),
 		word("she"),
-		word("doesn't"),
+		word("doesnߴt"),
 		word("look"),
 		word("at"),
 		word("me"),
@@ -3540,7 +3540,7 @@ export const page33 = section(
 		{ class: "line" },
 		word("keeps"),
 		word("on"),
-		word("goin'"),
+		word("goinߴ"),
 		word("like"),
 		word("nothing"),
 		word("happened.")
@@ -3586,11 +3586,11 @@ export const page34 = section(
 		word("them"),
 		word("and"),
 		word("that"),
-		word("we're")
+		word("weߴre")
 	),
 	div(
 		{ class: "line" },
-		word("goin'"),
+		word("goinߴ"),
 		word("to"),
 		word("the"),
 		word("pharmacy"),
@@ -3601,7 +3601,7 @@ export const page34 = section(
 	),
 	div(
 		{ class: "line" },
-		word("that'll"),
+		word("thatߴll"),
 		word("make"),
 		word("it"),
 		word("all"),
@@ -3619,7 +3619,7 @@ export const page34 = section(
 		word("her"),
 		word("that"),
 		word("I"),
-		word("hadn't"),
+		word("hadnߴt"),
 		word("budged"),
 		word("during"),
 		word("the")
@@ -3640,7 +3640,7 @@ export const page34 = section(
 		{ class: "line" },
 		word("that"),
 		word("I"),
-		word("hadn't"),
+		word("hadnߴt"),
 		word("done"),
 		word("anything"),
 		word("at"),
@@ -3707,7 +3707,7 @@ export const page36 = section(
 	div(
 		{ class: "line" },
 		word("And"),
-		word("I'm"),
+		word("Iߴm"),
 		word("thinking"),
 		word("that"),
 		word("was"),
@@ -3753,7 +3753,7 @@ export const page37 = section(
 		word("my"),
 		word("mom"),
 		word("says"),
-		word("that's"),
+		word("thatߴs"),
 		word("not")
 	),
 	div(
@@ -3762,7 +3762,7 @@ export const page37 = section(
 		word("to"),
 		word("work,"),
 		word("and"),
-		word("I'm"),
+		word("Iߴm"),
 		word("sorta"),
 		word("happy,"),
 		word("because")
@@ -3784,7 +3784,7 @@ export const page37 = section(
 		{ class: "line" },
 		word("I"),
 		word("like"),
-		word("doin'"),
+		word("doinߴ"),
 		word("on"),
 		word("a"),
 		word("regular"),
@@ -3796,7 +3796,7 @@ export const page38 = section(
 	div(
 		{ class: "line" },
 		word("Tonight"),
-		word("we're"),
+		word("weߴre"),
 		word("supposed"),
 		word("to"),
 		word("have"),
@@ -3831,14 +3831,14 @@ export const page38 = section(
 		{ class: "line" },
 		word("table,"),
 		word("and"),
-		word("I'm"),
+		word("Iߴm"),
 		word("at"),
 		word("the"),
 		word("end"),
 		word("of"),
 		word("it"),
 		word("like"),
-		word("it's"),
+		word("itߴs"),
 		word("my")
 	),
 	div(
@@ -3854,7 +3854,7 @@ export const page38 = section(
 		{ class: "line" },
 		word("that"),
 		word("she"),
-		word("didn't"),
+		word("didnߴt"),
 		word("know"),
 		word("that"),
 		word("the"),
@@ -3888,7 +3888,7 @@ export const page38 = section(
 	div(
 		{ class: "line" },
 		word("That"),
-		word("sorta'"),
+		word("sortaߴ"),
 		word("made"),
 		word("me"),
 		word("feel"),
@@ -3944,7 +3944,7 @@ export const page38 = section(
 	div(
 		{ class: "line" },
 		word("because"),
-		word("it's"),
+		word("itߴs"),
 		word("like"),
 		word("a"),
 		word("few"),
@@ -4003,7 +4003,7 @@ export const page38 = section(
 		word("said"),
 		word("that"),
 		word("it"),
-		word("wasn't"),
+		word("wasnߴt"),
 		word("something")
 	),
 	div(
@@ -4015,7 +4015,7 @@ export const page38 = section(
 		word("and"),
 		word("that"),
 		word("it"),
-		word("wasn't"),
+		word("wasnߴt"),
 		word("like")
 	),
 	div(
@@ -4033,7 +4033,7 @@ export const page38 = section(
 		word("whatever"),
 		word("the"),
 		word("hell"),
-		word("that's"),
+		word("thatߴs"),
 		word("supposed"),
 		word("to"),
 		word("mean.")
@@ -4043,7 +4043,7 @@ export const page39 = section(
 	{ class: "page" },
 	div(
 		{ class: "line" },
-		word("I'm"),
+		word("Iߴm"),
 		word("still"),
 		word("sort"),
 		word("of"),
@@ -4066,17 +4066,17 @@ export const page39 = section(
 	),
 	div(
 		{ class: "line" },
-		word("don't"),
+		word("donߴt"),
 		word("know"),
 		word("what"),
-		word("they're"),
+		word("theyߴre"),
 		word("talking"),
 		word("about—that")
 	),
 	div(
 		{ class: "line" },
 		word("I"),
-		word("didn't"),
+		word("didnߴt"),
 		word("know"),
 		word("anything"),
 		word("about"),
@@ -4104,13 +4104,13 @@ export const page39 = section(
 	),
 	div(
 		{ class: "line" },
-		word("hadn't"),
+		word("hadnߴt"),
 		word("noticed"),
 		word("the"),
 		word("last"),
 		word("jerk"),
 		word("though"),
-		word("they're")
+		word("theyߴre")
 	),
 	div(
 		{ class: "line" },
@@ -4128,14 +4128,14 @@ export const page39 = section(
 		word("hard,"),
 		word("like"),
 		word("when"),
-		word("I'm"),
+		word("Iߴm"),
 		word("in"),
 		word("trouble")
 	),
 	div(
 		{ class: "line" },
 		word("and"),
-		word("they're"),
+		word("theyߴre"),
 		word("trying"),
 		word("to"),
 		word("figure"),
@@ -4151,7 +4151,7 @@ export const page39 = section(
 		word("stop"),
 		word("misbehaving."),
 		word("Only"),
-		word("it's"),
+		word("itߴs"),
 		word("really"),
 		word("bad")
 	),
@@ -4161,7 +4161,7 @@ export const page39 = section(
 		word("time"),
 		word("and"),
 		word("I"),
-		word("can't"),
+		word("canߴt"),
 		word("stop"),
 		word("the"),
 		word("noises"),
@@ -4215,7 +4215,7 @@ export const page39 = section(
 		word("down,"),
 		word("and"),
 		word("then"),
-		word("I'm"),
+		word("Iߴm"),
 		word("shaking"),
 		word("my"),
 		word("head")
@@ -4246,7 +4246,7 @@ export const page39 = section(
 		word("about"),
 		word("what"),
 		word("times"),
-		word("I'm"),
+		word("Iߴm"),
 		word("supposed"),
 		word("to"),
 		word("take"),
@@ -4276,7 +4276,7 @@ export const page39 = section(
 	div(
 		{ class: "line" },
 		word("they"),
-		word("don't"),
+		word("donߴt"),
 		word("know"),
 		word("what"),
 		word("to"),
@@ -4310,7 +4310,7 @@ export const page39 = section(
 		{ class: "line" },
 		word("him"),
 		word("’cause"),
-		word("I'm"),
+		word("Iߴm"),
 		word("barking"),
 		word("so"),
 		word("loud,"),
@@ -4326,7 +4326,7 @@ export const page39 = section(
 		word("so"),
 		word("hard"),
 		word("that"),
-		word("everyone's"),
+		word("everyoneߴs"),
 		word("coffee")
 	),
 	div(
@@ -4369,7 +4369,7 @@ export const page39 = section(
 	div(
 		{ class: "line" },
 		word("like"),
-		word("I've"),
+		word("Iߴve"),
 		word("never"),
 		word("shaked"),
 		word("before"),
@@ -4381,7 +4381,7 @@ export const page39 = section(
 		{ class: "line" },
 		word("falling"),
 		word("right"),
-		word("outta'"),
+		word("outtaߴ"),
 		word("my"),
 		word("chair.")
 	)
@@ -4390,13 +4390,13 @@ export const page40 = section(
 	{ class: "page" },
 	div(
 		{ class: "line" },
-		word("They're"),
+		word("Theyߴre"),
 		word("all"),
 		word("looking"),
 		word("at"),
 		word("me"),
 		word("like"),
-		word("I've"),
+		word("Iߴve"),
 		word("just"),
 		word("been")
 	),
@@ -4407,7 +4407,7 @@ export const page40 = section(
 		word("a"),
 		word("car"),
 		word("or"),
-		word("somethin',"),
+		word("somethinߴ,"),
 		word("like"),
 		word("this"),
 		word("one"),
@@ -4468,20 +4468,20 @@ export const page41 = section(
 		word("I"),
 		word("mean,"),
 		word("I"),
-		word("kinda'"),
+		word("kindaߴ"),
 		word("feel"),
 		word("sorry"),
 		word("for"),
-		word("them—'cause")
+		word("them—ߴcause")
 	),
 	div(
 		{ class: "line" },
 		word("I"),
 		word("know"),
-		word("it's"),
+		word("itߴs"),
 		word("not"),
 		word("like"),
-		word("they're"),
+		word("theyߴre"),
 		word("enjoying"),
 		word("watching")
 	),
@@ -4500,7 +4500,7 @@ export const page41 = section(
 	div(
 		{ class: "line" },
 		word("maybe"),
-		word("she's"),
+		word("sheߴs"),
 		word("not"),
 		word("having"),
 		word("a"),
@@ -4532,9 +4532,9 @@ export const page41 = section(
 		word("to"),
 		word("see"),
 		word("if"),
-		word("she's")
+		word("sheߴs")
 	),
-	div({ class: "line" }, word("spyin'"), word("on"), word("me."))
+	div({ class: "line" }, word("spyinߴ"), word("on"), word("me."))
 );
 export const page42 = section(
 	{ class: "page" },
@@ -4595,7 +4595,7 @@ export const page42 = section(
 		word("and"),
 		word("that"),
 		word("maybe"),
-		word("that'll"),
+		word("thatߴll"),
 		word("be")
 	),
 	div({ class: "line" }, word("the"), word("end"), word("of"), word("it."))
