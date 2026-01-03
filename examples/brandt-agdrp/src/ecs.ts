@@ -1,7 +1,7 @@
 import { ECS } from "@thi.ng/ecs";
 
 // 2. The Master Schema
-export interface ComponentSpecs {
+export interface CompSpecs {
 	// --- PHYSICS (MemMapped) ---
 	// For TypedArrays, the Spec defines the backing array type
 	wght: Float32Array;
@@ -9,17 +9,13 @@ export interface ComponentSpecs {
 	ital: Float32Array;
 	cont: Float32Array;
 	urge: Float32Array;
-
-	// --- ANCHOR (MemMapped) ---
-	// Stores [x, y, width, pageIndex]
 	anch: Float32Array;
 }
 
 // 3. The Components
-export const ecs = new ECS<ComponentSpecs>({});
+export const ecs = new ECS<CompSpecs>({});
 
 // --- DEFINING SCALARS (Physics) ---
-
 export const wght = ecs.defComponent({
 	id: "wght",
 	type: "f32",
@@ -56,10 +52,9 @@ export const urge = ecs.defComponent({
 })!;
 
 // --- ANCHOR VECTOR ---
-// Size 4 = [x, y, width, pageIndex]
 export const anch = ecs.defComponent({
 	id: "anch",
 	type: "f32",
-	size: 4,
-	default: [0, 0, 0, 0],
+	size: 2,
+	default: [0, 0],
 })!;

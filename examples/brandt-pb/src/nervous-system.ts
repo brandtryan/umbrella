@@ -39,23 +39,24 @@ export function initNervousSystem(
 
 	// A. Detect Current Page
 	const pageIndex$ = scroll$.transform(
-		map((y) => Math.floor(y / window.innerHeight)),
+		map((y: any) => Math.floor(y / window.innerHeight)),
 		dedupe()
 	);
 
 	// B. The Reading Timer (The "Flashlight" logic)
 	// We combine Time + PageIndex.
-	const ReadingState$ = sync({
-		src: {
-			page: pageIndex$,
-			time: raf$,
-		},
-	}).transform(
-		// FIX: 'scan' requires a Reducer object { init, complete, step }, not just a function.
-		scan({
-			init: () => ({ page: 0, timer: 0, tLast: 0 }),
-			complete: (acc) => acc,
-			step: (acc, curr) => {
+	const ReadingState$ = sync(
+		{
+			src: {
+				page: pageIndex$,
+				time: raf$,
+			},
+		}.scan({
+			init: (page: 0, timer: 0, tLast: 0) => null,
+			complete: (acc: any) => {
+				acc;
+			},
+			step: (acc: any, curr: any) => {
 				// 1. Initialize tLast on first run if needed (or handle via init)
 				if (acc.tLast === 0) {
 					return { page: curr.page, timer: 0, tLast: curr.time };
@@ -79,7 +80,7 @@ export function initNervousSystem(
 
 	// 2. OUTPUT
 	const activeIndex$ = ReadingState$.transform(
-		map((state) => {
+		map((state: any) => {
 			// 1. Find Start index of curr page (sum of previous pages)
 			let startIndex = 0;
 			for (let i = 0; i < state.page; i++)
@@ -106,7 +107,7 @@ export function initNervousSystem(
 				val: idx,
 			});
 		},
-		error: (e) => console.error("Nervous System Error:", e),
+		// error: (e) => console.error("Nervous System Error:", e),
 	});
 
 	return { activeIndex$ };

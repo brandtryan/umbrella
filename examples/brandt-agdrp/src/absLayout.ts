@@ -5,8 +5,6 @@ import { exposeGlobal } from "@thi.ng/expose";
 import { div } from "@thi.ng/hiccup-html";
 import { ConsoleLogger, LogLevel } from "@thi.ng/logger";
 import { $compile } from "@thi.ng/rdom";
-import { indexToUV } from "@thi.ng/shader-ast-stdlib";
-import { index } from "../../../packages/shader-ast/src/ast/indexed";
 
 log.set(new ConsoleLogger("ecs", LogLevel.INFO));
 
@@ -43,11 +41,12 @@ export const absLayout = () => {
 
 	for (let page of allPages) {
 		const wordsInPage: HTMLElement[] = Array.from(
-			page.querySelectorAll<HTMLElement>(".word")
+			page.querySelectorAll<HTMLElement>("word")
 		);
 		wordsInPage.forEach((wrd, page) => {
 			const box = wrd.getBoundingClientRect();
 			// Normalize here?
+			// indexToUV(4096, [box.x, box.y])
 			const x = box.x;
 			const y = box.y;
 			const w = box.width;
@@ -63,6 +62,9 @@ export const absLayout = () => {
 
 	// 5. Update Capacity
 	ecs.setCapacity(wordCount);
+
+	// Temp
+	const group = ecs.defGroup([wght, wdth, ital, cont, urge, anch]);
 
 	// 5. Create entities
 	for (let i = 0; i < wordCount; i++) {
