@@ -4,7 +4,7 @@ import { $compile } from "@thi.ng/rdom";
 import { AttribPool } from "@thi.ng/vector-pools";
 import * as Content from "./html";
 import { getPageCounts } from "./html";
-import { initNervousSystem } from "./nervous-system";
+import { initNervousSystem } from "../../brandt-agdrp/nervous-system";
 
 /********************
  * CONFIGURATION

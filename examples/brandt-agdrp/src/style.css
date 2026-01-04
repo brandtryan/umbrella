@@ -32,7 +32,7 @@
 :root {
 	/*
 		Slope Calc
-		Min viewport: 400px
+		Min viewport: 380px
 		Max viewport: 1200px
 	*/
 	--fs-fluid: clamp(12px, 1rem + 1vw, 24px);

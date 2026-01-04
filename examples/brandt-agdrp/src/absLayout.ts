@@ -5,11 +5,22 @@ import { ConsoleLogger, LogLevel } from "@thi.ng/logger";
 import { $compile } from "@thi.ng/rdom";
 import { anch, cont, ecs, ital, urge, wdth, wght } from "./ecs";
 import * as Content from "./html";
+import { glCanvas } from "@thi.ng/webgl";
 
+/********************
+ * CONFIGURATION
+ *********************/
 log.set(new ConsoleLogger("ecs", LogLevel.INFO));
 
-const W = window.innerWidth;
-const H = window.innerHeight;
+/********************
+ * TEMP HACK FOR STATE
+ *********************/
+const DATA_DIM = 64;
+const MAX_WORDS = DATA_DIM * DATA_DIM;
+const DEBUG_VIEW = true;
+const ENABLE_DEBUG_OVERLAY = true;
+const VW = window.innerWidth;
+const VH = window.innerHeight;
 
 /********************
  * DOM SETUP
@@ -23,37 +34,85 @@ const sortedPages = Object.keys(Content)
 	.map((key) => Content[key as keyof typeof Content]);
 
 const pageWordCounts: number[] = Content.getPageCounts(sortedPages);
-console.log("Word Counts per Page:", pageWordCounts);
 
 const book = div({ id: "pages" }, ...sortedPages);
+const canvas = glCanvas({
+	version: 2,
+	width: DATA_DIM,
+	height: DATA_DIM,
+	autoScale: false,
+	parent: document.body,
+});
+
+if (DEBUG_VIEW) {
+	Object.assign(canvas.canvas.style, {
+		position: "fixed",
+		top: "0",
+		right: "0",
+		zIndex: "9999",
+		width: "128px",
+		height: "128px",
+		border: "1px solid cyan",
+	});
+} else {
+	canvas.canvas.style.display = "none";
+}
+
+const gl = canvas.gl;
+if (!gl) throw new Error("WebGL2 not supported!");
+if (!gl.getExtension("EXT_color_buffer_float")) {
+	console.error(
+		"EXT_color_buffer_float not supported! Falling back to WebGL 2 defaults."
+	);
+}
+gl.getExtension("EXT_float_blend");
+
+// --- DEBUG OVERLAY SETUP ---
+let debugEl: HTMLElement;
+if (ENABLE_DEBUG_OVERLAY) {
+	debugEl = document.createElement("div");
+	Object.assign(debugEl.style, {
+		position: "fixed",
+		bottom: "10px",
+		left: "10px",
+		background: "rgba(0,0,0,0.85)",
+		color: "#0f0",
+		fontFamily: "monospace",
+		fontSize: "12px",
+		padding: "10px",
+		zIndex: "10000",
+		pointerEvents: "none",
+		whiteSpace: "pre",
+		border: "1px solid #0f0",
+	});
+	document.body.appendChild(debugEl);
+}
 
 $compile(book).mount(document.getElementById("app")!);
 await document.fonts.ready;
+console.log(book);
 
 /********************
  * WORD DOM DATA
  *********************/
-const all_words = Array.from(document.getElementsByClassName("word"));
-const all_words_count = all_words.length;
-const dom_nodes = [...all_words] as HTMLElement[];
+const words = Array.from(document.getElementsByClassName("word"));
+const words_count = words.length;
+const dom_nodes = [...words] as HTMLElement[];
 dom_nodes.forEach((el) => (el.dataset.id = dom_nodes.indexOf(el).toString()));
 
 /********************
  * LAYOUT & DATA PACKING
+ *
+ * Need a specifically structured, dense buffer to send to the GPU Texture:
+ * Structure: [x, y, page, id,  x, y, page, id...]
+ *
+ * The components in ECS are:
+ * "anch" for anchor position
+ * "wght" for mass
+ * "wdth" for volume
+ * "ital" for vel/inflate
+ * "cont" for edgyness
  *********************/
-// need a specific, dense buffer to send to the GPU Texture.
-// Structure: [x, y, page, id,  x, y, page, id...]
-// Above is what i think is a AOS as oppossed to an SOA, and I wonder the usefulness
-// of even including page and id in this particular array which only references home base.
-// If I could use a vec2 and just pass along (x,y), as the position of the this
-// element in the array is precisely the same integer as it's ECS entity id. Thoughts?
-// So I believe this is what I've been calling the "anchor" position/array
-// The components in ECS are:
-// "anch" for anchor position
-// "wght" for mass
-// "wdth" for volume
-// "ital" for vel/inflate
-// "cont" for edgyness
 
 // 4. Global access for console/debugging
 exposeGlobal("ecs", ecs, true);
@@ -62,7 +121,7 @@ exposeGlobal("ecs", ecs, true);
 const anchComp = ecs.components.get("anch")!;
 const anchBuff = anchComp.vals; // this is the float32array
 // 6. Update Capacity
-ecs.setCapacity(all_words_count);
+ecs.setCapacity(words_count);
 
 // 7. Create 5d Group
 const group = ecs.defGroup([wght, wdth, ital, cont, urge]);
@@ -74,8 +133,8 @@ for (let i = 0; i < dom_nodes.length; i++) {
 	const ptr = i * 4;
 
 	// Normalize (Pixels -> 0..1 for UV texture)
-	const normX = rect.left / W;
-	const normY = 1.0 - rect.top / H;
+	const normX = rect.left / VW;
+	const normY = 1.0 - rect.top / VH;
 
 	// Write directly to buffer for the anchors one time
 	anchBuff[ptr] = normX; // x (absolute)
@@ -86,7 +145,7 @@ for (let i = 0; i < dom_nodes.length; i++) {
 
 console.log(`
 All 3 numbers to right should match!
-Total Words * 4: 		${all_words_count * 4}
+Total Words * 4: 		${words_count * 4}
 ===========================================
 Entities * 4: 			${ecs.idgen.capacity * 4}
 ===========================================
