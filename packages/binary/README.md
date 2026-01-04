@@ -64,7 +64,7 @@ For Node.js REPL:
 const bin = await import("@thi.ng/binary");
 ```
 
-Package sizes (brotli'd, pre-treeshake): ESM: 2.53 KB
+Package sizes (brotli'd, pre-treeshake): ESM: 2.50 KB
 
 ## Dependencies
 

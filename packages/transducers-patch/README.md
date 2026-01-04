@@ -65,7 +65,7 @@ For Node.js REPL:
 const tp = await import("@thi.ng/transducers-patch");
 ```
 
-Package sizes (brotli'd, pre-treeshake): ESM: 496 bytes
+Package sizes (brotli'd, pre-treeshake): ESM: 497 bytes
 
 ## Dependencies
 

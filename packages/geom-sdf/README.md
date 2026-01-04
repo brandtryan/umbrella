@@ -167,7 +167,7 @@ For Node.js REPL:
 const sdf = await import("@thi.ng/geom-sdf");
 ```
 
-Package sizes (brotli'd, pre-treeshake): ESM: 3.76 KB
+Package sizes (brotli'd, pre-treeshake): ESM: 3.78 KB
 
 ## Dependencies
 

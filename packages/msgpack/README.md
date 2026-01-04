@@ -79,7 +79,7 @@ For Node.js REPL:
 const msg = await import("@thi.ng/msgpack");
 ```
 
-Package sizes (brotli'd, pre-treeshake): ESM: 1.57 KB
+Package sizes (brotli'd, pre-treeshake): ESM: 1.56 KB
 
 ## Dependencies
 

@@ -106,7 +106,7 @@ For Node.js REPL:
 const hc = await import("@thi.ng/hiccup-canvas");
 ```
 
-Package sizes (brotli'd, pre-treeshake): ESM: 2.65 KB
+Package sizes (brotli'd, pre-treeshake): ESM: 2.58 KB
 
 ## Dependencies
 

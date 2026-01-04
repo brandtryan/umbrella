@@ -67,7 +67,7 @@ For Node.js REPL:
 const dd = await import("@thi.ng/dgraph-dot");
 ```
 
-Package sizes (brotli'd, pre-treeshake): ESM: 226 bytes
+Package sizes (brotli'd, pre-treeshake): ESM: 228 bytes
 
 ## Dependencies
 

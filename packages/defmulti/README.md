@@ -71,7 +71,7 @@ For Node.js REPL:
 const def = await import("@thi.ng/defmulti");
 ```
 
-Package sizes (brotli'd, pre-treeshake): ESM: 802 bytes
+Package sizes (brotli'd, pre-treeshake): ESM: 800 bytes
 
 ## Dependencies
 

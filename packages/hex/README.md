@@ -64,7 +64,7 @@ For Node.js REPL:
 const hex = await import("@thi.ng/hex");
 ```
 
-Package sizes (brotli'd, pre-treeshake): ESM: 616 bytes
+Package sizes (brotli'd, pre-treeshake): ESM: 631 bytes
 
 ## Dependencies
 
