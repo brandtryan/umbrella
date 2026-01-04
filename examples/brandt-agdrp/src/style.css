@@ -29,6 +29,16 @@
 	initial-value: 0;
 }
 
+:root {
+	/*
+		Slope Calc
+		Min viewport: 400px
+		Max viewport: 1200px
+	*/
+	--fs-fluid: clamp(12px, 1rem + 1vw, 24px);
+	--lh-fluid: clamp(20px, 1.7em, 36px);
+}
+
 /* Base and Typography */
 html {
 	background-color: #213547;
@@ -40,8 +50,8 @@ html {
 	font-kerning: normal;
 	font-synthesis: none;
 	text-rendering: auto;
-	font-size: clamp(16px, 1.03vw + 11.8px, 22px);
-	line-height: clamp(26px, 28px + 0.75vh, 39px);
+	font-size: var(--fs-fluid);
+	line-height: var(--lh-fluid);
 }
 
 html,
@@ -73,23 +83,27 @@ body {
 	align-content: center;
 	height: 100vh;
 	width: 100%;
-	overflow: hidden;
+	min-width: 380px;
+	max-width: 1200px;
+	overflow: visible;
 	scroll-snap-align: start;
 }
 
 /* Line Styling */
 .line {
-	border: 1px goldenrod solid;
-	display: block;
-	max-width: 90vw;
-	min-width: 400px;
 	white-space: preserve nowrap;
 	text-align: left;
 }
 
-/* Word Styling */
+/* Word Styling KEEP KEEP KEEP*/
 .word {
-	display: inline-block;
 	font-variation-settings: "wght" var(--wght), "wdth" var(--wdth),
 		"ital" var(--ital), "cont" var(--cont);
+}
+
+span {
+	border: none;
+	padding: 0;
+	margin: 0;
+	display: inline-block;
 }
