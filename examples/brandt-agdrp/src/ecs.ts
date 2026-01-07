@@ -10,9 +10,9 @@ export interface CompSpecs {
 	cont: Float32Array;
 	urge: Float32Array;
 
-	// anch is for rect.x, rect.top, page, id
+	// rest is for rect.x, rect.top, page, id
 	// NOT part of the 5d 'Phase Space' components above
-	anch: Float32Array;
+	rest: Float32Array;
 }
 
 // 3. The Components
@@ -54,9 +54,9 @@ export const urge = ecs.defComponent({
 	default: [0],
 })!;
 
-// --- ANCHOR VECTOR ---
-export const anch = ecs.defComponent({
-	id: "anch",
+// --- REST VECTOR ---
+export const rest = ecs.defComponent({
+	id: "rest",
 	type: "f32",
-	size: 4,
+	size: 4, // left, top, pageIndex, entityId
 })!;

@@ -3,7 +3,7 @@ import { exposeGlobal } from "@thi.ng/expose";
 import { div } from "@thi.ng/hiccup-html";
 import { ConsoleLogger, LogLevel } from "@thi.ng/logger";
 import { $compile } from "@thi.ng/rdom";
-import { anch, cont, ecs, ital, urge, wdth, wght } from "./ecs";
+import { rest, cont, ecs, ital, urge, wdth, wght } from "./ecs";
 import * as Content from "./html";
 import { glCanvas } from "@thi.ng/webgl";
 
@@ -19,8 +19,8 @@ const DATA_DIM = 64;
 const MAX_WORDS = DATA_DIM * DATA_DIM;
 const DEBUG_VIEW = true;
 const ENABLE_DEBUG_OVERLAY = true;
-const VW = window.innerWidth;
-const VH = window.innerHeight;
+const vw = window.innerWidth;
+const vh = window.innerHeight;
 
 /********************
  * DOM SETUP
@@ -34,8 +34,10 @@ const sortedPages = Object.keys(Content)
 	.map((key) => Content[key as keyof typeof Content]);
 
 const pageWordCounts: number[] = Content.getPageCounts(sortedPages);
-
+// console.log(pageWordCounts);
+console.log(pageWordCounts);
 const book = div({ id: "pages" }, ...sortedPages);
+
 const canvas = glCanvas({
 	version: 2,
 	width: DATA_DIM,
@@ -90,13 +92,12 @@ if (ENABLE_DEBUG_OVERLAY) {
 
 $compile(book).mount(document.getElementById("app")!);
 await document.fonts.ready;
-console.log(book);
 
 /********************
  * WORD DOM DATA
  *********************/
 const words = Array.from(document.getElementsByClassName("word"));
-const words_count = words.length;
+const word_count = words.length;
 const dom_nodes = [...words] as HTMLElement[];
 dom_nodes.forEach((el) => (el.dataset.id = dom_nodes.indexOf(el).toString()));
 
@@ -104,52 +105,57 @@ dom_nodes.forEach((el) => (el.dataset.id = dom_nodes.indexOf(el).toString()));
  * LAYOUT & DATA PACKING
  *
  * Need a specifically structured, dense buffer to send to the GPU Texture:
- * Structure: [x, y, page, id,  x, y, page, id...]
+ * REST component Structure: [left, top, page, id,  left, top, page, id...]
  *
  * The components in ECS are:
- * "anch" for anchor position
  * "wght" for mass
  * "wdth" for volume
  * "ital" for vel/inflate
  * "cont" for edgyness
+ * "urge" hidden scalar
+ * "rest" for rest position.left, position.top, pageIndex, entityId
  *********************/
 
 // 4. Global access for console/debugging
 exposeGlobal("ecs", ecs, true);
 
-// 5. get the Raw buffer ONCE (for ANCH)
-const anchComp = ecs.components.get("anch")!;
-const anchBuff = anchComp.vals; // this is the float32array
+// 5. get the Raw buffer ONCE (for rest)
+const restComp = ecs.components.get("rest")!;
+const restBuff = restComp.vals; // this is the float32array
 // 6. Update Capacity
-ecs.setCapacity(words_count);
+ecs.setCapacity(word_count);
 
-// 7. Create 5d Group
-const group = ecs.defGroup([wght, wdth, ital, cont, urge]);
-
-// 8. Create Entities
+// 7. Create Entities
 for (let i = 0; i < dom_nodes.length; i++) {
-	ecs.defEntity([wght, wdth, ital, cont, urge, anch]);
+	ecs.defEntity([wght, wdth, ital, cont, urge, rest]);
 	const rect = dom_nodes[i].getBoundingClientRect();
 	const ptr = i * 4;
+	// 1. Calculate Absolute Y (World Space)
+	// This is how far down the document the word is, regardless of scroll
+	// const absoluteY = rect.top;
 
-	// Normalize (Pixels -> 0..1 for UV texture)
-	const normX = rect.left / VW;
-	const normY = 1.0 - rect.top / VH;
+	// 2. Calculate Page Index (The Bucket)
+	// "If I am at 2500px and the window is 1000px, I am on Page 2."
+	// const pageIndex = Math.floor(rect.top / vh);
+	const pageIndex = Math.floor(dom_nodes[i].offsetTop / vh);
 
-	// Write directly to buffer for the anchors one time
-	anchBuff[ptr] = normX; // x (absolute)
-	anchBuff[ptr + 1] = normY; // y (absolute)
-	anchBuff[ptr + 2] = 0; // page (calc logic here)
-	anchBuff[ptr + 3] = i; // id (the entity id)
+	// 3. Normalize for GPU (Viewport Space)
+	const normX = rect.left / vw;
+	const normY = 1.0 - rect.top / vh;
+
+	// 4. Write to Buffer
+	restBuff[ptr] = normX; // R
+	restBuff[ptr + 1] = normY; // G
+	restBuff[ptr + 2] = pageIndex; // B (Now correctly calculated)
+	restBuff[ptr + 3] = i; // A
 }
 
 console.log(`
 All 3 numbers to right should match!
-Total Words * 4: 		${words_count * 4}
+Total Words * 4: 		${word_count * 4}
 ===========================================
 Entities * 4: 			${ecs.idgen.capacity * 4}
 ===========================================
-anchBuff.vals.length:	${ecs.components.get("anch")!.vals.length}
+restBuff.vals.length:	${ecs.components.get("rest")!.vals.length}
 `);
-
-console.log(anchBuff);
+console.log(restBuff);

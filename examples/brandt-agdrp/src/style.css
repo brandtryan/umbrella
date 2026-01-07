@@ -87,6 +87,7 @@ body {
 	max-width: 1200px;
 	overflow: visible;
 	scroll-snap-align: start;
+	margin-inline: auto;
 }
 
 /* Line Styling */

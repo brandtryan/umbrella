@@ -39,20 +39,19 @@ let mainFrames = 0;
 let workerFrames = 0;
 let lastTime = performance.now();
 
-// const state = {
-// 	// new Atom?
-// 	urge_threshold: 0.0,
-// 	curr_stress: 0.0,
-// 	curr_urge: 0.0,
-// 	last_action_time: dateTime(),
-// 	vw: window.innerWidth,
-// 	vh: window.innerHeight,
-// 	scrollY: window.scrollY,
-// 	curr_page: scrollY / window.innerHeight,
-// 	dom_nodes: [] as HTMLElement[],
-// 	node_y_pos: new Float32Array(MAX_WORDS),
-// 	word_count: 0,
-// };
+const state = {
+	urge_threshold: 0.0,
+	curr_stress: 0.0,
+	curr_urge: 0.0,
+	last_action_time: dateTime(),
+	vw: window.innerWidth,
+	vh: window.innerHeight,
+	scrollY: window.scrollY,
+	curr_page: scrollY / window.innerHeight,
+	dom_nodes: [] as HTMLElement[],
+	node_y_pos: new Float32Array(MAX_WORDS),
+	word_count: 0,
+};
 
 /********************
  * WORD DOM POSITIONS
