@@ -34,8 +34,6 @@ const sortedPages = Object.keys(Content)
 	.map((key) => Content[key as keyof typeof Content]);
 
 const pageWordCounts: number[] = Content.getPageCounts(sortedPages);
-// console.log(pageWordCounts);
-console.log(pageWordCounts);
 const book = div({ id: "pages" }, ...sortedPages);
 
 const canvas = glCanvas({
@@ -90,8 +88,8 @@ if (ENABLE_DEBUG_OVERLAY) {
 	document.body.appendChild(debugEl);
 }
 
-$compile(book).mount(document.getElementById("app")!);
 await document.fonts.ready;
+$compile(book).mount(document.getElementById("app")!);
 
 /********************
  * WORD DOM DATA
@@ -119,11 +117,12 @@ dom_nodes.forEach((el) => (el.dataset.id = dom_nodes.indexOf(el).toString()));
 // 4. Global access for console/debugging
 exposeGlobal("ecs", ecs, true);
 
-// 5. get the Raw buffer ONCE (for rest)
+// 5. Update Capacity
+ecs.setCapacity(word_count);
+
+// 6. get the Raw buffer ONCE (for rest)
 const restComp = ecs.components.get("rest")!;
 const restBuff = restComp.vals; // this is the float32array
-// 6. Update Capacity
-ecs.setCapacity(word_count);
 
 // 7. Create Entities
 for (let i = 0; i < dom_nodes.length; i++) {
@@ -140,12 +139,14 @@ for (let i = 0; i < dom_nodes.length; i++) {
 	const pageIndex = Math.floor(dom_nodes[i].offsetTop / vh);
 
 	// 3. Normalize for GPU (Viewport Space)
-	const normX = rect.left / vw;
-	const normY = 1.0 - rect.top / vh;
+	// const normX = rect.left / vw;
+	// const normY = 1.0 - rect.top / vh;
 
 	// 4. Write to Buffer
-	restBuff[ptr] = normX; // R
-	restBuff[ptr + 1] = normY; // G
+	// restBuff[ptr] = normX; // R
+	// restBuff[ptr + 1] = normY; // G
+	restBuff[ptr] = rect.left; // R
+	restBuff[ptr + 1] = rect.top; // G
 	restBuff[ptr + 2] = pageIndex; // B (Now correctly calculated)
 	restBuff[ptr + 3] = i; // A
 }
