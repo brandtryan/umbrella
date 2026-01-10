@@ -205,7 +205,7 @@ export function ivec2(x: NumericB | Vec2Term | UVec2Term | BVec2Term): Lit<"ivec
 // prettier-ignore
 export function ivec2(x: NumericB, y: NumericB): Lit<"ivec2">;
 // prettier-ignore
-export function ivec2(...xs: any[]): Lit<"ivec2"> {
+export function ivec2(p0: string, p1: string, p2: { const: boolean; }, ...xs: any[]): Lit<"ivec2"> {
     return $gvec2("ivec2", $ivec, xs);
 }
 

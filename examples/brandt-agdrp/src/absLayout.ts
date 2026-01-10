@@ -3,9 +3,9 @@ import { exposeGlobal } from "@thi.ng/expose";
 import { div } from "@thi.ng/hiccup-html";
 import { ConsoleLogger, LogLevel } from "@thi.ng/logger";
 import { $compile } from "@thi.ng/rdom";
-import { rest, cont, ecs, ital, urge, wdth, wght } from "./ecs";
-import * as Content from "./html";
 import { glCanvas } from "@thi.ng/webgl";
+import { ecs } from "./ecs";
+import * as Content from "./html";
 
 /********************
  * CONFIGURATION
@@ -16,7 +16,6 @@ log.set(new ConsoleLogger("ecs", LogLevel.INFO));
  * TEMP HACK FOR STATE
  *********************/
 const DATA_DIM = 64;
-const MAX_WORDS = DATA_DIM * DATA_DIM;
 const DEBUG_VIEW = true;
 const ENABLE_DEBUG_OVERLAY = true;
 const vw = window.innerWidth;
@@ -88,6 +87,20 @@ if (ENABLE_DEBUG_OVERLAY) {
 	document.body.appendChild(debugEl);
 }
 
+// export function updateHUD(state: any, time: number) {
+// 	if (!debugEl) return;
+
+// 	//simple, direct text update.
+// 	// We avoid complex DOM diffing here for spee.
+// 	debugEl.innerText = `
+// 	SIMULATION STATUS: RUNNING
+// --------------------------
+// TIME    : ${time.toFixed(2)}
+// ENTITIES: ${state.numParticles || 0}
+// FPS     : ${(1000 / state.lastFrameDuration).toFixed(0)}
+// `.trim();
+// }
+
 await document.fonts.ready;
 $compile(book).mount(document.getElementById("app")!);
 
@@ -98,20 +111,16 @@ const words = Array.from(document.getElementsByClassName("word"));
 const word_count = words.length;
 const dom_nodes = [...words] as HTMLElement[];
 dom_nodes.forEach((el) => (el.dataset.id = dom_nodes.indexOf(el).toString()));
+let wght: CSSStyleValue = 300;
+let wdth: CSSStyleValue = 100;
 
+for (let word of words) {
+	const computedStyles = getComputedStyle(word);
+	wght = computedStyles.getPropertyValue("--wght");
+	wdth = computedStyles.getPropertyValue("--wdth");
+}
 /********************
  * LAYOUT & DATA PACKING
- *
- * Need a specifically structured, dense buffer to send to the GPU Texture:
- * REST component Structure: [left, top, page, id,  left, top, page, id...]
- *
- * The components in ECS are:
- * "wght" for mass
- * "wdth" for volume
- * "ital" for vel/inflate
- * "cont" for edgyness
- * "urge" hidden scalar
- * "rest" for rest position.left, position.top, pageIndex, entityId
  *********************/
 
 // 4. Global access for console/debugging
@@ -120,35 +129,56 @@ exposeGlobal("ecs", ecs, true);
 // 5. Update Capacity
 ecs.setCapacity(word_count);
 
-// 6. get the Raw buffer ONCE (for rest)
-const restComp = ecs.components.get("rest")!;
-const restBuff = restComp.vals; // this is the float32array
+// 6. get components
+const restComponent = ecs.components.get("rest")!;
+const stateComponent = ecs.components.get("state")!;
+const velComponent = ecs.components.get("vel")!;
+
+// 7. create buffers
+const restBuffer = restComponent.vals;
+const stateBuffer = stateComponent.vals;
+const velBuffer = velComponent.vals;
 
 // 7. Create Entities
 for (let i = 0; i < dom_nodes.length; i++) {
-	ecs.defEntity([wght, wdth, ital, cont, urge, rest]);
+	ecs.defEntity([restComponent, stateComponent, velComponent]);
 	const rect = dom_nodes[i].getBoundingClientRect();
 	const ptr = i * 4;
-	// 1. Calculate Absolute Y (World Space)
-	// This is how far down the document the word is, regardless of scroll
-	// const absoluteY = rect.top;
 
 	// 2. Calculate Page Index (The Bucket)
 	// "If I am at 2500px and the window is 1000px, I am on Page 2."
-	// const pageIndex = Math.floor(rect.top / vh);
 	const pageIndex = Math.floor(dom_nodes[i].offsetTop / vh);
 
-	// 3. Normalize for GPU (Viewport Space)
-	// const normX = rect.left / vw;
-	// const normY = 1.0 - rect.top / vh;
+	const anchorX = rect.left + rect.width * 0.5;
+	const anchorY = rect.top + rect.height * 0.5;
 
-	// 4. Write to Buffer
-	// restBuff[ptr] = normX; // R
-	// restBuff[ptr + 1] = normY; // G
-	restBuff[ptr] = rect.left; // R
-	restBuff[ptr + 1] = rect.top; // G
-	restBuff[ptr + 2] = pageIndex; // B (Now correctly calculated)
-	restBuff[ptr + 3] = i; // A
+	// 3. Normalize for GPU (Viewport Space)
+	const normX = anchorX / vw;
+	const normY = 1.0 - (anchorY % vh) / vh;
+
+	const urge = Math.random();
+	const decay_timer = 0;
+	const v_wght = 0;
+	const v_wdth = 0;
+	const v_urge = 0;
+
+	// 4. Write to Rest Buffer
+	restBuffer[ptr] = normX; // R
+	restBuffer[ptr + 1] = normY; // G
+	restBuffer[ptr + 2] = pageIndex; // B
+	restBuffer[ptr + 3] = i; // A
+
+	// 5. Write to State Buffer
+	stateBuffer[ptr] = wght; // R
+	stateBuffer[ptr + 1] = wdth; // G
+	stateBuffer[ptr + 2] = urge; // B
+	stateBuffer[ptr + 3] = decay_timer; // A
+
+	// 6. Write to Vel Buffer
+	velBuffer[ptr] = v_wght; // R
+	velBuffer[ptr + 1] = v_wdth; // G
+	velBuffer[ptr + 2] = v_urge; // B
+	velBuffer[ptr + 3] = 0; // A
 }
 
 console.log(`
@@ -158,5 +188,10 @@ Total Words * 4: 		${word_count * 4}
 Entities * 4: 			${ecs.idgen.capacity * 4}
 ===========================================
 restBuff.vals.length:	${ecs.components.get("rest")!.vals.length}
+
+Rest Component Buffer: ${restBuffer.length}
+----------------------------------
+State Component Buffer: ${stateBuffer.length}
+----------------------------------
+Velocity Component Buffer: ${velBuffer.length}
 `);
-console.log(restBuff);
