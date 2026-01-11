@@ -1,6 +1,6 @@
 import { sync, fromEvent, fromRAF } from "@thi.ng/rstream";
 import { map, dedupe, scan } from "@thi.ng/transducers";
-import { calculateReadingSpeed } from "../brandt-pb/src/reading-model";
+import { calculateReadingSpeed } from "./reading-model";
 
 // Configuration for Tier 2 model
 const SPEED_CONFIG = calculateReadingSpeed();

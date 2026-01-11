@@ -4,7 +4,7 @@ import { $compile } from "@thi.ng/rdom";
 import { AttribPool } from "@thi.ng/vector-pools";
 import * as Content from "./html";
 import { getPageCounts } from "./html";
-import { initNervousSystem } from "../../brandt-agdrp/nervous-system";
+import { initNervousSystem } from "./nervous-system";
 
 /********************
  * CONFIGURATION
@@ -25,7 +25,7 @@ const sortedPages = Object.keys(Content)
 	.map((key) => Content[key as keyof typeof Content]);
 
 const pageWordCounts: number[] = getPageCounts(sortedPages);
-console.log("Word Counts per Page:", pageWordCounts);
+// console.log("Word Counts per Page:", pageWordCounts);
 
 const book = div({ id: "pages" }, ...sortedPages);
 
