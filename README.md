@@ -312,16 +312,11 @@ feature or `develop` branches)
 
 ### Latest updates
 
-As of: 2025-12-25
+As of: 2026-01-23
 
-| Status                                        | Package                                             | Version                                                                                                                   | Changelog                                          |
-|:----------------------------------------------|:----------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------|:---------------------------------------------------|
-| ![](https://img.shields.io/badge/-feat-green) | [`@thi.ng/binary`](./packages/binary)               | [![version](https://img.shields.io/npm/v/@thi.ng/binary.svg)](https://www.npmjs.com/package/@thi.ng/binary)               | [changelog](./packages/binary/CHANGELOG.md)        |
-| ![](https://img.shields.io/badge/-feat-green) | [`@thi.ng/errors`](./packages/errors)               | [![version](https://img.shields.io/npm/v/@thi.ng/errors.svg)](https://www.npmjs.com/package/@thi.ng/errors)               | [changelog](./packages/errors/CHANGELOG.md)        |
-| ![](https://img.shields.io/badge/-feat-green) | [`@thi.ng/math`](./packages/math)                   | [![version](https://img.shields.io/npm/v/@thi.ng/math.svg)](https://www.npmjs.com/package/@thi.ng/math)                   | [changelog](./packages/math/CHANGELOG.md)          |
-| ![](https://img.shields.io/badge/-feat-green) | [`@thi.ng/pixel-io-tiff`](./packages/pixel-io-tiff) | [![version](https://img.shields.io/npm/v/@thi.ng/pixel-io-tiff.svg)](https://www.npmjs.com/package/@thi.ng/pixel-io-tiff) | [changelog](./packages/pixel-io-tiff/CHANGELOG.md) |
-| ![](https://img.shields.io/badge/-fix-orange) | [`@thi.ng/sexpr`](./packages/sexpr)                 | [![version](https://img.shields.io/npm/v/@thi.ng/sexpr.svg)](https://www.npmjs.com/package/@thi.ng/sexpr)                 | [changelog](./packages/sexpr/CHANGELOG.md)         |
-| ![](https://img.shields.io/badge/-feat-green) | [`@thi.ng/units`](./packages/units)                 | [![version](https://img.shields.io/npm/v/@thi.ng/units.svg)](https://www.npmjs.com/package/@thi.ng/units)                 | [changelog](./packages/units/CHANGELOG.md)         |
+| Status                                           | Package                               | Version                                                                                                     | Changelog                                   |
+|:-------------------------------------------------|:--------------------------------------|:------------------------------------------------------------------------------------------------------------|:--------------------------------------------|
+| ![](https://img.shields.io/badge/-refactor-cyan) | [`@thi.ng/server`](./packages/server) | [![version](https://img.shields.io/npm/v/@thi.ng/server.svg)](https://www.npmjs.com/package/@thi.ng/server) | [changelog](./packages/server/CHANGELOG.md) |
 
 ### Algorithms & data structures
 
@@ -391,6 +386,7 @@ As of: 2025-12-25
 | [`@thi.ng/pixel-io-geotiff`](./packages/pixel-io-geotiff)   | [![version](https://img.shields.io/npm/v/@thi.ng/pixel-io-geotiff.svg)](https://www.npmjs.com/package/@thi.ng/pixel-io-geotiff)   | [changelog](./packages/pixel-io-geotiff/CHANGELOG.md)  | GeoTIFF reader support for thi.ng/pixel         |
 | [`@thi.ng/pixel-io-netpbm`](./packages/pixel-io-netpbm)     | [![version](https://img.shields.io/npm/v/@thi.ng/pixel-io-netpbm.svg)](https://www.npmjs.com/package/@thi.ng/pixel-io-netpbm)     | [changelog](./packages/pixel-io-netpbm/CHANGELOG.md)   | 1/8/16/24bit NetPBM image format reader/writer  |
 | [`@thi.ng/pixel-io-pfm`](./packages/pixel-io-pfm)           | [![version](https://img.shields.io/npm/v/@thi.ng/pixel-io-pfm.svg)](https://www.npmjs.com/package/@thi.ng/pixel-io-pfm)           | [changelog](./packages/pixel-io-pfm/CHANGELOG.md)      | Portable FloatMap image format reader/writer    |
+| [`@thi.ng/pixel-io-tiff`](./packages/pixel-io-tiff)         | [![version](https://img.shields.io/npm/v/@thi.ng/pixel-io-tiff.svg)](https://www.npmjs.com/package/@thi.ng/pixel-io-tiff)         | [changelog](./packages/pixel-io-tiff/CHANGELOG.md)     | Minimal TIFF reader                             |
 | [`@thi.ng/prefixes`](./packages/prefixes)                   | [![version](https://img.shields.io/npm/v/@thi.ng/prefixes.svg)](https://www.npmjs.com/package/@thi.ng/prefixes)                   | [changelog](./packages/prefixes/CHANGELOG.md)          | Linked Data, RDF & xmlns prefixes/URLs          |
 | [`@thi.ng/sax`](./packages/sax)                             | [![version](https://img.shields.io/npm/v/@thi.ng/sax.svg)](https://www.npmjs.com/package/@thi.ng/sax)                             | [changelog](./packages/sax/CHANGELOG.md)               | SAX-like XML parser / transducer                |
 | [`@thi.ng/tangle`](./packages/tangle)                       | [![version](https://img.shields.io/npm/v/@thi.ng/tangle.svg)](https://www.npmjs.com/package/@thi.ng/tangle)                       | [changelog](./packages/tangle/CHANGELOG.md)            | Literate programming utilities                  |
@@ -421,6 +417,7 @@ As of: 2025-12-25
 | [`@thi.ng/router`](./packages/router)                           | [![version](https://img.shields.io/npm/v/@thi.ng/router.svg)](https://www.npmjs.com/package/@thi.ng/router)                           | [changelog](./packages/router/CHANGELOG.md)              | Customizable browser & non-browser router        |
 | [`@thi.ng/text-canvas`](./packages/text-canvas)                 | [![version](https://img.shields.io/npm/v/@thi.ng/text-canvas.svg)](https://www.npmjs.com/package/@thi.ng/text-canvas)                 | [changelog](./packages/text-canvas/CHANGELOG.md)         | Text-mode canvas, drawing, tables, charts        |
 | [`@thi.ng/text-format`](./packages/text-format)                 | [![version](https://img.shields.io/npm/v/@thi.ng/text-format.svg)](https://www.npmjs.com/package/@thi.ng/text-format)                 | [changelog](./packages/text-format/CHANGELOG.md)         | Color text formatting w/ ANSI & HTML presets     |
+| [`@thi.ng/text-format-image`](./packages/text-format-image)     | [![version](https://img.shields.io/npm/v/@thi.ng/text-format-image.svg)](https://www.npmjs.com/package/@thi.ng/text-format-image)     | [changelog](./packages/text-format-image/CHANGELOG.md)   | Bitmap image formatting for CLI/Terminal         |
 
 ### Fundamentals
 

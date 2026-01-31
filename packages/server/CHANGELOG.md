@@ -1,15 +1,21 @@
 # Change Log
 
-- **Last updated**: 2025-12-25T15:58:06Z
+- **Last updated**: 2026-01-23T13:09:44Z
 - **Generator**: [thi.ng/monopub](https://thi.ng/monopub)
 
 All notable changes to this project will be documented in this file.
-Only versions published since **2022-01-01** are listed here.
+Only versions published since **2023-01-01** are listed here.
 Please consult the Git history for older version information.
 See [Conventional Commits](https://conventionalcommits.org/) for commit guidelines.
 
 **Note:** Unlisted _patch_ versions only involve non-code or otherwise excluded changes
 and/or version bumps of transitive dependencies.
+
+### [0.12.22](https://github.com/thi-ng/umbrella/tree/@thi.ng/server@0.12.22) (2026-01-23)
+
+#### ♻️ Refactoring
+
+- add ParsedFormData, fix parseSearchParams(), add docs/tests ([f9899f7](https://github.com/thi-ng/umbrella/commit/f9899f7))
 
 ### [0.12.19](https://github.com/thi-ng/umbrella/tree/@thi.ng/server@0.12.19) (2025-12-03)
 

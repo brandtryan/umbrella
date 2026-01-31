@@ -1,6 +1,6 @@
 {
 	"name": "@thi.ng/timestamp",
-	"version": "1.1.30",
+	"version": "1.1.32",
 	"description": "Timestamp getter wrapping (in order of preference) `process.hrtime.bigint()`, `performance.now()` or `Date.now()`",
 	"type": "module",
 	"module": "./index.js",
@@ -40,7 +40,7 @@
 	},
 	"devDependencies": {
 		"esbuild": "^0.27.2",
-		"typedoc": "^0.28.15",
+		"typedoc": "^0.28.16",
 		"typescript": "^5.9.3"
 	},
 	"keywords": [

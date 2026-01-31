@@ -1,10 +1,10 @@
 # Change Log
 
-- **Last updated**: 2025-12-25T15:58:05Z
+- **Last updated**: 2026-01-23T13:09:44Z
 - **Generator**: [thi.ng/monopub](https://thi.ng/monopub)
 
 All notable changes to this project will be documented in this file.
-Only versions published since **2022-01-01** are listed here.
+Only versions published since **2023-01-01** are listed here.
 Please consult the Git history for older version information.
 See [Conventional Commits](https://conventionalcommits.org/) for commit guidelines.
 
@@ -52,11 +52,3 @@ and/or version bumps of transitive dependencies.
 - add sampleUniformX/Y() fns ([88f9ec5](https://github.com/thi-ng/umbrella/commit/88f9ec5))
   - update deps (add [@thi.ng/geom-isec](https://github.com/thi-ng/umbrella/tree/main/packages/geom-isec))
   - update pkg
-
-### [2.1.38](https://github.com/thi-ng/umbrella/tree/@thi.ng/geom-resample@2.1.38) (2022-12-10)
-
-#### 🩹 Bug fixes
-
-- avoid unnecessary resampling ([f2b0ef2](https://github.com/thi-ng/umbrella/commit/f2b0ef2))
-  - update resample(), check if given `opts` are actually usable
-    if not, just use orig points (or copies)
