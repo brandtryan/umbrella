@@ -4,9 +4,11 @@ import { ECS } from "@thi.ng/ecs";
 export interface CompSpecs {
 	// --- PHYSICS (MemMapped) ---
 	// For TypedArrays, the Spec defines the backing array type
+
 	rest: Float32Array;
+
+	// u_state group:
 	state: Float32Array;
-	vel: Float32Array;
 }
 
 export const ecs = new ECS<CompSpecs>({});
@@ -19,13 +21,6 @@ export const rest = ecs.defComponent({
 
 export const state = ecs.defComponent({
 	id: "state",
-	type: "f32",
-	size: 4,
-	default: () => [300, 100, Math.random(), 0],
-});
-
-export const vel = ecs.defComponent({
-	id: "vel",
 	type: "f32",
 	size: 4,
 });
