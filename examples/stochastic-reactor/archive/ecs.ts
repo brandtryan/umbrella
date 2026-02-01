@@ -1,8 +1,10 @@
 import { ECS } from "@thi.ng/ecs";
 
-// The Schema
+// 2. The Master Schema
 export interface CompSpecs {
-	// u_rest group:
+	// --- PHYSICS (MemMapped) ---
+	// For TypedArrays, the Spec defines the backing array type
+
 	rest: Float32Array;
 
 	// u_state group:
@@ -21,5 +23,4 @@ export const state = ecs.defComponent({
 	id: "state",
 	type: "f32",
 	size: 4,
-	stride: 4,
 });

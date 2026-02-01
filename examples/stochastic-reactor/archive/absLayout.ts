@@ -9,7 +9,7 @@ import { ConsoleLogger, LogLevel } from "@thi.ng/logger";
 import { $compile } from "@thi.ng/rdom";
 import { glCanvas } from "@thi.ng/webgl";
 import { ecs, type CompSpecs } from "./ecs";
-import * as Content from "./html";
+import * as Content from "../src/html";
 import { ComponentInfo } from "../../../packages/ecs/src/api";
 
 /********************
@@ -33,7 +33,7 @@ const sortedPages = Object.keys(Content)
 	.filter((key) => key.startsWith("page"))
 	.sort(
 		(a, b) =>
-			parseInt(a.replace("page", "")) - parseInt(b.replace("page", ""))
+			parseInt(a.replace("page", "")) - parseInt(b.replace("page", "")),
 	)
 	.map((key) => Content[key as keyof typeof Content]);
 
@@ -66,7 +66,7 @@ const gl = canvas.gl;
 if (!gl) throw new Error("WebGL2 not supported!");
 if (!gl.getExtension("EXT_color_buffer_float")) {
 	console.error(
-		"EXT_color_buffer_float not supported! Falling back to WebGL 2 defaults."
+		"EXT_color_buffer_float not supported! Falling back to WebGL 2 defaults.",
 	);
 }
 gl.getExtension("EXT_float_blend");
