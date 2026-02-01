@@ -1,5 +1,10 @@
 {
 	"extends": "../tsconfig.json",
-	"include": ["src/**/*", "archive/physics.ts", "archive/physics-shader.ts"],
+	"include": [
+		"src/**/*",
+		"archive/physics.ts",
+		"archive/physics-shader.ts",
+		"archive/index copy.ts"
+	],
 	"compilerOptions": {}
 }
