@@ -3,7 +3,7 @@ import { ECS } from "@thi.ng/ecs";
 // The Schema
 export interface CompSpecs {
 	// u_rest group:
-	rest: Float32Array;
+	roots: Float32Array;
 
 	// u_state group:
 	state: Float32Array;
@@ -11,8 +11,8 @@ export interface CompSpecs {
 
 export const ecs = new ECS<CompSpecs>({});
 
-export const rest = ecs.defComponent({
-	id: "rest",
+export const roots = ecs.defComponent({
+	id: "roots",
 	type: "f32",
 	size: 4,
 });

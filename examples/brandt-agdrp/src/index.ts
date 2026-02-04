@@ -1,28 +1,22 @@
-import { LOGGER as log, type ComponentID } from "@thi.ng/ecs";
 import { exposeGlobal } from "@thi.ng/expose";
 import { div } from "@thi.ng/hiccup-html";
 import { ConsoleLogger, LogLevel } from "@thi.ng/logger";
-import { $compile } from "@thi.ng/rdom";
-import {
-	defn,
-	ret,
-	// texture,
-	div as divvy,
-	$xy,
-	sym,
-	V2,
-	sub,
-	mul,
-	$y,
-} from "@thi.ng/shader-ast";
-import { glCanvas, defFBO, defTexture } from "@thi.ng/webgl";
+import { $compile, type ComponentLike } from "@thi.ng/rdom";
+import { FBO, glCanvas, defFBO, defTexture, TextureType } from "@thi.ng/webgl";
 import { ecs, type CompSpecs } from "./ecs";
 import * as Content from "./html";
+import { LOGGER as log } from "@thi.ng/shader-ast";
+
+/********************
+ * PRE
+ *********************/
+//`everwun caldum ruuuuby, like, like, the red...uh huh, Roodey.`
 
 /********************
  * CONFIGURATION
  *********************/
 log.set(new ConsoleLogger("ecs", LogLevel.INFO));
+const DEBUG_VIEW = true;
 const vw = window.innerWidth;
 const vh = window.innerHeight;
 
@@ -43,6 +37,8 @@ const book = div({ id: "pages" }, ...sortedPages);
 await document.fonts.ready;
 $compile(book).mount(document.getElementById("app")!);
 
+const roots = [];
+
 /********************
  * WORD DOM DATA
  *********************/
@@ -61,28 +57,66 @@ const { canvas } = glCanvas({
 
 const gl = canvas.getContext("webgl2");
 
+if (DEBUG_VIEW) {
+	Object.assign(canvas.style, {
+		position: "fixed",
+		top: "0",
+		right: "0",
+		zIndex: "9999",
+		width: "128px",
+		height: "128px",
+		border: "1px solid cyan",
+	});
+} else {
+	canvas.style.display = "none";
+}
+
 if (!gl) throw new Error("WebGL2 not supported!");
 if (!gl.getExtension("EXT_color_buffer_float")) {
 	console.error(
 		"EXT_color_buffer_float not supported! Falling back to WebGL 2 defaults.",
 	);
 }
+
 gl.getExtension("EXT_float_blend");
 
-/********************
- * LAYOUT & DATA PACKING
- *********************/
-exposeGlobal("ecs", ecs, true);
-ecs.setCapacity(word_count);
+//********************
+// * LAYOUT & DATA PACKING
+//********************
 
-const restComponent: any = ecs.components.get("rest");
-const restVals: ComponentID<CompSpecs> = restComponent.vals;
-// console.log(restValues);
-const restState = new Float32Array(TEX_SIZE * TEX_SIZE * 4);
+// const u_rest = defTexture(gl, {
+// 	width: TEX_SIZE,
+// 	height: TEX_SIZE,
+// 	format: gl.RGBA32F,
+// 	type: gl.FLOAT,
+// 	image: roots_buff,
+// });
 
+// const state_0 = defFBO(gl);
+// const state_1 = defFBO(gl);
+
+// state_0.configure({
+// 	//@ts-expect-error
+// 	tex: defTexture(gl, {
+// 		width: TEX_SIZE,
+// 		height: TEX_SIZE,
+// 		format: gl.RGBA32F,
+// 		type: gl.FLOAT,
+// 	}),
+// });
+
+// state_1.configure({
+// 	//@ts-expect-error
+// 	tex: defTexture(gl, {
+// 		width: TEX_SIZE,
+// 		height: TEX_SIZE,
+// 		format: gl.RGBA32F,
+// 		type: gl.FLOAT,
+// 	}),
+// });
 // 7. Create Entities
+
 for (let i = 0; i < word_count; i++) {
-	ecs.defEntity(restComponent?.vals[i]);
 	const el = dom_nodes[i];
 	const rect = el.getBoundingClientRect();
 
@@ -100,68 +134,32 @@ for (let i = 0; i < word_count; i++) {
 	const urge = Math.random();
 
 	const ptr = i * 4;
-	// 4. Write to Rest Buffer
-	restState[ptr] = norm_x; // R
-	restState[ptr + 1] = norm_y; // G
-	restState[ptr + 2] = pageIndex; // B
-	restState[ptr + 3] = i; // A
+
+	roots[ptr] = norm_x; // R
+	roots[ptr + 1] = norm_y; // G
+	roots[ptr + 2] = pageIndex; // B
+	roots[ptr + 3] = i; // A
+
+	//	const floats = ecs.defEntity(ecs.components.get("roots")?.vals);
+
+	const u_roots = defTexture(gl, {
+		width: TEX_SIZE,
+		height: TEX_SIZE,
+		format: gl.RGBA32F,
+		type: gl.FLOAT,
+		image: undefined,
+	});
 }
-console.log(restState);
 
-// 	// Create a texture object
-const texture = gl.createTexture();
-// 	// Bind the texture to the TEXTURE_2D target
-gl.bindTexture(gl.TEXTURE_2D, texture);
+const fbo = defFBO(gl);
 
-const texConfig = {
-	width: TEX_SIZE,
-	texture: WebGLTexture,
-	height: TEX_SIZE,
-	format: gl.RGBA,
-	internalFormat: gl.RGBA32F,
-	type: gl.FLOAT,
-	filter: gl.NEAREST,
-	image: restState,
-};
+gl.bindFramebuffer(gl.FRAMEBUFFER, fbo.fbo);
 
-const fboPair = [1].map(() =>
-	defFBO(gl, {
-		tex: [defTexture(gl, texConfig)],
-	}),
+console.log(
+	`
+		All 3 numbers to right should match!
+		Total Words * 4: 		${word_count * 4}
+		===========================================
+		ECS capacity: 			${ecs.idgen.capacity * 4}
+`,
 );
-
-const aspectCorrectedUV = defn(
-	V2,
-	"aspectCorrectedUV2",
-	[V2, V2],
-	(fragCoord, resolution) => [
-		ret(divvy(sub(mul(2, fragCoord), resolution), $y(resolution))),
-	],
-);
-
-// const readState = defn(
-// 	"vec4", // 1. Return Type
-// 	"readState", // 2. Function Name (in GLSL)
-// 	["sampler2D", "vec2"], // 3. Argument Types
-// 	(tex, res) => {
-// 		// Define a symbol (variable) for UV to keep code clean
-// 		const uv = sym(divvy($xy(), res));
-
-// 		return [
-// 			// Return the texture lookup using that UV
-// 			ret(texture(tex, uv)),
-// 		];
-// 	},
-// );
-// // 4. Write to State Buffer
-// console.log(`
-// All 3 numbers to right should match!
-// Total Words * 4: 		${word_count * 4}
-// ===========================================
-// Entities * 4: 			${ecs.idgen.capacity * 4}
-// ----------------------------------
-// Rest Component Buffer: ${restState.length}
-// ----------------------------------
-// Bake Complete. Payload Size: ${restState.byteLength} bytes.);
-// ----------------------------------
-// `);
