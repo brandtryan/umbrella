@@ -1,6 +1,6 @@
 {
 	"name": "@thi.ng/expose",
-	"version": "1.2.74",
+	"version": "1.2.75",
 	"description": "Conditional global variable exposition",
 	"type": "module",
 	"module": "./index.js",
@@ -8,7 +8,8 @@
 	"sideEffects": false,
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/thi-ng/umbrella.git"
+		"url": "git+https://github.com/thi-ng/umbrella.git",
+		"directory": "packages/expose"
 	},
 	"homepage": "https://thi.ng/expose",
 	"funding": [

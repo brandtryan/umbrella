@@ -7,7 +7,7 @@
 [![Mastodon Follow](https://img.shields.io/mastodon/follow/109331703950160316?domain=https%3A%2F%2Fmastodon.thi.ng&style=social)](https://mastodon.thi.ng/@toxi)
 
 > [!NOTE]
-> This is one of 213 standalone projects, maintained as part
+> This is one of 214 standalone projects, maintained as part
 > of the [@thi.ng/umbrella](https://github.com/thi-ng/umbrella/) monorepo
 > and anti-framework.
 >
@@ -68,6 +68,7 @@ conventions are closely aligned to the ones used by the
 - [addN](https://docs.thi.ng/umbrella/tensors/variables/addN.html): Tensor-scalar addition
 - [argMax](https://docs.thi.ng/umbrella/tensors/functions/argMax.html): Maximum component index/value
 - [argMin](https://docs.thi.ng/umbrella/tensors/functions/argMin.html): Minimum component index/value
+- [cdf](https://docs.thi.ng/umbrella/tensors/variables/cdf.html): Cumulative distribution of 1D tensor
 - [clamp](https://docs.thi.ng/umbrella/tensors/variables/clamp.html): Tensor-tensor interval clamping
 - [clampN](https://docs.thi.ng/umbrella/tensors/variables/clampN.html): Tensor-scalar interval clamping
 - [convolve](https://docs.thi.ng/umbrella/tensors/variables/convolve.html): Tensor convolution (1D/2D/3D only)
@@ -76,8 +77,10 @@ conventions are closely aligned to the ones used by the
 - [div](https://docs.thi.ng/umbrella/tensors/variables/div.html): Tensor-tensor division
 - [divN](https://docs.thi.ng/umbrella/tensors/variables/divN.html): Tensor-scalar division
 - [dot](https://docs.thi.ng/umbrella/tensors/variables/dot.html): Dot product
+- [equalizeHistogram](https://docs.thi.ng/umbrella/tensors/functions/equalizeHistogram.html): histogram equalization
 - [exp](https://docs.thi.ng/umbrella/tensors/variables/exp.html): Componentwise `Math.exp`
 - [exp2](https://docs.thi.ng/umbrella/tensors/variables/exp2.html): Componentwise `2^x`
+- [histogramUint](https://docs.thi.ng/umbrella/tensors/functions/histogramUint.html): histogram of uint-based tensor
 - [identity](https://docs.thi.ng/umbrella/tensors/functions/identity.html): Square identity matrix tensor
 - [integrate](https://docs.thi.ng/umbrella/tensors/functions/integrate.html): Integrate tensor along innermost dimension
 - [log](https://docs.thi.ng/umbrella/tensors/variables/log.html): Componentwise `Math.log`
@@ -250,7 +253,7 @@ For Node.js REPL:
 const ten = await import("@thi.ng/tensors");
 ```
 
-Package sizes (brotli'd, pre-treeshake): ESM: 11.49 KB
+Package sizes (brotli'd, pre-treeshake): ESM: 11.80 KB
 
 ## Dependencies
 

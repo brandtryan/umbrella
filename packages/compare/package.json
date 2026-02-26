@@ -1,6 +1,6 @@
 {
 	"name": "@thi.ng/compare",
-	"version": "2.4.39",
+	"version": "2.4.40",
 	"description": "Comparators with support for types implementing the @thi.ng/api/ICompare interface",
 	"type": "module",
 	"module": "./index.js",
@@ -8,7 +8,8 @@
 	"sideEffects": false,
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/thi-ng/umbrella.git"
+		"url": "git+https://github.com/thi-ng/umbrella.git",
+		"directory": "packages/compare"
 	},
 	"homepage": "https://thi.ng/compare",
 	"funding": [
@@ -39,7 +40,7 @@
 		"tool:tangle": "../../node_modules/.bin/tangle src/**/*.ts"
 	},
 	"dependencies": {
-		"@thi.ng/api": "^8.12.13"
+		"@thi.ng/api": "^8.12.14"
 	},
 	"devDependencies": {
 		"esbuild": "^0.27.2",

@@ -1,6 +1,6 @@
 {
 	"name": "@thi.ng/cache",
-	"version": "2.3.62",
+	"version": "2.3.63",
 	"description": "In-memory cache implementations with ES6 Map-like API and different eviction strategies",
 	"type": "module",
 	"module": "./index.js",
@@ -8,7 +8,8 @@
 	"sideEffects": false,
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/thi-ng/umbrella.git"
+		"url": "git+https://github.com/thi-ng/umbrella.git",
+		"directory": "packages/cache"
 	},
 	"homepage": "https://thi.ng/cache",
 	"funding": [
@@ -39,8 +40,8 @@
 		"tool:tangle": "../../node_modules/.bin/tangle src/**/*.ts"
 	},
 	"dependencies": {
-		"@thi.ng/api": "^8.12.13",
-		"@thi.ng/dcons": "^3.2.181"
+		"@thi.ng/api": "^8.12.14",
+		"@thi.ng/dcons": "^3.2.182"
 	},
 	"devDependencies": {
 		"esbuild": "^0.27.2",

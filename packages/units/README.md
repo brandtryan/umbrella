@@ -7,7 +7,7 @@
 [![Mastodon Follow](https://img.shields.io/mastodon/follow/109331703950160316?domain=https%3A%2F%2Fmastodon.thi.ng&style=social)](https://mastodon.thi.ng/@toxi)
 
 > [!NOTE]
-> This is one of 213 standalone projects, maintained as part
+> This is one of 214 standalone projects, maintained as part
 > of the [@thi.ng/umbrella](https://github.com/thi-ng/umbrella/) monorepo
 > and anti-framework.
 >
@@ -151,7 +151,6 @@ The following units are provided as "builtins", here grouped by dimension:
 | `m/s2`    | `m_s2`        | meter per second squared  |
 | `ft/s2`   | `ft_s2`       | foot per second squared   |
 | `rad/s2`  | `rad_s2`      | radian per second squared |
-| `g0`      | `g0`          | standard gravity          |
 
 #### Angle
 
@@ -582,6 +581,7 @@ The following constants are provided (more to come):
 | `EARTH_CIRCUMFERENCE`                        | `m`                 |                           |
 | `EARTH_MASS`                                 | `kg`                |                           |
 | `EARTH_RADIUS`                               | `m`                 |                           |
+| `G0`                                         | `m/s2`              | Standard gravity          |
 | `GRAVITATION`                                | `kg-1·m3·s-2`       | Gravitational constant    |
 | `SPEED_OF_LIGHT`                             | `m/s`               |                           |
 | `SPEED_OF_SOUND_IN_AIR`                      | `m/s`               | at 20 ℃                   |
@@ -687,7 +687,7 @@ For Node.js REPL:
 const units = await import("@thi.ng/units");
 ```
 
-Package sizes (brotli'd, pre-treeshake): ESM: 4.79 KB
+Package sizes (brotli'd, pre-treeshake): ESM: 5.69 KB
 
 ## Dependencies
 

@@ -1,6 +1,6 @@
 {
 	"name": "@thi.ng/porter-duff",
-	"version": "2.1.125",
+	"version": "2.1.126",
 	"description": "Porter-Duff operators for packed ints & float-array alpha compositing",
 	"type": "module",
 	"module": "./index.js",
@@ -8,7 +8,8 @@
 	"sideEffects": false,
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/thi-ng/umbrella.git"
+		"url": "git+https://github.com/thi-ng/umbrella.git",
+		"directory": "packages/porter-duff"
 	},
 	"homepage": "https://thi.ng/porter-duff",
 	"funding": [
@@ -39,7 +40,7 @@
 		"tool:tangle": "../../node_modules/.bin/tangle src/**/*.ts"
 	},
 	"dependencies": {
-		"@thi.ng/api": "^8.12.13"
+		"@thi.ng/api": "^8.12.14"
 	},
 	"devDependencies": {
 		"esbuild": "^0.27.2",

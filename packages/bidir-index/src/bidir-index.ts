@@ -204,11 +204,19 @@ export class BidirIndex<T>
 	 * false), throws error if any of the given keys is unknown/unindexed (use
 	 * {@link BidirIndex.add} or {@link BidirIndex.addAll} first).
 	 *
+	 * @remarks
+	 * Only used if `fail=false` (default): If `all=true`, any unknown values
+	 * will be mapped to `null` values in the result array. Otherwise, the
+	 * default behavior is for such unknown values to be skipped.
+	 *
 	 * @param keys
 	 * @param fail
+	 * @param all
 	 */
-	getAll(keys: Iterable<T>, fail = false) {
-		return __iterate(this.fwd, keys, fail);
+	getAll(keys: Iterable<T>, fail?: boolean): number[];
+	getAll(keys: Iterable<T>, fail: boolean, all: true): (number | null)[];
+	getAll(keys: Iterable<T>, fail = false, all?: boolean) {
+		return __iterate(this.fwd, keys, fail, all);
 	}
 
 	/**
@@ -219,20 +227,47 @@ export class BidirIndex<T>
 	 * @param fail
 	 */
 	getAllUnique(keys: Iterable<T>, fail = false) {
-		return new Set(__iterate(this.fwd, keys, fail));
+		return new Set(<number[]>__iterate(this.fwd, keys, fail));
 	}
 
 	/**
-	 * Returns array of matching keys for all given IDs. If `fail` is true
-	 * (default: false), throws error if any of the given IDs is
-	 * unknown/unindexed (use {@link BidirIndex.add} or
+	 * Reverse op of {@link BidirIndex.getAll}. Returns array of matching keys
+	 * for all given IDs. If `fail` is true (default: false), throws error if
+	 * any of the given IDs is unknown/unindexed (use {@link BidirIndex.add} or
 	 * {@link BidirIndex.addAll} first).
+	 *
+	 * @remarks
+	 * Only used if `fail=false` (default): If `all=true`, any unknown IDs will
+	 * be mapped to `null` values in the result array. Otherwise, the default
+	 * behavior is for such unknown values to be skipped.
 	 *
 	 * @param ids
 	 * @param fail
+	 * @param all
 	 */
-	getAllIDs(ids: Iterable<number>, fail = false) {
-		return __iterate(this.rev, ids, fail);
+	getAllIDs(ids: Iterable<number>, fail?: boolean): T[];
+	getAllIDs(ids: Iterable<number>, fail: boolean, all: true): (T | null)[];
+	getAllIDs(ids: Iterable<number>, fail = false, all?: true) {
+		return __iterate(this.rev, ids, fail, all);
+	}
+
+	/**
+	 * Attempts to rename `currKey` into `newKey` without changing its ID
+	 * mapping. Returns `ok` if successful, otherwise `missing` if `currKey` is
+	 * unknown or `conflict` if `newKey` already exists.
+	 *
+	 * @param currKey
+	 * @param newKey
+	 */
+	renameKey(currKey: T, newKey: T) {
+		const id1 = this.fwd.get(currKey);
+		if (id1 == null) return "missing";
+		const id2 = this.fwd.get(newKey);
+		if (id2 != null) return "conflict";
+		this.fwd.delete(currKey);
+		this.fwd.set(newKey, id1);
+		this.rev.set(id1, newKey);
+		return "ok";
 	}
 
 	/**
@@ -258,22 +293,25 @@ const __delete = <A, B>(fwd: Map<A, B>, rev: Map<B, A>, key: A) => {
 	return false;
 };
 
-const __iterate = <A, B>(
+/** @internal */
+function __iterate<A, B>(
 	index: Map<A, B>,
 	keys: Iterable<A>,
-	fail: boolean
-) => {
-	const res: B[] = [];
+	fail: boolean,
+	all?: boolean
+) {
+	const res: (B | null)[] = [];
 	for (const k of keys) {
 		const val = index.get(k);
 		if (val === undefined) {
 			if (fail) throw new Error(`unknwon key/ID: ${k}`);
+			if (all) res.push(null);
 		} else {
 			res.push(val);
 		}
 	}
 	return res;
-};
+}
 
 /**
  * Factory function wrapper for {@link BidirIndex}.

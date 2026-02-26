@@ -1,6 +1,6 @@
 {
 	"name": "@thi.ng/msgpack",
-	"version": "1.0.40",
+	"version": "1.0.41",
 	"description": "Small & fast msgpack serialization & deserialization",
 	"type": "module",
 	"module": "./index.js",
@@ -8,7 +8,8 @@
 	"sideEffects": false,
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/thi-ng/umbrella.git"
+		"url": "git+https://github.com/thi-ng/umbrella.git",
+		"directory": "packages/msgpack"
 	},
 	"homepage": "https://thi.ng/msgpack",
 	"funding": [
@@ -39,9 +40,9 @@
 		"tool:tangle": "../../node_modules/.bin/tangle src/**/*.ts"
 	},
 	"dependencies": {
-		"@thi.ng/checks": "^3.8.3",
-		"@thi.ng/errors": "^2.6.2",
-		"@thi.ng/strings": "^3.9.34"
+		"@thi.ng/checks": "^3.8.4",
+		"@thi.ng/errors": "^2.6.3",
+		"@thi.ng/strings": "^3.9.35"
 	},
 	"devDependencies": {
 		"esbuild": "^0.27.2",

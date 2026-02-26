@@ -1,6 +1,6 @@
 {
 	"name": "@thi.ng/bitstream",
-	"version": "2.4.39",
+	"version": "2.4.41",
 	"description": "ES6 iterator based read/write bit streams with support for variable word widths",
 	"type": "module",
 	"module": "./index.js",
@@ -8,7 +8,8 @@
 	"sideEffects": false,
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/thi-ng/umbrella.git"
+		"url": "git+https://github.com/thi-ng/umbrella.git",
+		"directory": "packages/bitstream"
 	},
 	"homepage": "https://thi.ng/bitstream",
 	"funding": [
@@ -39,7 +40,7 @@
 		"tool:tangle": "../../node_modules/.bin/tangle src/**/*.ts"
 	},
 	"dependencies": {
-		"@thi.ng/errors": "^2.6.2"
+		"@thi.ng/errors": "^2.6.3"
 	},
 	"devDependencies": {
 		"esbuild": "^0.27.2",

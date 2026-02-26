@@ -1,14 +1,15 @@
 {
 	"name": "@thi.ng/rle-pack",
-	"version": "3.1.117",
-	"description": "Binary run-length encoding packer w/ flexible repeat bit widths",
+	"version": "3.2.1",
+	"description": "Binary run-length encoding packer w/ flexible repeat bit widths and a naive RLE encoder/decoder for arrays of arbitrary typed values",
 	"type": "module",
 	"module": "./index.js",
 	"typings": "./index.d.ts",
 	"sideEffects": false,
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/thi-ng/umbrella.git"
+		"url": "git+https://github.com/thi-ng/umbrella.git",
+		"directory": "packages/rle-pack"
 	},
 	"homepage": "https://thi.ng/rle-pack",
 	"funding": [
@@ -39,8 +40,9 @@
 		"tool:tangle": "../../node_modules/.bin/tangle src/**/*.ts"
 	},
 	"dependencies": {
-		"@thi.ng/bitstream": "^2.4.39",
-		"@thi.ng/errors": "^2.6.2"
+		"@thi.ng/api": "^8.12.14",
+		"@thi.ng/bitstream": "^2.4.41",
+		"@thi.ng/errors": "^2.6.3"
 	},
 	"devDependencies": {
 		"esbuild": "^0.27.2",
@@ -69,6 +71,12 @@
 	"exports": {
 		".": {
 			"default": "./index.js"
+		},
+		"./binary": {
+			"default": "./binary.js"
+		},
+		"./simple": {
+			"default": "./simple.js"
 		}
 	},
 	"thi.ng": {

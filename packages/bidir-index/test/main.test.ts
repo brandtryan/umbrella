@@ -23,6 +23,7 @@ test("addAll", () => {
 test("getAll", () => {
 	const idx = defBidirIndex("abc");
 	expect(idx.getAll("cba")).toEqual([2, 1, 0]);
+	expect(idx.getAllUnique("ccbbaa")).toEqual(new Set([0, 1, 2]));
 	expect(idx.getAllIDs([2, 1, 0])).toEqual(["c", "b", "a"]);
 	expect(() => idx.getAll("def", true)).toThrow();
 	expect(() => idx.getAllIDs([4], true)).toThrow();
@@ -43,4 +44,13 @@ test("deleteAll", () => {
 			[102, "c"],
 		])
 	);
+});
+
+test("rename", () => {
+	const idx = defBidirIndex("ab");
+	expect(idx.renameKey("a", "b")).toBe("conflict");
+	expect(idx.renameKey("c", "b")).toBe("missing");
+	expect(idx.renameKey("a", "c")).toBe("ok");
+	expect(idx.get("a")).toBeUndefined();
+	expect(idx.get("c")).toBe(0);
 });

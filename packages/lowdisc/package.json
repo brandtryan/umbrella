@@ -1,6 +1,6 @@
 {
 	"name": "@thi.ng/lowdisc",
-	"version": "1.0.33",
+	"version": "1.0.34",
 	"description": "n-dimensional low-discrepancy sequence generators/iterators",
 	"type": "module",
 	"module": "./index.js",
@@ -8,7 +8,8 @@
 	"sideEffects": false,
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/thi-ng/umbrella.git"
+		"url": "git+https://github.com/thi-ng/umbrella.git",
+		"directory": "packages/lowdisc"
 	},
 	"homepage": "https://thi.ng/lowdisc",
 	"funding": [
@@ -39,7 +40,7 @@
 		"tool:tangle": "../../node_modules/.bin/tangle src/**/*.ts"
 	},
 	"dependencies": {
-		"@thi.ng/errors": "^2.6.2"
+		"@thi.ng/errors": "^2.6.3"
 	},
 	"devDependencies": {
 		"esbuild": "^0.27.2",

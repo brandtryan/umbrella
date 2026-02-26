@@ -1,6 +1,6 @@
 {
 	"name": "@thi.ng/dot",
-	"version": "2.1.126",
+	"version": "2.1.127",
 	"description": "Graphviz document abstraction & serialization to DOT format",
 	"type": "module",
 	"module": "./index.js",
@@ -8,7 +8,8 @@
 	"sideEffects": false,
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/thi-ng/umbrella.git"
+		"url": "git+https://github.com/thi-ng/umbrella.git",
+		"directory": "packages/dot"
 	},
 	"homepage": "https://thi.ng/dot",
 	"funding": [
@@ -39,8 +40,8 @@
 		"tool:tangle": "../../node_modules/.bin/tangle src/**/*.ts"
 	},
 	"dependencies": {
-		"@thi.ng/api": "^8.12.13",
-		"@thi.ng/checks": "^3.8.3"
+		"@thi.ng/api": "^8.12.14",
+		"@thi.ng/checks": "^3.8.4"
 	},
 	"devDependencies": {
 		"esbuild": "^0.27.2",
