@@ -1,9 +1,4 @@
-import {
-	LOGGER as log,
-	type ComponentID,
-	type ComponentInfo,
-} from "@thi.ng/ecs";
-import { exposeGlobal } from "@thi.ng/expose";
+import { LOGGER as log, type ComponentID } from "@thi.ng/ecs";
 import { div } from "@thi.ng/hiccup-html";
 import { ConsoleLogger, LogLevel } from "@thi.ng/logger";
 import { $compile, type ComponentLike } from "@thi.ng/rdom";

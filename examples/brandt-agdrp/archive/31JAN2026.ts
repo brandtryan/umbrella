@@ -46,7 +46,7 @@ import {
 import type { AppCtx } from "../src/api.js";
 import { OpNode } from "../src/opnode.js";
 
-import { ecs, roots, state } from "../src/ecs.js";
+import { ecs, anchors, state } from "../src/ecs.js";
 import * as Content from "../src/html.js";
 import { $compile } from "@thi.ng/rdom";
 import { div } from "@thi.ng/hiccup-html";

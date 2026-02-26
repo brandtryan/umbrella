@@ -55,10 +55,7 @@ class OpNode {
 	fbo: FBO;
 	shader: Shader;
 
-	constructor(
-		public ctx: AppCtx,
-		public spec: OpSpec,
-	) {
+	constructor(public ctx: AppCtx, public spec: OpSpec) {
 		// define texture object
 		this.tex = defTexture(gl, {
 			width: ctx.texSize,
@@ -112,5 +109,3 @@ const op = new OpNode(CTX, {
 // no draw call - just update
 // update with a time (0-1)
 op.update(0.88888);
-
-const brandt = document.getElementsByClassName(".word");

@@ -1,28 +1,46 @@
-import { exposeGlobal } from "@thi.ng/expose";
 import { div } from "@thi.ng/hiccup-html";
 import { ConsoleLogger, LogLevel } from "@thi.ng/logger";
-import { $compile, type ComponentLike } from "@thi.ng/rdom";
-import { FBO, glCanvas, defFBO, defTexture, TextureType } from "@thi.ng/webgl";
-import { ecs, type CompSpecs } from "./ecs";
+import { $compile } from "@thi.ng/rdom";
+import {
+	glCanvas,
+	defFBO,
+	defTexture,
+	type TextureType,
+	type Texture,
+	type TextureFormat,
+	defTextureFloat,
+} from "@thi.ng/webgl";
+import "../src/ecs";
 import * as Content from "./html";
 import { LOGGER as log } from "@thi.ng/shader-ast";
-
-/********************
- * PRE
- *********************/
-//`everwun caldum ruuuuby, like, like, the red...uh huh, Roodey.`
+import { GLSLVersion } from "@thi.ng/shader-ast-glsl";
 
 /********************
  * CONFIGURATION
  *********************/
-log.set(new ConsoleLogger("ecs", LogLevel.INFO));
 const DEBUG_VIEW = true;
 const vw = window.innerWidth;
 const vh = window.innerHeight;
+log.set(new ConsoleLogger("ECS", LogLevel.DEBUG));
 
 /********************
- * DOM SETUP
+ * SETUP DOM
  *********************/
+const words = Array.from(document.getElementsByClassName("word"));
+const word_count = words.length;
+const TEX_SIZE = Math.ceil(Math.sqrt(word_count));
+const MAX_WORDS = TEX_SIZE * TEX_SIZE;
+const dom_nodes = [...words] as HTMLElement[];
+dom_nodes.forEach((el) => (el.dataset.id = dom_nodes.indexOf(el).toString()));
+
+const { gl, canvas } = glCanvas({
+	version: 2,
+	width: TEX_SIZE,
+	height: TEX_SIZE,
+	autoScale: false,
+	parent: document.body,
+});
+
 const sortedPages = Object.keys(Content)
 	.filter((key) => key.startsWith("page"))
 	.sort(
@@ -33,29 +51,8 @@ const sortedPages = Object.keys(Content)
 
 const pageWordCounts: number[] = Content.getPageCounts(sortedPages);
 const book = div({ id: "pages" }, ...sortedPages);
-
 await document.fonts.ready;
 $compile(book).mount(document.getElementById("app")!);
-
-const roots = [];
-
-/********************
- * WORD DOM DATA
- *********************/
-const words = Array.from(document.getElementsByClassName("word"));
-const word_count = words.length;
-const TEX_SIZE = Math.ceil(Math.sqrt(word_count));
-const dom_nodes = [...words] as HTMLElement[];
-dom_nodes.forEach((el) => (el.dataset.id = dom_nodes.indexOf(el).toString()));
-const { canvas } = glCanvas({
-	version: 2,
-	width: TEX_SIZE,
-	height: TEX_SIZE,
-	autoScale: false,
-	parent: document.body,
-});
-
-const gl = canvas.getContext("webgl2");
 
 if (DEBUG_VIEW) {
 	Object.assign(canvas.style, {
@@ -78,19 +75,9 @@ if (!gl.getExtension("EXT_color_buffer_float")) {
 	);
 }
 
-gl.getExtension("EXT_float_blend");
-
 //********************
 // * LAYOUT & DATA PACKING
 //********************
-
-// const u_rest = defTexture(gl, {
-// 	width: TEX_SIZE,
-// 	height: TEX_SIZE,
-// 	format: gl.RGBA32F,
-// 	type: gl.FLOAT,
-// 	image: roots_buff,
-// });
 
 // const state_0 = defFBO(gl);
 // const state_1 = defFBO(gl);
@@ -114,7 +101,6 @@ gl.getExtension("EXT_float_blend");
 // 		type: gl.FLOAT,
 // 	}),
 // });
-// 7. Create Entities
 
 for (let i = 0; i < word_count; i++) {
 	const el = dom_nodes[i];
@@ -135,31 +121,8 @@ for (let i = 0; i < word_count; i++) {
 
 	const ptr = i * 4;
 
-	roots[ptr] = norm_x; // R
-	roots[ptr + 1] = norm_y; // G
-	roots[ptr + 2] = pageIndex; // B
-	roots[ptr + 3] = i; // A
-
-	//	const floats = ecs.defEntity(ecs.components.get("roots")?.vals);
-
-	const u_roots = defTexture(gl, {
-		width: TEX_SIZE,
-		height: TEX_SIZE,
-		format: gl.RGBA32F,
-		type: gl.FLOAT,
-		image: undefined,
-	});
+	anchors[ptr] = norm_x; // R
+	anchors[ptr + 1] = norm_y; // G
+	anchors[ptr + 2] = pageIndex; // B
+	anchors[ptr + 3] = i; // A
 }
-
-const fbo = defFBO(gl);
-
-gl.bindFramebuffer(gl.FRAMEBUFFER, fbo.fbo);
-
-console.log(
-	`
-		All 3 numbers to right should match!
-		Total Words * 4: 		${word_count * 4}
-		===========================================
-		ECS capacity: 			${ecs.idgen.capacity * 4}
-`,
-);
