@@ -1,51 +1,365 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Buffer-Centric Variable Font Reactor</title>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
-			rel="icon"
-			href='data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y=".9em" font-size="90">⛱️</text></svg>'
-		/>
-		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
-		<meta
-			name="viewport"
-			content="width=device-width, initial-scale=1.0, user-scalable=no"
-		/>
-		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
-		<title>rstream-dataflow · @thi.ng/umbrella</title>
-		<link
-			href="https://unpkg.com/tachyons@4/css/tachyons.min.css"
+			href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap"
 			rel="stylesheet"
 		/>
 		<style>
-			* {
-				user-select: none;
+			/* * SECRET WEAPON 1: CSS Houdini Properties
+         * Tells the browser this variable is a strict number and does NOT inherit.
+         * This prevents massive DOM Style Recalculation cascades when updated via JS.
+         */
+			@property --wght {
+				syntax: "<number>";
+				inherits: false;
+				initial-value: 400;
 			}
 
-			*::selection {
-				background: none;
+			html,
+			body {
+				margin: 0;
+				padding: 0;
+				height: 100%;
+				background-color: #213547;
+				color: #f1f1f1f5;
+				font-family: "Inter", system-ui;
+				overflow: hidden; /* Hide main scrollbar, we use #app for scrolling */
+			}
+
+			/* Matches your scroll-snapping container */
+			#app {
+				height: 100vh;
+				width: 100vw;
+				display: flex;
+				flex-direction: column;
+				overflow-y: auto;
+				scroll-snap-type: y mandatory;
+				scroll-behavior: smooth;
+			}
+
+			/* Each 'Page' takes up exactly 100vh and snaps into place */
+			section {
+				height: 100vh;
+				flex-shrink: 0; /* Prevent squishing */
+				scroll-snap-align: start;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				gap: 15px;
+			}
+
+			/* Block level lines, no wrapping, as requested */
+			.word-line {
+				display: block;
+				white-space: nowrap;
+				font-size: clamp(2rem, 5vw, 4rem);
+				text-transform: uppercase;
+				text-align: center;
+			}
+
+			.jitter-letter {
+				font-variation-settings: "wght" var(--wght);
+
+				/* THE FIX: Backed down from 'strict' to 'layout style'
+             * 'strict' includes 'size' containment, which collapses height to 0
+             * unless explicitly set. 'layout style' gives us the performance
+             * isolation without making the text disappear!
+             */
+				display: inline-block;
+				width: 1em; /* Fixed relative width */
+				text-align: center;
+				contain: strict;
+			}
+
+			#fps-counter {
+				position: fixed;
+				top: 10px;
+				left: 10px;
+				background: rgba(0, 0, 0, 0.8);
+				padding: 10px;
+				font-family: monospace;
+				z-index: 100;
 			}
 		</style>
-		<script>
-			window.goatcounter = { path: (p) => location.host + p };
-		</script>
-		<script
-			data-goatcounter="https://thing.goatcounter.com/count"
-			async
-			src="//gc.zgo.at/count.js"
-		></script>
 	</head>
+	<body>
+		<div id="fps-counter">FPS: 0</div>
+		<canvas id="compute-canvas" style="display: none"></canvas>
 
-	<body class="sans-serif">
-		<div id="app" class="vw-100 vh-100 ma0 pa0 bg-light-gray"></div>
-		<div class="absolute bottom-1 right-1 lh-copy tr">
-			@thi.ng/rstream dataflow graph <br />Click & drag mouse / touch
-			anywhere
-			<br />
-			<a
-				href="https://github.com/thi-ng/umbrella/tree/develop/examples/rstream-dataflow/"
-				>Source</a
-			>
-		</div>
-		<script type="module" src="/src/index.ts"></script>
+		<!-- Scroll Snapping Container -->
+		<div id="app"></div>
+
+		<script>
+			window.onload = () => {
+				const textToJitter = "STOCHASTIC";
+				const appContainer = document.getElementById("app");
+
+				const spanElements = [];
+				const TOTAL_PAGES = 50;
+				const LINES_PER_PAGE = 8;
+				const LETTERS_PER_PAGE = textToJitter.length * LINES_PER_PAGE;
+
+				// 1. SETUP DOM (Scroll Snapping Sections)
+				for (let p = 0; p < TOTAL_PAGES; p++) {
+					const section = document.createElement("section");
+
+					for (let line = 0; line < LINES_PER_PAGE; line++) {
+						const lineDiv = document.createElement("div");
+						lineDiv.className = "word-line";
+
+						for (let char of textToJitter) {
+							const span = document.createElement("span");
+							span.className = "jitter-letter";
+							span.innerText = char;
+							lineDiv.appendChild(span);
+							spanElements.push(span);
+						}
+						section.appendChild(lineDiv);
+					}
+					appContainer.appendChild(section);
+				}
+
+				const PARTICLE_COUNT = spanElements.length; // 50 pages * 8 lines * 10 letters = 4,000
+
+				// 2. WEBGL2 CONTEXT & SHADER SETUP
+				const canvas = document.getElementById("compute-canvas");
+				const gl = canvas.getContext("webgl2");
+
+				if (!gl) return;
+
+				const vsSource = `#version 300 es
+                in vec4 a_particleData;
+                out vec4 v_newParticleData;
+
+                float rand(vec2 co){
+                    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+                }
+
+                void main() {
+                    float currentWght = a_particleData.x;
+                    float targetWght = a_particleData.y;
+                    float speed = a_particleData.z;
+                    float seed = a_particleData.w;
+
+                    float diff = targetWght - currentWght;
+                    currentWght += diff * speed;
+
+                    if (abs(diff) < 10.0) {
+                        targetWght = 100.0 + rand(vec2(seed, currentWght)) * 800.0;
+                        seed += 1.0;
+                    }
+
+                    v_newParticleData = vec4(currentWght, targetWght, speed, seed);
+                }
+            `;
+
+				const fsSource = `#version 300 es
+                precision mediump float;
+                out vec4 fragColor;
+                void main() { fragColor = vec4(1.0); }
+            `;
+
+				function compileShader(type, source) {
+					const shader = gl.createShader(type);
+					gl.shaderSource(shader, source);
+					gl.compileShader(shader);
+					return shader;
+				}
+
+				const program = gl.createProgram();
+				gl.attachShader(
+					program,
+					compileShader(gl.VERTEX_SHADER, vsSource),
+				);
+				gl.attachShader(
+					program,
+					compileShader(gl.FRAGMENT_SHADER, fsSource),
+				);
+
+				gl.transformFeedbackVaryings(
+					program,
+					["v_newParticleData"],
+					gl.SEPARATE_ATTRIBS,
+				);
+				gl.linkProgram(program);
+				gl.useProgram(program);
+
+				// 3. BUFFER CREATION
+				const initialData = new Float32Array(PARTICLE_COUNT * 4);
+
+				for (let i = 0; i < PARTICLE_COUNT * 4; i += 4) {
+					initialData[i] = 400.0;
+					initialData[i + 1] = 900.0;
+					initialData[i + 2] = 0.05 + Math.random() * 0.1;
+					initialData[i + 3] = Math.random() * 100.0;
+				}
+
+				const bufferA = gl.createBuffer();
+				gl.bindBuffer(gl.ARRAY_BUFFER, bufferA);
+				gl.bufferData(gl.ARRAY_BUFFER, initialData, gl.DYNAMIC_COPY);
+
+				const bufferB = gl.createBuffer();
+				gl.bindBuffer(gl.ARRAY_BUFFER, bufferB);
+				gl.bufferData(
+					gl.ARRAY_BUFFER,
+					initialData.byteLength,
+					gl.DYNAMIC_COPY,
+				);
+
+				const pingPongBuffers = [bufferA, bufferB];
+				let readIndex = 0;
+
+				const dataLocation = gl.getAttribLocation(
+					program,
+					"a_particleData",
+				);
+
+				const vaoA = gl.createVertexArray();
+				gl.bindVertexArray(vaoA);
+				gl.bindBuffer(gl.ARRAY_BUFFER, bufferA);
+				gl.enableVertexAttribArray(dataLocation);
+				gl.vertexAttribPointer(dataLocation, 4, gl.FLOAT, false, 0, 0);
+
+				const vaoB = gl.createVertexArray();
+				gl.bindVertexArray(vaoB);
+				gl.bindBuffer(gl.ARRAY_BUFFER, bufferB);
+				gl.enableVertexAttribArray(dataLocation);
+				gl.vertexAttribPointer(dataLocation, 4, gl.FLOAT, false, 0, 0);
+
+				gl.bindVertexArray(null);
+
+				const pbo = gl.createBuffer();
+				gl.bindBuffer(gl.PIXEL_PACK_BUFFER, pbo);
+				gl.bufferData(
+					gl.PIXEL_PACK_BUFFER,
+					initialData.byteLength,
+					gl.STREAM_READ,
+				);
+				gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
+
+				const resultData = new Float32Array(PARTICLE_COUNT * 4);
+				const previousWeights = new Int32Array(PARTICLE_COUNT);
+				let currentFence = null;
+
+				let lastTime = performance.now();
+				let frameCount = 0;
+				const fpsEl = document.getElementById("fps-counter");
+
+				// 4. THE REACTOR LOOP
+				function renderLoop() {
+					const now = performance.now();
+					frameCount++;
+					if (now - lastTime >= 1000) {
+						fpsEl.innerText = `FPS: ${frameCount}`;
+						frameCount = 0;
+						lastTime = now;
+					}
+
+					const writeIndex = 1 - readIndex;
+					const outputBuffer = pingPongBuffers[writeIndex];
+					const activeVAO = readIndex === 0 ? vaoA : vaoB;
+
+					gl.bindVertexArray(activeVAO);
+					gl.bindBufferBase(
+						gl.TRANSFORM_FEEDBACK_BUFFER,
+						0,
+						outputBuffer,
+					);
+					gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+					// GPU computes physics for ALL 4,000 particles
+					gl.enable(gl.RASTERIZER_DISCARD);
+					gl.beginTransformFeedback(gl.POINTS);
+					gl.drawArrays(gl.POINTS, 0, PARTICLE_COUNT);
+					gl.endTransformFeedback();
+					gl.disable(gl.RASTERIZER_DISCARD);
+
+					gl.bindBufferBase(gl.TRANSFORM_FEEDBACK_BUFFER, 0, null);
+
+					if (currentFence) {
+						const status = gl.clientWaitSync(currentFence, 0, 0);
+
+						if (
+							status === gl.ALREADY_SIGNALED ||
+							status === gl.CONDITION_SATISFIED
+						) {
+							gl.bindBuffer(gl.PIXEL_PACK_BUFFER, pbo);
+							gl.getBufferSubData(
+								gl.PIXEL_PACK_BUFFER,
+								0,
+								resultData,
+							);
+							gl.bindBuffer(gl.PIXEL_PACK_BUFFER, null);
+							gl.deleteSync(currentFence);
+							currentFence = null;
+
+							// --- THE MATH GATEKEEPER ---
+							// Because we strictly snap to 100vh sections, we can completely replace
+							// the Intersection Observer by calculating exactly which page is currently visible!
+							const windowHeight = window.innerHeight;
+							const activePageIndex = Math.round(
+								appContainer.scrollTop / windowHeight,
+							);
+
+							// Calculate exactly which slice of our 4,000 array belongs to the visible page
+							const startIndex =
+								activePageIndex * LETTERS_PER_PAGE;
+							const endIndex = startIndex + LETTERS_PER_PAGE;
+
+							// Only loop through the ~80 visible letters, completely ignoring the other 3,920!
+							for (let i = startIndex; i < endIndex; i++) {
+								// Failsafe in case of over-scrolling bounce on Macs
+								if (i >= PARTICLE_COUNT) break;
+
+								const dataIndex = i * 4;
+								const currentWeight = Math.round(
+									resultData[dataIndex],
+								);
+
+								if (currentWeight !== previousWeights[i]) {
+									spanElements[i].style.setProperty(
+										"--wght",
+										currentWeight,
+									);
+									previousWeights[i] = currentWeight;
+								}
+							}
+						}
+					}
+
+					if (!currentFence) {
+						gl.bindBuffer(gl.COPY_READ_BUFFER, outputBuffer);
+						gl.bindBuffer(gl.COPY_WRITE_BUFFER, pbo);
+						gl.copyBufferSubData(
+							gl.COPY_READ_BUFFER,
+							gl.COPY_WRITE_BUFFER,
+							0,
+							0,
+							initialData.byteLength,
+						);
+
+						gl.bindBuffer(gl.COPY_READ_BUFFER, null);
+						gl.bindBuffer(gl.COPY_WRITE_BUFFER, null);
+
+						currentFence = gl.fenceSync(
+							gl.SYNC_GPU_COMMANDS_COMPLETE,
+							0,
+						);
+					}
+
+					readIndex = writeIndex;
+					requestAnimationFrame(renderLoop);
+				}
+
+				renderLoop();
+			};
+		</script>
 	</body>
 </html>

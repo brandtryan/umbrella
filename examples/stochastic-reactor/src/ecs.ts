@@ -1,61 +1,43 @@
-import { ECS } from "@thi.ng/ecs";
+import type { Maybe } from "@thi.ng/api";
+import { ECS, type MemMappedComponent } from "@thi.ng/ecs";
 
 // 2. The Master Schema
 export interface CompSpecs {
 	// --- PHYSICS (MemMapped) ---
-
-	wght: Float32Array;
-	wdth: Float32Array;
-	ital: Float32Array;
-	cont: Float32Array;
-	urge: Float32Array;
+	state: Float32Array;
+	// x & y coord positions (unchanging position vector)
+	pos: Float32Array;
+	// META: Visibility status (driven by IntersectionObserver).
+	page: Uint8Array;
 	// META: The DOM ID to bind back to the HTML element.
 	// We store this as an integer (index in the cache).
-	domId: Uint32Array;
-	// META: Visibility status (driven by IntersectionObserver).
-	isVisible: Uint8Array;
+	domId: Uint16Array;
 }
 
 export const ecs = new ECS<CompSpecs>({});
 
-export const wght = ecs.defComponent({
-	id: "wght",
+export const stateComponent: Maybe<MemMappedComponent<"state">> =
+	ecs.defComponent({
+		id: "state",
+		type: "f32",
+		size: 4, // "wght", "wdth", "ital", "cont"
+	})!;
+
+export const posComponent: Maybe<MemMappedComponent<"pos">> = ecs.defComponent({
+	id: "pos",
 	type: "f32",
-	size: 1,
-});
+	size: 2, // x and y
+})!;
 
-export const wdth = ecs.defComponent({
-	id: "wdth",
-	type: "f32",
-	size: 1,
-});
-
-export const ital = ecs.defComponent({
-	id: "ital",
-	type: "f32",
-	size: 1,
-});
-
-export const cont = ecs.defComponent({
-	id: "cont",
-	type: "f32",
-	size: 1,
-});
-
-export const urge = ecs.defComponent({
-	id: "urge",
-	type: "f32",
-	size: 1,
-});
-
-export const domId = ecs.defComponent({
-	id: "domId",
-	type: "u32",
-	size: 1,
-});
-
-export const isVisible = ecs.defComponent({
-	id: "isVisible",
-	type: "u8",
-	size: 1,
-});
+export const pageComponent: Maybe<MemMappedComponent<"page">> =
+	ecs.defComponent({
+		id: "page",
+		type: "u8",
+		size: 1,
+	})!;
+export const domIdComponent: Maybe<MemMappedComponent<"domId">> =
+	ecs.defComponent({
+		id: "domId",
+		type: "u16",
+		size: 1,
+	})!;

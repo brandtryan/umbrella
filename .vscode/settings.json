@@ -1,4 +1,5 @@
 {
 	"markdown.validate.enabled": true,
-	"liveServer.settings.port": 3002
+	"liveServer.settings.port": 3002,
+	"typescript.tsdk": "node_modules/typescript/lib"
 }

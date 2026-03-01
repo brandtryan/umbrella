@@ -1,0 +1,151 @@
+@font-face {
+	font-family: Ikarus;
+	src: url("./Ikarus.woff2") format("woff2-variations");
+	font-display: swap;
+	unicode-range: U+00-7F, U+2014;
+}
+
+@property --wght {
+	syntax: "<number>";
+	inherits: false;
+	initial-value: 300;
+}
+
+@property --wdth {
+	syntax: "<number>";
+	inherits: false;
+	initial-value: 100;
+}
+
+@property --ital {
+	syntax: "<number>";
+	inherits: false;
+	initial-value: 0;
+}
+
+@property --cont {
+	syntax: "<number>";
+	inherits: false;
+	initial-value: 0;
+}
+
+:root {
+	/*
+		Slope Calc
+		Min viewport: 380px
+		Max viewport: 1200px
+	*/
+	--fs-fluid: clamp(12px, 0.75rem + 1vw, 24px);
+	--lh-fluid: clamp(20px, 1.5em, 36px);
+}
+
+/* Base and Typography */
+html {
+	background-color: #213547;
+	color: #f1f1f1f5;
+	font-family: Ikarus, system-ui;
+	font-feature-settings:
+		"liga" 1,
+		"ss02" 1,
+		"ss03" 1,
+		"ss04" 1,
+		"ss05" 1,
+		"ss10" 1,
+		"ss11" 1,
+		"ss14" 1;
+	font-kerning: normal;
+	font-synthesis: none;
+	font-size: var(--fs-fluid);
+	height: 100%;
+	letter-spacing: normal;
+	line-height: var(--lh-fluid);
+	text-rendering: auto;
+	word-spacing: 0.05em;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	overflow: hidden;
+}
+
+/* canvas {
+	background-color: black;
+} */
+
+#app {
+	height: 100vh;
+	width: 100vw;
+	overflow-y: scroll;
+	scroll-snap-type: y mandatory;
+	scroll-behavior: smooth;
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
+
+/* #app::-webkit-scrollbar {
+	display: none;
+} */
+
+/* Page Structure */
+.page {
+	display: grid;
+	justify-content: center;
+	align-content: center;
+	height: 100vh;
+	width: 100%;
+	min-width: 380px;
+	max-width: 1200px;
+	overflow: visible;
+	scroll-snap-align: start;
+	margin-inline: auto;
+}
+
+/* Line Styling */
+.line {
+	white-space: preserve nowrap;
+	text-align: left;
+}
+
+/* Word Styling */
+.word {
+	font-variation-settings:
+		"wght" var(--wght),
+		"wdth" var(--wdth),
+		"ital" var(--ital),
+		"cont" var(--cont);
+}
+
+span {
+	border: none;
+	padding: 0;
+	margin: 0;
+	display: inline-block;
+}
+
+#fps-counter {
+	position: fixed;
+	top: 10px;
+	left: 10px;
+	background: rgba(0, 0, 0, 0.8);
+	padding: 10px;
+	font-family: monospace;
+	z-index: 100;
+}
+
+#compute-canvas {
+	position: fixed;
+	top: 10px;
+	right: 10px;
+	width: 96px;
+	height: 96px;
+	background-color: #0b131b;
+	border: 2px solid rgba(104, 144, 238, 0.5);
+	border-radius: 8px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+	z-index: 100;
+	pointer-events: none;
+	will-change: transform; /* Puts the canvas on its own GPU layer */
+}

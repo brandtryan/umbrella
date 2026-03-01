@@ -1,16 +1,11 @@
-import {
-	LOGGER as log,
-	type ComponentInfo,
-	type IComponent,
-} from "@thi.ng/ecs";
+import { LOGGER as log } from "@thi.ng/ecs";
 import { exposeGlobal } from "@thi.ng/expose";
 import { div } from "@thi.ng/hiccup-html";
 import { ConsoleLogger, LogLevel } from "@thi.ng/logger";
 import { $compile } from "@thi.ng/rdom";
 import { glCanvas } from "@thi.ng/webgl";
-import { ecs, type CompSpecs } from "./ecs";
+import { ecs } from "./ecs";
 import * as Content from "../src/html";
-import { ComponentInfo } from "../../../packages/ecs/src/api";
 
 /********************
  * CONFIGURATION
