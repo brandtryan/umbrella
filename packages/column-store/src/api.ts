@@ -113,7 +113,7 @@ export const LIMITS: Record<NumericType, [number, number]> = {
 	f64: [-Infinity, Infinity],
 };
 
-export interface IColumn {
+export interface IColumn extends Iterable<any> {
 	bitmap?: BitmapIndex;
 
 	readonly isArray: boolean;
@@ -234,7 +234,7 @@ export type QueryTermOp = Fn3<
 	QueryCtx<any>,
 	QueryTerm<any>,
 	Maybe<IColumn>,
-	void
+	boolean
 >;
 
 export interface QueryTermOpSpec {

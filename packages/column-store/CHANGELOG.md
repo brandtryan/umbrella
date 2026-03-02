@@ -1,6 +1,6 @@
 # Change Log
 
-- **Last updated**: 2026-02-25T15:52:45Z
+- **Last updated**: 2026-03-01T16:40:02Z
 - **Generator**: [thi.ng/monopub](https://thi.ng/monopub)
 
 All notable changes to this project will be documented in this file.
@@ -10,6 +10,40 @@ See [Conventional Commits](https://conventionalcommits.org/) for commit guidelin
 
 **Note:** Unlisted _patch_ versions only involve non-code or otherwise excluded changes
 and/or version bumps of transitive dependencies.
+
+## [0.9.0](https://github.com/thi-ng/umbrella/tree/@thi.ng/column-store@0.9.0) (2026-03-01)
+
+#### 🚀 Features
+
+- add query predicates (syntax sugar) ([a9e7b89](https://github.com/thi-ng/umbrella/commit/a9e7b89))
+
+## [0.8.0](https://github.com/thi-ng/umbrella/tree/@thi.ng/column-store@0.8.0) (2026-02-28)
+
+#### 🚀 Features
+
+- add iterable support for columns ([6abb059](https://github.com/thi-ng/umbrella/commit/6abb059))
+  - update `IColumn`
+  - add `AColumn` iterator impl
+  - add tests
+
+### [0.7.1](https://github.com/thi-ng/umbrella/tree/@thi.ng/column-store@0.7.1) (2026-02-28)
+
+#### ⏱ Performance improvements
+
+- update query ops to only iterate already selected rows (if possible) ([9492ead](https://github.com/thi-ng/umbrella/commit/9492ead))
+  - add QueryCtx iterable support, iterate bitfield if available
+  - update all query ops to iterate via ctx/bitfield
+  - add short-circuit to fail query if current op produced no results
+
+## [0.7.0](https://github.com/thi-ng/umbrella/tree/@thi.ng/column-store@0.7.0) (2026-02-26)
+
+#### 🚀 Features
+
+- update `addColumn()` logic to prefill existing rows with defaults ([2fc5887](https://github.com/thi-ng/umbrella/commit/2fc5887))
+  - add `IColumn.ensureRows()`, add all impls
+  - update `Table.addColumn()`
+  - update `Table.validateColumnSpec()`
+  - add tests for all column types
 
 ### [0.6.1](https://github.com/thi-ng/umbrella/tree/@thi.ng/column-store@0.6.1) (2026-02-25)
 
