@@ -71,10 +71,6 @@ body {
 	overflow: hidden;
 }
 
-/* canvas {
-	background-color: black;
-} */
-
 #app {
 	height: 100vh;
 	width: 100vw;
@@ -125,27 +121,27 @@ span {
 	display: inline-block;
 }
 
-#fps-counter {
+/* #fps-counter {
 	position: fixed;
-	top: 10px;
+	top: 900px;
 	left: 10px;
 	background: rgba(0, 0, 0, 0.8);
 	padding: 10px;
 	font-family: monospace;
 	z-index: 100;
-}
+} */
 
-#compute-canvas {
+canvas {
 	position: fixed;
-	top: 10px;
-	right: 10px;
+	top: 0px;
+	right: 0px;
 	width: 96px;
 	height: 96px;
-	background-color: #0b131b;
+	background-color: #595d60;
 	border: 2px solid rgba(104, 144, 238, 0.5);
 	border-radius: 8px;
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-	z-index: 100;
+	z-index: 999;
 	pointer-events: none;
 	will-change: transform; /* Puts the canvas on its own GPU layer */
 }
