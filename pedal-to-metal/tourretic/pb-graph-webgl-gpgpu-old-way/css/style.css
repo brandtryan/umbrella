@@ -1,0 +1,61 @@
+@font-face {
+	font-family: Ikarus;
+	src: url("./Ikarus.woff2") format("woff2-variations");
+	font-weight: 47 900;
+	font-stretch: 60% 140%;
+	font-display: swap;
+	unicode-range: U+00-7F, U+2014;
+}
+
+/* Base and Typography */
+html {
+	background-color: #213547;
+	color: #f1f1f1f5;
+	font-family: Ikarus, system-ui, -apple-system, "Segoe UI", Roboto,
+		"Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif,
+		"Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+		"Noto Color Emoji";
+	font-feature-settings: "kern" 1, "liga" 1, "ss02" 1, "ss03" 1, "ss04" 1,
+		"ss06" 1, "ss10" 1, "ss11" 1, "ss12" 1;
+	height: 100%;
+	/* letter-spacing: 0; */
+	letter-spacing: normal;
+	word-spacing: 0.05rem;
+	font-kerning: normal;
+	font-synthesis: none;
+	font-variation-settings: "ital" 0, "cont" 0, "wght" 300, "wdth" 100;
+	text-rendering: optimizeSpeed;
+	font-size: clamp(16px, 1vw + 11.8px, 22px);
+	line-height: clamp(21.6px, 1.942vw + 16.52px, 31.9px);
+	scroll-snap-type: y mandatory;
+}
+
+body {
+	margin-left: 2.5%;
+	margin-right: 2.5%;
+	padding: 0;
+}
+
+/* Page Structure */
+.page {
+	outline: thick solid khaki;
+	border-radius: 4px;
+	outline-width: thick 6.5px;
+	display: grid;
+	place-content: center;
+	padding: 0;
+	min-height: 100vh;
+	box-sizing: border-box;
+	scroll-snap-align: center;
+}
+
+/* Line Styling */
+p.line {
+	outline: ridge rgba(104, 144, 238, 0.733);
+	outline-width: 2.5px;
+	padding-left: 2px;
+	margin-block-start: 0;
+	margin-block-end: 0;
+	white-space: nowrap;
+	text-align: left;
+}

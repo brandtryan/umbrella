@@ -1,0 +1,75 @@
+digraph GPGPU_Architecture {
+    rankdir=TD;
+    node [fontname="Helvetica", shape=box, style=filled, fillcolor="#f9f9f9"];
+    edge [fontname="Helvetica", fontsize=10];
+
+    subgraph cluster_L1 {
+        label = "Layer 1: Initialization";
+        style = filled;
+        fillcolor = "#e3f2fd";
+        Hiccup [label="Hiccup Tree\n(Static Content)"];
+        DOM_Layout [label="Browser Layout\n(Grid/Flow)"];
+        Coord_Extract [label="Coordinate Extraction\n(getBoundingClientRect)"];
+        Static_Buffer [label="Static Data Buffer\n(IDs, Page Index)"];
+        
+        Hiccup -> DOM_Layout;
+        DOM_Layout -> Coord_Extract;
+        Coord_Extract -> Static_Buffer;
+    }
+
+    subgraph cluster_L4_Input {
+        label = "Layer 4: Reactive Inputs";
+        style = filled;
+        fillcolor = "#fff3e0";
+        Scroll_Event [label="Scroll Stream", shape=ellipse];
+        Reader_Logic [label="Reader Logic\n(Calculate Visible Range)"];
+        
+        Scroll_Event -> Reader_Logic;
+    }
+
+    subgraph cluster_L3 {
+        label = "Layer 3: GPGPU Physics Core";
+        style = filled;
+        fillcolor = "#e8f5e9";
+        
+        Uniforms [label="Uniforms\n(u_time, u_activeRange)"];
+        Shader [label="Physics Shader\n(PRE-GPGPU Branching)", shape=hexagon, color=red, penwidth=2];
+        PingPong [label="Ping-Pong FBOs\n(RGBA32F Texture)"];
+        Noise [label="Additive Noise\n(The Tic)", shape=ellipse];
+        
+        Static_Buffer -> Shader [label="Seeding", style=dashed];
+        Reader_Logic -> Uniforms [label="Active Indices"];
+        Uniforms -> Shader;
+        Noise -> Shader;
+        Shader -> PingPong [label="Write State"];
+        PingPong -> Shader [label="Read Previous"];
+    }
+
+    subgraph cluster_L4_Bridge {
+        label = "Layer 4: The Bridge";
+        style = filled;
+        fillcolor = "#fff3e0";
+        Readback [label="gl.readPixels\n(Full Texture Dump)"];
+        CPU_Buffer [label="Float32Array\n(Raw Data)"];
+        
+        PingPong -> Readback [label="Async Transfer"];
+        Readback -> CPU_Buffer;
+    }
+
+    subgraph cluster_L5 {
+        label = "Layer 5: VDOM-less Presentation";
+        style = filled;
+        fillcolor = "#f3e5f5";
+        
+        Wrapper [label="FastTextRenderer\n(Component Wrapper)", shape=component];
+        Imperative_Loop [label="Imperative Update Loop\n(for i in activeRange)", shape=parallelogram];
+        DOM_Nodes [label="Cached DOM Nodes\n(Array<HTMLElement>)"];
+        CSS_Vars [label="CSS Variables\n(--wght, --wdth)"];
+        
+        CPU_Buffer -> Wrapper [label="Update(buffer)"];
+        Reader_Logic -> Wrapper [label="Set Active Range"];
+        Wrapper -> Imperative_Loop;
+        Imperative_Loop -> DOM_Nodes [label="Direct Access"];
+        DOM_Nodes -> CSS_Vars [label="style.setProperty"];
+    }
+}

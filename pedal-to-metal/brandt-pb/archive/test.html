@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<style>
+			/* 1. Load your font */
+			@font-face {
+				font-family: "Ikarus-Variable";
+				src: url("./Ikarus.woff2") format("woff2"); /* Ensure filename matches exactly */
+			}
+
+			/* 2. Global Property Definitions (The correct way) */
+			@property --wght {
+				syntax: "<number>";
+				inherits: true;
+				initial-value: 300;
+			}
+			@property --wdth {
+				syntax: "<number>";
+				inherits: true;
+				initial-value: 100;
+			}
+			@property --ital {
+				syntax: "<number>";
+				inherits: true;
+				initial-value: 0;
+			}
+			@property --cont {
+				syntax: "<number>";
+				inherits: true;
+				initial-value: 0;
+			}
+
+			body {
+				font-family: system-ui, sans-serif;
+				padding: 2rem;
+				background: #f4f4f4;
+			}
+
+			.controls {
+				background: white;
+				padding: 20px;
+				border-radius: 8px;
+				box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+				margin-bottom: 2rem;
+				max-width: 600px;
+			}
+
+			.control-group {
+				margin-bottom: 1rem;
+				display: flex;
+				align-items: center;
+				gap: 15px;
+			}
+
+			label {
+				width: 60px;
+				font-weight: bold;
+				font-family: monospace;
+			}
+			input[type="range"] {
+				flex-grow: 1;
+			}
+			span.value {
+				width: 50px;
+				text-align: right;
+				font-family: monospace;
+			}
+
+			/* 3. The Test Element */
+			.demo-text {
+				font-family: "Ikarus-Variable";
+				font-size: 8rem;
+				line-height: 1;
+				text-align: center;
+
+				/* Set defaults */
+				--wght: 300;
+				--wdth: 100;
+				--ital: 0;
+				--cont: 0;
+
+				/* Map variables to settings */
+				font-variation-settings: "wght" var(--wght), "wdth" var(--wdth),
+					"ital" var(--ital), "cont" var(--cont);
+
+				/* Smooth transition to spot snapping */
+				transition: font-variation-settings 0.1s linear;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="controls">
+			<h3>Axis Tester</h3>
+			<div class="control-group">
+				<label>WGHT</label>
+				<input type="range" id="wght" min="100" max="900" value="300" />
+				<span class="value" id="val-wght">300</span>
+			</div>
+
+			<div class="control-group">
+				<label>WDTH</label>
+				<input type="range" id="wdth" min="50" max="200" value="100" />
+				<span class="value" id="val-wdth">100</span>
+			</div>
+
+			<div class="control-group">
+				<label>ITAL</label>
+				<input
+					type="range"
+					id="ital"
+					min="0"
+					max="12"
+					step="0.1"
+					value="0"
+				/>
+				<span class="value" id="val-ital">0</span>
+			</div>
+
+			<div class="control-group">
+				<label>CONT</label>
+				<input type="range" id="cont" min="0" max="100" value="0" />
+				<span class="value" id="val-cont">0</span>
+			</div>
+		</div>
+
+		<div class="demo-text" id="demo" contenteditable="true">Ikarus</div>
+
+		<script>
+			const demo = document.getElementById("demo");
+			const inputs = document.querySelectorAll('input[type="range"]');
+
+			inputs.forEach((input) => {
+				input.addEventListener("input", (e) => {
+					const axis = e.target.id;
+					const val = e.target.value;
+
+					// Update the CSS variable on the text element
+					demo.style.setProperty(`--${axis}`, val);
+
+					// Update the number display
+					document.getElementById(`val-${axis}`).textContent = val;
+				});
+			});
+		</script>
+	</body>
+</html>

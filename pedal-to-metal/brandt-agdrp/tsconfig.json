@@ -1,0 +1,12 @@
+{
+	"extends": "../tsconfig.json",
+	"include": [
+		"src/**/*",
+		"archive/physics.ts",
+		"archive/physics-shader.ts",
+		"archive/index copy.ts",
+		"archive/31JAN2026_messOfGoodSnippets.ts",
+		"archive/31JAN2026.ts"
+	],
+	"compilerOptions": {}
+}

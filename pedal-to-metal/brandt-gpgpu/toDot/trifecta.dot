@@ -1,0 +1,190 @@
+digraph KineticTypographyPipeline {
+    // ---------------------------------------------------------
+    // Global Graph Settings
+    // ---------------------------------------------------------
+    rankdir = TB;
+    newrank = true;
+    // Allows ranking across clusters
+    splines = true;
+    // Orthogonal edges for circuit-board look
+    nodesep = 0.8;
+    ranksep = 1.0;
+    fontname = "Helvetica Neue";
+    fontsize = 14;
+    compound = true;
+    // Allow edges between clusters
+    
+    // ---------------------------------------------------------
+    // Node Styles
+    // ---------------------------------------------------------
+    node [fontname = "Helvetica"; fontsize = 10; style = "filled"; penwidth = 1.5;];
+    
+    // Style: Logic / Standard Nodes
+    node [shape = box; fillcolor = "#ffffff"; color = "#333333";];
+    
+    // Style: Libraries (@thi.ng/*) - Octagon
+    node [shape = octagon; fillcolor = "#e1f5fe"; color = "#0277bd";];
+    
+    // Style: Data Structures (FBOs, Arrays) - Cylinder
+    node [shape = cylinder; fillcolor = "#fff9c4"; color = "#fbc02d"; margin = "0.2,0.1";];
+    
+    // Style: External Inputs
+    node [shape = plain; fillcolor = none; style = "dashed";];
+    
+    // ---------------------------------------------------------
+    // External Producers (Based on Data Table)
+    // ---------------------------------------------------------
+    subgraph {
+        rank = same;
+        P1_Clock;
+        P2_Gestures;
+        P3_Control;
+    }
+    P1_Clock [label = "P1: Master_Clock_RAF\n(@thi.ng/rstream)";shape = ellipse;style = dashed;color = "#999999";];
+    P2_Gestures [label = "P2: Browser_Gestures\n(@thi.ng/rstream-gestures)";shape = ellipse;style = dashed;color = "#999999";];
+    P3_Control [label = "P3: External_Control_Atom";shape = ellipse;style = dashed;color = "#999999";];
+    
+    // ---------------------------------------------------------
+    // Cluster 1: Layer 1 - Initialization & Seeding
+    // ---------------------------------------------------------
+    subgraph cluster_L1 {
+        label = "Layer 1: Initialization & Seeding\n(Static Prep)";
+        style = filled;
+        fillcolor = "#f3e5f5";
+        // Light Purple
+        color = "#8e24aa";
+        
+        Static_Text_Layout [shape = box;label = "Static_Text_Layout\n(JS Read / getBoundingClientRect)";fillcolor = "#ffffff";];
+        Initial_Target_Positions [shape = cylinder;label = "Initial_Target_Positions\n(Coordinates)";fillcolor = "#fff9c4";];
+        
+        Static_Text_Layout -> Initial_Target_Positions [label = "Coordinate\nExtraction";];
+    }
+    
+    // ---------------------------------------------------------
+    // Cluster 2: Layer 2 - ECS Data Core
+    // ---------------------------------------------------------
+    subgraph cluster_L2 {
+        label = "Layer 2: ECS Data Core\n(Data-Oriented Design)";
+        style = filled;
+        fillcolor = "#e8eaf6";
+        // Light Indigo
+        color = "#3949ab";
+        
+        // Grouping ECS Internal elements
+        subgraph cluster_ECS_Internal {
+            label = "";
+            style = invis;
+            ECS_Components [shape = cylinder;label = "ECS_Components\n(Pure Data)";];
+            Entities [shape = cylinder;label = "Entities\n(Numeric IDs)";];
+            Data_Storage [shape = cylinder;label = "Data_Storage\n(Typed Arrays / SOA)\n@thi.ng/ecs";];
+        }
+        
+        L2_Core [shape = box;label = "L2_ECS_Data_Core\n(Manager)";];
+        Texture_Mapper [shape = octagon;label = "Map_ECS_to_Texture";fillcolor = "#e1f5fe";];
+        
+        // Connections inside L2
+        {ECS_Components Entities Data_Storage} -> L2_Core [style = dotted; arrowhead = none;];
+        L2_Core -> Texture_Mapper [label = "Prepare DOD Data";];
+    }
+    
+    // ---------------------------------------------------------
+    // Cluster 3: Layer 3 - GPGPU Multi-Pass Loop
+    // ---------------------------------------------------------
+    subgraph cluster_L3 {
+        label = "Layer 3: GPGPU Multi-Pass\n(Physics Simulator)";
+        style = filled;
+        fillcolor = "#e0f2f1";
+        // Light Teal
+        color = "#00897b";
+        
+        WebGL_Context [shape = octagon;label = "WebGL_Context\n@thi.ng/webgl";];
+        Procedural_Noise [shape = cylinder;label = "Procedural_Noise_Field\n(Input Texture)";];
+        
+        // Ping Pong Buffer structure
+        subgraph cluster_PingPong {
+            label = "Ping-Pong State";
+            style = dashed;
+            color = "#004d40";
+            
+            FBO_A [shape = cylinder;label = "FBO_A\n(Current State)";];
+            Physics_Shader [shape = octagon;label = "Physics_Shader\n(GLSL / @thi.ng/shader-ast)\nVerlet Integration";];
+            FBO_B [shape = cylinder;label = "FBO_B\n(Next State)";];
+        }
+        
+        // L3 Internal Flow
+        FBO_A -> Physics_Shader [label = "Read State";];
+        Procedural_Noise -> Physics_Shader [label = "Flow Field";];
+        Physics_Shader -> FBO_B [label = "Write State\n(60fps)";];
+        
+        // Frame Flip (Feedback Loop)
+        FBO_B -> FBO_A [label = "Frame Flip"; style = dashed; constraint = false; color = "#555555";];
+    }
+    
+    // ---------------------------------------------------------
+    // Cluster 4: Layer 4 - Reactive Dataflow
+    // ---------------------------------------------------------
+    subgraph cluster_L4 {
+        label = "Layer 4: Reactive Dataflow\n(Sync & AGDRP Bridge)";
+        style = filled;
+        fillcolor = "#fff3e0";
+        // Light Orange
+        color = "#fb8c00";
+        
+        Raw_Vector_Stream [shape = cylinder;label = "Raw_Vector_Stream\n(Float32Array View)";];
+        Reader_Logic [shape = octagon;label = "Reader_Logic\n(Transducer: map/filter/dedupe)";];
+        Control_Stream [shape = cylinder;label = "Control_Stream\n(Stress Scalar)";];
+        Active_Word_Set [shape = cylinder;label = "Active_Word_Set\n(Visibility Stream)";];
+        
+        // Critical Node
+        Synchronized_Merge [shape = octagon;label = "Synchronized_Merge\n(@thi.ng/rstream sync())";penwidth = 3;color = "#d84315";];
+        
+        // L4 Internal Flow
+        Reader_Logic -> Control_Stream [label = "State Change";];
+    }
+    
+    // ---------------------------------------------------------
+    // Cluster 5: Layer 5 - VDOM-less Visualization
+    // ---------------------------------------------------------
+    subgraph cluster_L5 {
+        label = "Layer 5: VDOM-less Visualization\n(DDKT Output)";
+        style = filled;
+        fillcolor = "#ffebee";
+        // Light Red
+        color = "#e53935";
+        
+        VDOM_Embedding [shape = octagon;label = "VDOM-less_Embedding\n(@thi.ng/rdom: compile)";];
+        Live_DOM [shape = box;label = "Live_DOM_Node\n(HTML Element)";style = "filled,rounded";fillcolor = "#ffcdd2";];
+        CSS_Target [shape = note;label = "style.fontVariationSettings\n(Targeted Update)";];
+        
+        VDOM_Embedding -> Live_DOM [label = "Mount/Update";];
+        Live_DOM -> CSS_Target [style = dotted;];
+    }
+    
+    // ---------------------------------------------------------
+    // Inter-Cluster Connections & External Inputs
+    // ---------------------------------------------------------
+    
+    // L1 -> L2
+    Initial_Target_Positions -> L2_Core [label = "ECS Seeding"; color = "#333333";];
+    
+    // L2 -> L3
+    Texture_Mapper -> FBO_A [label = "Initial Load"; lhead = cluster_L3;];
+    
+    // L3 -> L4 (Readback)
+    FBO_B -> Raw_Vector_Stream [label = "GPU Readback\n(Stream Raw Vector Data)"; color = "#d84315"; penwidth = 2;];
+    
+    // L4 Inputs
+    P2_Gestures -> Reader_Logic [label = "fromEvent()";];
+    P3_Control -> Control_Stream [label = "Config";];
+    
+    // L3 External Input
+    P1_Clock -> Physics_Shader [label = "Time Uniform";];
+    
+    // L4 Synchronization (Critical Convergence)
+    Raw_Vector_Stream -> Synchronized_Merge [label = "High Freq Data"; color = "#d84315"; penwidth = 2;];
+    Control_Stream -> Synchronized_Merge [label = "Low Freq Control"; color = "#d84315"; penwidth = 2;];
+    Active_Word_Set -> Synchronized_Merge [label = "State Filter"; color = "#d84315"; penwidth = 2;];
+    
+    // L4 -> L5
+    Synchronized_Merge -> VDOM_Embedding [label = "Tuple Output\n(Sync Snapshot)"; penwidth = 2;];
+}

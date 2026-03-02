@@ -1,0 +1,11 @@
+{
+	"extends": "../tsconfig.json",
+	"exclude": [
+		"./archive/*",
+		"./node_modules/**/*"
+	],
+	"include": [
+		"src/**/*"
+	],
+	"compilerOptions": {}
+}
